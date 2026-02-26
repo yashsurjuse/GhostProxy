@@ -1,6 +1,6 @@
 import { defineConfig, normalizePath } from 'vite';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import react from '@vitejs/plugin-react-swc';
 import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -12,9 +12,18 @@ import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 
-const epoxyPath = normalizePath(
-  resolve(dirname(fileURLToPath(import.meta.resolve('@mercuryworkshop/epoxy-transport'))), '.')
-);
+// Use dynamic import of require for ESM compatibility
+let epoxyPath;
+try {
+  const { createRequire } = await import('node:module');
+  const require = createRequire(import.meta.url);
+  epoxyPath = normalizePath(
+    resolve(dirname(require.resolve('@mercuryworkshop/epoxy-transport')), '.')
+  );
+} catch (e) {
+  // fallback or error handling
+  epoxyPath = '';
+}
 import dotenv from 'dotenv';
 
 dotenv.config();
