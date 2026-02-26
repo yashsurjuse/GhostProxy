@@ -1,0 +1,498 @@
+import loaderStore from '/src/utils/hooks/loader/useLoaderStore';
+import { Globe, X, Plus, Loader, UsersRound, UserPlus, Check, Pencil, Trash2, Upload, Download } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useOptions } from '/src/utils/optionsContext'
+import clsx from 'clsx';
+import { createId } from '/src/utils/id';
+import { process } from '/src/utils/hooks/loader/utils';
+
+const PROFILE_STORE_KEY = 'ghostBrowserProfiles';
+const PROFILE_ACTIVE_KEY = 'ghostBrowserActiveProfileId';
+
+const snapshotCurrentStorage = () => {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || key === PROFILE_STORE_KEY || key === PROFILE_ACTIVE_KEY) continue;
+    data[key] = localStorage.getItem(key);
+  }
+  return data;
+};
+
+const applyStorageSnapshot = (snapshot) => {
+  const keep = new Set([PROFILE_STORE_KEY, PROFILE_ACTIVE_KEY]);
+  const toRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && !keep.has(key)) toRemove.push(key);
+  }
+  toRemove.forEach((key) => localStorage.removeItem(key));
+
+  Object.entries(snapshot || {}).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      localStorage.setItem(key, value);
+    }
+  });
+};
+
+const getGhostTabLabel = (url) => {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url, location.origin);
+    if (parsed.origin !== location.origin) return null;
+
+    const path = parsed.pathname.replace(/\/$/, '') || '/';
+    if (path.startsWith('/docs/')) return 'Ghost Docs';
+    const map = {
+      '/': 'Ghost Home',
+      '/new': 'Ghost Home',
+      '/apps': 'Ghost Apps',
+      '/settings': 'Ghost Settings',
+      '/discover': 'Ghost Entertainment',
+      '/docs': 'Ghost Docs',
+      '/search': 'Ghost Search',
+      '/code': 'Ghost Code',
+      '/ai': 'Ghost AI',
+      '/remote': 'Ghost Remote Access',
+    };
+    return map[path] || null;
+  } catch {
+    return null;
+  }
+};
+
+const TabBar = () => {
+  const { tabs, addTab, removeTab, setActive, showTabs, setLastActive, showUI, updateUrl, updateTitle } = loaderStore();
+  const { options } = useOptions();
+  const [profilesOpen, setProfilesOpen] = useState(false);
+  const [profilesRender, setProfilesRender] = useState(false);
+  const [profilesAnim, setProfilesAnim] = useState(false);
+  const [profiles, setProfiles] = useState([]);
+  const [activeProfileId, setActiveProfileId] = useState('');
+  const [newProfileName, setNewProfileName] = useState('');
+  const [renameId, setRenameId] = useState('');
+  const [renameValue, setRenameValue] = useState('');
+  const fileInputRef = useRef(null);
+  const panelRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const storedProfiles = JSON.parse(localStorage.getItem(PROFILE_STORE_KEY) || '[]');
+      const list = Array.isArray(storedProfiles) ? storedProfiles : [];
+
+      if (list.length === 0) {
+        const initial = {
+          id: createId(),
+          name: 'Default',
+          snapshot: snapshotCurrentStorage(),
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify([initial]));
+        localStorage.setItem(PROFILE_ACTIVE_KEY, initial.id);
+        setProfiles([initial]);
+        setActiveProfileId(initial.id);
+        return;
+      }
+
+      const activeId = localStorage.getItem(PROFILE_ACTIVE_KEY) || list[0].id;
+      localStorage.setItem(PROFILE_ACTIVE_KEY, activeId);
+      setProfiles(list);
+      setActiveProfileId(activeId);
+    } catch {
+      const initial = {
+        id: createId(),
+        name: 'Default',
+        snapshot: snapshotCurrentStorage(),
+        updatedAt: Date.now(),
+      };
+      localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify([initial]));
+      localStorage.setItem(PROFILE_ACTIVE_KEY, initial.id);
+      setProfiles([initial]);
+      setActiveProfileId(initial.id);
+    }
+  }, []);
+
+  const persistProfiles = (next, nextActive = activeProfileId) => {
+    setProfiles(next);
+    setActiveProfileId(nextActive);
+    localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify(next));
+    localStorage.setItem(PROFILE_ACTIVE_KEY, nextActive);
+  };
+
+  const activeProfile = useMemo(
+    () => profiles.find((profile) => profile.id === activeProfileId) || profiles[0],
+    [profiles, activeProfileId],
+  );
+
+  const createProfile = () => {
+    const name = (newProfileName || `Profile ${profiles.length + 1}`).trim();
+    const nextProfile = {
+      id: createId(),
+      name,
+      snapshot: snapshotCurrentStorage(),
+      updatedAt: Date.now(),
+    };
+    const next = [...profiles, nextProfile];
+    persistProfiles(next, nextProfile.id);
+    setNewProfileName('');
+  };
+
+  const switchProfile = (targetId) => {
+    if (!targetId || targetId === activeProfileId) return;
+    const next = profiles.map((profile) => {
+      if (profile.id === activeProfileId) {
+        return { ...profile, snapshot: snapshotCurrentStorage(), updatedAt: Date.now() };
+      }
+      return profile;
+    });
+    const target = next.find((profile) => profile.id === targetId);
+    if (!target) return;
+
+    persistProfiles(next, targetId);
+    applyStorageSnapshot(target.snapshot || {});
+    window.location.reload();
+  };
+
+  const deleteProfile = (id) => {
+    if (profiles.length <= 1) return;
+    const next = profiles.filter((profile) => profile.id !== id);
+    const nextActive = id === activeProfileId ? next[0].id : activeProfileId;
+    persistProfiles(next, nextActive);
+
+    if (id === activeProfileId) {
+      const target = next.find((profile) => profile.id === nextActive);
+      applyStorageSnapshot(target?.snapshot || {});
+      window.location.reload();
+    }
+  };
+
+  const saveRename = () => {
+    if (!renameId) return;
+    const name = renameValue.trim();
+    if (!name) return;
+    const next = profiles.map((profile) => profile.id === renameId ? { ...profile, name } : profile);
+    persistProfiles(next, activeProfileId);
+    setRenameId('');
+    setRenameValue('');
+  };
+
+  const exportActiveProfile = () => {
+    if (!activeProfile) return;
+    const payload = JSON.stringify(activeProfile, null, 2);
+    const blob = new Blob([payload], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(activeProfile.name || 'profile').replace(/\s+/g, '_').toLowerCase()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importProfile = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || '{}'));
+        const imported = {
+          id: createId(),
+          name: String(parsed.name || `Imported ${profiles.length + 1}`).trim() || `Imported ${profiles.length + 1}`,
+          snapshot: parsed.snapshot && typeof parsed.snapshot === 'object' ? parsed.snapshot : {},
+          updatedAt: Date.now(),
+        };
+        persistProfiles([...profiles, imported], activeProfileId);
+      } catch {}
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  };
+
+  const clearActiveProfileData = () => {
+    if (!activeProfile) return;
+    const next = profiles.map((profile) =>
+      profile.id === activeProfile.id
+        ? { ...profile, snapshot: {}, updatedAt: Date.now() }
+        : profile,
+    );
+    persistProfiles(next, activeProfile.id);
+    applyStorageSnapshot({});
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    const close = (event) => {
+      if (!profilesOpen) return;
+      const clickedPanel = panelRef.current?.contains(event.target);
+      const clickedTrigger = triggerRef.current?.contains(event.target);
+      if (!clickedPanel && !clickedTrigger) {
+        setProfilesOpen(false);
+      }
+    };
+    window.addEventListener('pointerdown', close);
+    return () => window.removeEventListener('pointerdown', close);
+  }, [profilesOpen]);
+
+  useEffect(() => {
+    if (profilesOpen) {
+      setProfilesAnim(false);
+      setProfilesRender(true);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setProfilesAnim(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
+    }
+
+    setProfilesAnim(false);
+    const t = setTimeout(() => setProfilesRender(false), 180);
+    return () => clearTimeout(t);
+  }, [profilesOpen]);
+
+  useEffect(() => {
+    const closeAll = () => setProfilesOpen(false);
+    window.addEventListener('ghost-close-all-loader-popups', closeAll);
+    return () => window.removeEventListener('ghost-close-all-loader-popups', closeAll);
+  }, []);
+
+  useEffect(() => {
+    if (!activeProfileId || profiles.length === 0) return;
+
+    const interval = setInterval(() => {
+      const latestSnapshot = snapshotCurrentStorage();
+      const serialized = JSON.stringify(latestSnapshot);
+
+      setProfiles((prev) => {
+        const current = prev.find((profile) => profile.id === activeProfileId);
+        if (!current) return prev;
+
+        const currentSerialized = JSON.stringify(current.snapshot || {});
+        if (currentSerialized === serialized) return prev;
+
+        const next = prev.map((profile) =>
+          profile.id === activeProfileId
+            ? { ...profile, snapshot: latestSnapshot, updatedAt: Date.now() }
+            : profile,
+        );
+
+        localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify(next));
+        return next;
+      });
+    }, 1200);
+
+    return () => clearInterval(interval);
+  }, [activeProfileId, profiles.length]);
+
+  return (
+    <div className={clsx("h-10 items-center overflow-visible gap-1 px-1 relative", showTabs && showUI ? 'flex' : 'hidden')} style={{ backgroundColor: options.tabBarColor || "#070e15" }}>
+      <div className="relative flex-none">
+        <button
+          ref={triggerRef}
+          className={clsx(
+            'w-8 h-8 rounded-lg flex items-center justify-center border',
+            options.type != 'light' ? 'border-white/10 hover:bg-[#ffffff1e]' : 'border-black/10 hover:bg-[#a7a7a7]',
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+            setProfilesOpen((prev) => !prev);
+          }}
+          title="Profiles"
+        >
+          <UsersRound size={15} />
+        </button>
+
+        {profilesRender && (
+          <>
+            <button
+              type="button"
+              aria-label="Close profile manager"
+              className={
+                'fixed inset-0 z-[115] bg-transparent transition-opacity duration-200 ' +
+                (profilesAnim ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none')
+              }
+              onClick={() => setProfilesOpen(false)}
+            />
+            <div
+              ref={panelRef}
+              className={
+                'absolute left-0 top-10 w-[380px] rounded-xl border border-white/10 bg-[#17191d] z-[120] shadow-[0_14px_34px_rgba(0,0,0,0.4)] overflow-hidden transition-all duration-200 origin-top-left ' +
+                (profilesAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none')
+              }
+            >
+            <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+              <p className="text-sm font-semibold">Profile Manager</p>
+              <div className="flex items-center gap-1">
+                <button className="p-1.5 rounded-md hover:bg-[#ffffff10]" title="Export profile" onClick={exportActiveProfile}>
+                  <Download size={14} />
+                </button>
+              </div>
+            </div>
+
+            <div className="px-4 pt-3 pb-2 border-b border-white/10">
+              <p className="text-xs opacity-70">Current Profile</p>
+              <p className="text-sm font-semibold truncate">{activeProfile?.name || 'Default'}</p>
+            </div>
+
+            <div className="p-3 space-y-2 max-h-[290px] overflow-y-auto">
+              <p className="text-xs opacity-70 px-1">Available Profiles</p>
+              {profiles.map((profile) => {
+                const active = profile.id === activeProfileId;
+                const isRenaming = renameId === profile.id;
+                return (
+                  <div key={profile.id} className={clsx('rounded-lg border px-2 py-2', active ? 'border-white/25 bg-white/12' : 'border-white/10 bg-white/5')}>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        {isRenaming ? (
+                          <input
+                            value={renameValue}
+                            onChange={(e) => setRenameValue(e.target.value)}
+                            className="w-full bg-[#ffffff10] border border-white/15 rounded px-2 py-1 text-sm"
+                            placeholder="Profile name"
+                          />
+                        ) : (
+                          <p className="text-sm font-medium truncate">{profile.name}</p>
+                        )}
+                        <p className="text-[11px] opacity-70">{active ? '• Active' : '• Available'}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {isRenaming ? (
+                          <button className="p-1 rounded hover:bg-white/10" onClick={saveRename} title="Save name">
+                            <Check size={13} />
+                          </button>
+                        ) : (
+                          <button className="p-1 rounded hover:bg-white/10" onClick={() => { setRenameId(profile.id); setRenameValue(profile.name); }} title="Rename">
+                            <Pencil size={13} />
+                          </button>
+                        )}
+                        {!active && (
+                          <button className="p-1 rounded hover:bg-white/10" onClick={() => switchProfile(profile.id)} title="Switch to profile">
+                            <Check size={13} />
+                          </button>
+                        )}
+                        {profiles.length > 1 && (
+                          <button className="p-1 rounded hover:bg-white/10" onClick={() => deleteProfile(profile.id)} title="Delete">
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="p-3 border-t border-white/10 flex items-center gap-2">
+              <input
+                value={newProfileName}
+                onChange={(e) => setNewProfileName(e.target.value)}
+                placeholder="New profile name"
+                className="flex-1 h-9 rounded-md bg-[#ffffff10] border border-white/10 px-2 text-sm"
+              />
+              <button className="h-9 px-3 rounded-md bg-[#ffffff18] hover:bg-[#ffffff28] text-sm font-medium flex items-center gap-1.5" onClick={createProfile}>
+                <UserPlus size={13} /> Create
+              </button>
+            </div>
+
+            <div className="px-3 pb-3 grid grid-cols-2 gap-2">
+              <button
+                className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload size={13} /> Import
+              </button>
+              <button
+                className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
+                onClick={clearActiveProfileData}
+              >
+                <Trash2 size={13} /> Clear Data
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={importProfile}
+              />
+            </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {tabs.map(({ title, id, active, isLoading, url, pinned, group }) => {
+        const showGlobe = url === 'tabs://new' || !isLoading;
+        const ghostLabel = getGhostTabLabel(url);
+        const displayTitle = ghostLabel || (url === 'tabs://new' ? 'New Tab' : title);
+        return (
+          <div
+            className={clsx(
+              'flex flex-1 flex-shrink px-2 h-[calc(100%-7px)] min-w-[60px] max-w-[200px]',
+              'items-center border rounded-md duration-150',
+            )}
+            onClick={() => setActive(id)}
+            key={id}
+            style={{ backgroundColor: active ? options.tabColor || "#111e2fb0" : "", borderColor: active ? options.tabOutline || "#344646" : "#ffffff0c" }}
+          >
+            {showGlobe ? (
+              <Globe size={15} className="flex-shrink-0" />
+            ) : (
+              <Loader size={15} className="flex-shrink-0 animate-spin" />
+            )}
+            {pinned && <span className="ml-1 text-[0.64rem] opacity-80">📌</span>}
+            {group && <span className="ml-1 text-[0.62rem] opacity-70">[{group}]</span>}
+            <span className="truncate text-[0.79rem] ml-1 min-w-0">{displayTitle}</span>
+            <X
+              size={13}
+              className={clsx("ml-auto flex-shrink-0 duration-200 cursor-pointer")}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (tabs.length > 1) {
+                  active && setLastActive(id);
+                  removeTab(id);
+                  return;
+                }
+
+                if (url !== 'tabs://new') {
+                  updateUrl(id, process('ghost://home', false, options.prType || 'auto', options.engine || null));
+                  updateTitle(id, 'New Tab');
+                }
+              }}
+            />
+          </div>
+        );
+      })}
+
+      <button
+        disabled={tabs.length >= 20}
+        className={clsx(
+          'flex-none mx-1 w-6 h-6',
+          'flex items-center justify-center',
+          'duration-100 rounded-lg',
+          options.type != 'light' ? "hover:bg-[#ffffff1e]" : "hover:bg-[#a7a7a7]",
+          tabs.length >= 20 ? 'cursor-not-allowed opacity-50 hover:bg-transparent' : '',
+        )}
+        onClick={() => {
+          if (tabs.length < 20) {
+            let uuid = createId();
+            addTab({
+              title: 'New Tab',
+              id: uuid,
+              url: "tabs://new"
+            });
+            setActive(uuid);
+          }
+        }}
+      >
+        <Plus size={15} />
+      </button>
+    </div>
+  );
+};
+
+export default TabBar;

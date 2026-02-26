@@ -1,0 +1,38 @@
+[
+  {
+    "id": "getting_started",
+    "title": "Getting started",
+    "topics": [
+      { "id": "1", "title": "How to find links", "file": "/docs/getting_started/1.md" },
+      { "id": "2", "title": "How to use Ghost", "file": "/docs/getting_started/2.md" },
+      { "id": "3", "title": "General info", "file": "/docs/getting_started/3.md" }
+    ]
+  },
+  {
+    "id": "how_to",
+    "title": "How to..",
+    "topics": [
+      { "id": "1", "title": "Customize", "file": "/docs/how_to/1.md" },
+      { "id": "2", "title": "Delete my data", "file": "/docs/how_to/2.md" },
+      { "id": "3", "title": "Import/Export my Data", "file": "/docs/how_to/3.md" },
+      { "id": "4", "title": "Fix common issues", "file": "/docs/how_to/4.md" },
+      { "id": "5", "title": "Turn on Performance Mode", "file": "/docs/how_to/5.md" },
+      { "id": "6", "title": "Speed up the searching", "file": "/docs/how_to/6.md" },
+      { "id": "7", "title": "Hide my tab from teachers", "file": "/docs/how_to/7.md" },
+      { "id": "8", "title": "Save my data in the cloud", "file": "/docs/how_to/8.md" },
+      { "id": "9", "title": "Access my home computer with Ghost", "file": "/docs/how_to/9.md" },
+      { "id": "10", "title": "Use GeForce Now", "file": "/docs/how_to/10.md" }
+    ]
+  },
+  {
+    "id": "development",
+    "title": "Development",
+    "topics": [
+      { "id": "1", "title": "How to host/deploy a client", "file": "/docs/development/1.md" },
+      { "id": "2", "title": "How to host a backend", "file": "/docs/development/2.md" },
+      { "id": "3", "title": "How to setup Remote Proxy Server", "file": "/docs/development/3.md" },
+      { "id": "4", "title": "How to host a cloud saving server", "file": "/docs/development/4.md" },
+      { "id": "5", "title": "How to set up Remote Access on your PC", "file": "/docs/development/5.md" }
+    ]
+  }
+]

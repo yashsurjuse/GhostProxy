@@ -1,0 +1,14 @@
+[
+  {
+    "word": "Proxy",
+    "definition": "A service that routes your web requests through another server."
+  },
+  {
+    "word": "Wisp",
+    "definition": "Ghost's websocket tunnel endpoint used by transports for proxied requests."
+  },
+  {
+    "word": "Transport",
+    "definition": "The request backend implementation (for example LibCurl) used by the proxy engine."
+  }
+]

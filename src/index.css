@@ -1,0 +1,71 @@
+@import './globals.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
+@font-face {
+  font-family: 'SFProText';
+  src:
+    url('https://cdn.jsdelivr.net/gh/nerocdn/assets-8bH2k/subset-SFProText-Semibold.woff2')
+      format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/nerocdn/assets-8bH2k/subset-SFProText-Semibold.woff')
+      format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family:
+    'Geist',
+    'Inter',
+    'SF Pro Text',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+}
+
+@keyframes ghostFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ghost-anim-card {
+  animation: ghostFadeUp 220ms ease-out;
+}
+
+@keyframes ghostFadeDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.ghost-anim-leave {
+  animation: ghostFadeDown 220ms ease-in forwards;
+}
+
+/* Prevent hover outline for popup containers that opt out */
+.ai-settings-no-outline:hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}

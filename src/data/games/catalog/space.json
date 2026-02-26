@@ -1,0 +1,1377 @@
+﻿[
+    {
+        "name":  "1v1.LOL",
+        "cover":  "/assets/imgs/g/1v1_LOL.webp",
+        "url":  "https://1v1.lol/"
+    },
+    {
+        "name":  "2048",
+        "cover":  "/assets/imgs/g/2048.webp",
+        "url":  "https://www.2048.org/"
+    },
+    {
+        "name":  "2048 Multitasking",
+        "cover":  "/assets/imgs/g/2048.webp",
+        "url":  "https://calculatorgames.github.io/simplegimes/2048-multitask/index.html"
+    },
+    {
+        "name":  "Ball Dodge",
+        "cover":  "/assets/imgs/g/balldodge.webp",
+        "url":  "https://3kh0-assets.silvereen.net/3kh0-assets/ball-dodge"
+    },
+    {
+        "name":  "3D Dino Game",
+        "cover":  "/assets/imgs/g/3D_Dino_Game.webp",
+        "url":  "https://lagged.com/api/play2/t-rex-3d2/"
+    },
+    {
+        "name":  "60 Second Burger Run",
+        "cover":  "/assets/imgs/g/60_Second_Burger_Run.webp",
+        "url":  "https://www.coolmathgames.com/0-60-second-burger-run/play"
+    },
+    {
+        "name":  "A Dark Room",
+        "cover":  "/assets/imgs/g/A_Dark_Room.webp",
+        "url":  "https://adarkroom.doublespeakgames.com/"
+    },
+    {
+        "name":  "Age of War",
+        "cover":  "/assets/imgs/g/Age_of_War.webp",
+        "url":  "https://age-of-war.game-files.crazygames.com/ruffle/ageofwar.html"
+    },
+    {
+        "name":  "Happy Wheels",
+        "cover":  "/assets/imgs/g/Happy_Wheels.webp",
+        "url":  "https://totaljerkface.com"
+    },
+    {
+        "name":  "Basketball Random",
+        "cover":  "/assets/imgs/g/Basketball_Random.webp",
+        "url":  "https://basketrandomonline.github.io/g8/basket-random/"
+    },
+    {
+        "name":  "Soccer Random",
+        "cover":  "/assets/imgs/g/Soccer_Random.webp",
+        "url":  "https://soccer-random.github.io/s8/soccer-random/"
+    },
+    {
+        "name":  "Basketball Stars",
+        "cover":  "/assets/imgs/g/Basketball_Stars.webp",
+        "url":  "https://basketballstars.pro/game/basketball-stars/"
+    },
+    {
+        "name":  "Getaway Shootout",
+        "cover":  "/assets/imgs/g/Getaway_Shootout.webp",
+        "url":  "https://www.twoplayergames.org/embed/getaway-shootout"
+    },
+    {
+        "name":  "Boxing Random",
+        "cover":  "/assets/imgs/g/Boxing_Random.webp",
+        "url":  "https://boxingrandom.github.io/file/"
+    },
+    {
+        "name":  "Rooftop Snipers",
+        "cover":  "/assets/imgs/g/Rooftop_Snipers.webp",
+        "url":  "https://h52304.github.io/s/rooftop-snipers/"
+    },
+    {
+        "name":  "Glass City",
+        "cover":  "/assets/imgs/g/Glass_City.webp",
+        "url":  "https://rpc.lol/games/projects/glass-city/index.html"
+    },
+    {
+        "name":  "Hacker Typer",
+        "cover":  "/assets/imgs/g/Hacker_Typer.webp",
+        "url":  "https://hackertyper.com/"
+    },
+    {
+        "name":  "Idle Shark Game",
+        "cover":  "/assets/imgs/g/Idle_Shark_Game.webp",
+        "url":  "https://alpha.shark.tobot.dev/"
+    },
+    {
+        "name":  "Interactive Buddy",
+        "cover":  "/assets/imgs/g/Interactive_Buddy.webp",
+        "url":  "https://1kh0.github.io/projects/interactivebuddy/index.html"
+    },
+    {
+        "name":  "Just One Boss",
+        "cover":  "/assets/imgs/g/Just_One_Boss.webp",
+        "url":  "https://www.coolmathgames.com/0-just-one-boss/play"
+    },
+    {
+        "name":  "Portal Mario",
+        "cover":  "/assets/imgs/g/Portal_Mario.webp",
+        "url":  "https://tannerrogalsky.com/mari0/"
+    },
+    {
+        "name":  "Eaglercraft v1.8",
+        "cover":  "/assets/imgs/g/Eaglercraft_v1_8.webp",
+        "url":  "https://mcv18.netlify.app/"
+    },
+    {
+        "name":  "Eaglercraft v1.5.2",
+        "cover":  "/assets/imgs/g/Eaglercraft_v1_8.webp",
+        "url":  "https://mcv152.netlify.app/"
+    },
+    {
+        "name":  "n-gon",
+        "cover":  "/assets/imgs/g/n_gon.webp",
+        "url":  "https://landgreen.github.io/n-gon/"
+    },
+    {
+        "name":  "Paper.io",
+        "cover":  "/assets/imgs/g/Paper_io.webp",
+        "url":  "https://paper-io.com/"
+    },
+    {
+        "name":  "Portal Flash",
+        "cover":  "/assets/imgs/g/Portal_Flash.webp",
+        "url":  "https://1kh0.github.io/projects/portalflash/index.html"
+    },
+    {
+        "name":  "Retro Bowl",
+        "cover":  "/assets/imgs/g/Retro_Bowl.webp",
+        "url":  "https://1kh0.github.io/projects/retro-bowl/index.html"
+    },
+    {
+        "name":  "Slope",
+        "cover":  "/assets/imgs/g/Slope.webp",
+        "url":  "https://1kh0.github.io/projects/slope/index.html"
+    },
+    {
+        "name":  "Sandspiel",
+        "cover":  "/assets/imgs/g/Sandspiel.webp",
+        "url":  "https://sandspiel.club/"
+    },
+    {
+        "name":  "Cryzen",
+        "cover":  "/assets/imgs/g/Cryzen.webp",
+        "url":  "https://cryzen.io/play"
+    },
+    {
+        "name":  "Deeeep.io",
+        "cover":  "/assets/imgs/g/Deeeep_io.webp",
+        "url":  "https://beta.deeeep.io/"
+    },
+    {
+        "name":  "diep.io",
+        "cover":  "/assets/imgs/g/diep_io.webp",
+        "url":  "https://diep.io/"
+    },
+    {
+        "name":  "Dreader",
+        "cover":  "/assets/imgs/g/Dreader.webp",
+        "url":  "https://donitz.itch.io/dreader"
+    },
+    {
+        "name":  "Drift Hunters",
+        "cover":  "/assets/imgs/g/Drift_Hunters.webp",
+        "url":  "https://webglmath.github.io/drift-hunters/"
+    },
+    {
+        "name":  "OvO",
+        "cover":  "/assets/imgs/g/OvO.webp",
+        "url":  "https://www.coolmathgames.com/0-ovo/play"
+    },
+    {
+        "name":  "Rainbow Tower",
+        "cover":  "/assets/imgs/g/Rainbow_Tower.webp",
+        "url":  "https://www.mathplayground.com/mobile_rainbow_tower/index.html"
+    },
+    {
+        "name":  "Gunspin",
+        "cover":  "/assets/imgs/g/Gunspin.webp",
+        "url":  "https://static.playunblocked.com/2019/11/gunspin/"
+    },
+    {
+        "name":  "Territorial.io",
+        "cover":  "/assets/imgs/g/Territorial_io.webp",
+        "url":  "https://territorial.io/"
+    },
+    {
+        "name":  "Madness: Haphazard",
+        "cover":  "/assets/imgs/g/Madness__Haphazard.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=3404"
+    },
+    {
+        "name":  "Space Plan",
+        "cover":  "/assets/imgs/g/Space_Plan.webp",
+        "url":  "http://www.jhollands.co.uk/spaceplan/"
+    },
+    {
+        "name":  "thisissand",
+        "cover":  "/assets/imgs/g/thisissand.webp",
+        "url":  "https://thisissand.com/"
+    },
+    {
+        "name":  "Shell Shockers",
+        "cover":  "/assets/imgs/g/Shell_Shockers.webp",
+        "url":  "https://shellshock.io/"
+    },
+    {
+        "name":  "Rooftop Snipers 2",
+        "cover":  "/assets/imgs/g/Rooftop_Snipers_2.webp",
+        "url":  "https://h52304.github.io/s6/rooftop-snipers-2/"
+    },
+    {
+        "name":  "Temple of Boom",
+        "cover":  "/assets/imgs/g/Temple_of_Boom.webp",
+        "url":  "https://temple-of-boom.github.io/file/"
+    },
+    {
+        "name":  "Earn to Die 2012 P.2",
+        "cover":  "/assets/imgs/g/Earn_to_Die_2012_P_2.webp",
+        "url":  "https://games-online.io/game/EarnToDie/index.html"
+    },
+    {
+        "name":  "FNAF 2",
+        "cover":  "/assets/imgs/g/FNAF_2.webp",
+        "url":  "https://sussygamedeveloper.github.io/FNAF2/"
+    },
+    {
+        "name":  "FNAF 3",
+        "cover":  "/assets/imgs/g/FNAF_3.webp",
+        "url":  "https://sussygamedeveloper.github.io/fnaf3/"
+    },
+    {
+        "name":  "Time Shooter 2",
+        "cover":  "/assets/imgs/g/Time_Shooter_2.webp",
+        "url":  "https://html5.gamedistribution.com/62a72f2da7cb4b609579a47653546e6a/"
+    },
+    {
+        "name":  "Haunt the House",
+        "cover":  "/assets/imgs/g/Haunt_the_House.webp",
+        "url":  "https://w8.snokido.com/games/flash/ruffle.html?g=haunt-the-house\u0026v=231027"
+    },
+    {
+        "name":  "Strike Force Heros",
+        "cover":  "/assets/imgs/g/Strike_Force_Heros.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=2194"
+    },
+    {
+        "name":  "Armed with Wings 3",
+        "cover":  "/assets/imgs/g/Armed_with_Wings_3.webp",
+        "url":  "https://www.silvergames.com/en/armed-with-wings-3/gameframe"
+    },
+    {
+        "name":  "Amazing Strange Rope Police",
+        "cover":  "/assets/imgs/g/Amazing_Strange_Rope_Police.webp",
+        "url":  "https://www.gamearter.com/game/amazing-strange-rope-police-vice-spider-vegas/"
+    },
+    {
+        "name":  "N-Game",
+        "cover":  "/assets/imgs/g/N_Game.webp",
+        "url":  "https://www.numuki.com/gameframe/n-game"
+    },
+    {
+        "name":  "Gun Mayhem 2",
+        "cover":  "/assets/imgs/g/Gun_Mayhem_2.webp",
+        "url":  "https://www.silvergames.com/en/gun-mayhem-2/gameframe"
+    },
+    {
+        "name":  "Bullet Force",
+        "cover":  "/assets/imgs/g/Bullet_Force.webp",
+        "url":  "https://games.crazygames.com/en_US/bullet-force-multiplayer/index.html"
+    },
+    {
+        "name":  "People Playground",
+        "cover":  "/assets/imgs/g/People_Playground.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/4eacf9fb9012479194568af9a7e0417c/index.html?gdpr-targeting=1\u0026gd_sdk_referrer_url=https%3A%2F%2Fwww.silvergames.com%2Fen%2Fpeople-playground\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy5zaWx2ZXJnYW1lcy5jb20vZW4vcGVvcGxlLXBsYXlncm91bmQiLCJwYXJlbnREb21haW4iOiJzaWx2ZXJnYW1lcy5jb20iLCJ0b3BEb21haW4iOiJzaWx2ZXJnYW1lcy5jb20iLCJoYXNJbXByZXNzaW9uIjp0cnVlLCJsb2FkZXJFbmFibGVkIjp0cnVlLCJob3N0IjoiaHRtbDUuZ2FtZWRpc3RyaWJ1dGlvbi5jb20iLCJ2ZXJzaW9uIjoiMS41LjE3In0%253D"
+    },
+    {
+        "name":  "Hole.io",
+        "cover":  "/assets/imgs/g/Hole_io.webp",
+        "url":  "https://hole-io.com/"
+    },
+    {
+        "name":  "Color Tunnel",
+        "cover":  "/assets/imgs/g/Color_Tunnel.webp",
+        "url":  "https://f3.silvergames.com/html5/color-tunnel/"
+    },
+    {
+        "name":  "Slice it all",
+        "cover":  "/assets/imgs/g/Slice_it_all.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/efa941135635400f94bdb0b7430a92f4/index.html?gdpr-targeting=1\u0026gd_sdk_referrer_url=https%3A%2F%2Fwww.silvergames.com%2Fen%2Fslice-it-all\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy5zaWx2ZXJnYW1lcy5jb20vZW4vc2xpY2UtaXQtYWxsIiwicGFyZW50RG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwidG9wRG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwiaGFzSW1wcmVzc2lvbiI6dHJ1ZSwibG9hZGVyRW5hYmxlZCI6dHJ1ZSwiaG9zdCI6Imh0bWw1LmdhbWVkaXN0cmlidXRpb24uY29tIiwidmVyc2lvbiI6IjEuNS4xNyJ9"
+    },
+    {
+        "name":  "Granny",
+        "cover":  "/assets/imgs/g/Granny.webp",
+        "url":  "https://html5.gamemonetize.co/pm5wjn3np4xl59y8ie3a85xqs1m1nyma/"
+    },
+    {
+        "name":  "Piano Tiles",
+        "cover":  "/assets/imgs/g/Piano_Tiles.webp",
+        "url":  "https://h5.4j.com/games/Piano-Tiles-2-Online/index.html?pubid=silvergames\u0026v=1503580918"
+    },
+    {
+        "name":  "Raze",
+        "cover":  "/assets/imgs/g/Raze.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=4195"
+    },
+    {
+        "name":  "Intrusion",
+        "cover":  "/assets/imgs/g/Intrusion.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=2278"
+    },
+    {
+        "name":  "10 Minutes till Dawn",
+        "cover":  "/assets/imgs/g/10_Minutes_till_Dawn.webp",
+        "url":  "https://abinbins.github.io/a7/10-minutes-till-dawn/"
+    },
+    {
+        "name":  "Bitlife",
+        "cover":  "/assets/imgs/g/Bitlife.webp",
+        "url":  "https://ubg365.github.io/bitlife-life-simulator/play.html"
+    },
+    {
+        "name":  "Death Run 3D",
+        "cover":  "/assets/imgs/g/Death_Run_3D.webp",
+        "url":  "https://mathgames66.github.io/games/html5/deathrun3d/"
+    },
+    {
+        "name":  "Vex 3",
+        "cover":  "/assets/imgs/g/Vex_3.webp",
+        "url":  "https://html5.gamedistribution.com/762c932b4db74c6da0c1d101b2da8be6/?timestamp=1713731401\u0026countryCode=en\u0026siteLocale=en\u0026locale=en\u0026gd_sdk_referrer_url=https%3A%2F%2Fkizi.com%2Fgames%2Fvex-3"
+    },
+    {
+        "name":  "Vex 4",
+        "cover":  "/assets/imgs/g/Vex_4.webp",
+        "url":  "https://html5.gamedistribution.com/80e6a5ae477f4d4fbcd1ea293d10087d/?timestamp=1713731551\u0026countryCode=en\u0026siteLocale=en\u0026locale=en\u0026gd_sdk_referrer_url=https%3A%2F%2Fkizi.com%2Fgames%2Fvex-4"
+    },
+    {
+        "name":  "Vex 5",
+        "cover":  "/assets/imgs/g/Vex_5.webp",
+        "url":  "https://html5.gamedistribution.com/f120262ab72743039fbce88c1f370df8/?timestamp=1713731604\u0026countryCode=en\u0026siteLocale=en\u0026locale=en\u0026gd_sdk_referrer_url=https%3A%2F%2Fkizi.com%2Fgames%2Fvex-5"
+    },
+    {
+        "name":  "Vex 6",
+        "cover":  "/assets/imgs/g/Vex_6.webp",
+        "url":  "https://html5.gamedistribution.com/4925e12574364121a48c61c35f649c36/?timestamp=1713731635\u0026countryCode=en\u0026siteLocale=en\u0026locale=en\u0026gd_sdk_referrer_url=https%3A%2F%2Fkizi.com%2Fgames%2Fvex-6"
+    },
+    {
+        "name":  "Vex 7",
+        "cover":  "/assets/imgs/g/Vex_7.webp",
+        "url":  "https://html5.gamedistribution.com/0c454c9562d249d28ba3a2b50564042c/?timestamp=1713731659\u0026countryCode=en\u0026siteLocale=en\u0026locale=en\u0026gd_sdk_referrer_url=https%3A%2F%2Fkizi.com%2Fgames%2Fvex-7"
+    },
+    {
+        "name":  "Backrooms",
+        "cover":  "/assets/imgs/g/Backrooms.webp",
+        "url":  "https://backroomsgame.io/game/backrooms/"
+    },
+    {
+        "name":  "Cookie Clicker",
+        "cover":  "/assets/imgs/g/Cookie_Clicker.webp",
+        "url":  "https://orteil.dashnet.org/cookieclicker/"
+    },
+    {
+        "name":  "Toss the Turle",
+        "cover":  "/assets/imgs/g/Toss_the_Turle.webp",
+        "url":  "https://kdata1.com/RS/game.php?r=https://kdata1.com/2024/02/tosstheturtle_0.swf\u0026w=900\u0026h=563\u0026warnsupport=true"
+    },
+    {
+        "name":  "Binding of Issac",
+        "cover":  "/assets/imgs/g/Binding_of_Issac.webp",
+        "url":  "https://f.kbhgames.com/RS/game.php?r=//f.kbhgames.com/2011/10/binding-of-issac.swf\u0026w=800\u0026h=600\u0026warnsupport=true"
+    },
+    {
+        "name":  "Ultimate Car Driving Simulator",
+        "cover":  "/assets/imgs/g/Ultimate_Car_Driving_Simulator.webp",
+        "url":  "https://app-258100.games.s3.yandex.net/258100/tjl3zpx5pqgflpnp9trchxb110lsyvvz/index.html?is-united-page=1\u0026skip-guard=1\u0026header=no\u0026clid=2818308\u0026flags=%7B%22adv_sticky_banner_disabled%22%3Atrue%7D\u0026sdk=%2Fsdk%2F_%2Fv2.40602063910d0212bbe3.js#origin=https%3A%2F%2Fyandex.com\u0026app-id=258100\u0026device-type=desktop"
+    },
+    {
+        "name":  "Madalin Cars Multiplayer",
+        "cover":  "/assets/imgs/g/Madalin_Cars_Multiplayer.webp",
+        "url":  "https://f.kbhgames.com/2018/03/madalin-cars-multiplayer/"
+    },
+    {
+        "name":  "Deadshot.io",
+        "cover":  "/assets/imgs/g/Deadshot_io.webp",
+        "url":  "https://deadshot.io/"
+    },
+    {
+        "name":  "Stick Slasher",
+        "cover":  "/assets/imgs/g/Stick_Slasher.webp",
+        "url":  "https://kdata1.com/2023/03/stickslasher/"
+    },
+    {
+        "name":  "Basketbros.io",
+        "cover":  "/assets/imgs/g/Basketbros_io.webp",
+        "url":  "https://kdata1.com/2023/03/stickslasher/"
+    },
+    {
+        "name":  "Fancy Pants Adventure: World 2",
+        "cover":  "/assets/imgs/g/Fancy_Pants_Adventure__World_2.webp",
+        "url":  "https://kdata1.com/2022/12/fancy-pants-adventure-3/?kbhgames"
+    },
+    {
+        "name":  "Fancy Pants Adventure: World 1",
+        "cover":  "/assets/imgs/g/Fancy_Pants_Adventure__World_1.webp",
+        "url":  "https://kbhgames.com/game/fancy-pants-adventures"
+    },
+    {
+        "name":  "Jetpack Joyride",
+        "cover":  "/assets/imgs/g/Jetpack_Joyride.webp",
+        "url":  "https://kdata1.com/2024/02/jetpack-joyride/"
+    },
+    {
+        "name":  "Station Meltdown",
+        "cover":  "/assets/imgs/g/Station_Meltdown.webp",
+        "url":  "https://kdata1.com/2022/03/station-meltdown/"
+    },
+    {
+        "name":  "What Remains",
+        "cover":  "/assets/imgs/g/What_Remains.webp",
+        "url":  "https://kdata1.com/2021/07/3911393/"
+    },
+    {
+        "name":  "Plazma Burst",
+        "cover":  "/assets/imgs/g/Plazma_Burst.webp",
+        "url":  "https://f.kbhgames.com/RS/game.php?r=//f.kbhgames.com/2018/swf/plazma-burst.swf\u0026w=1000\u0026h=500\u0026warnsupport=true"
+    },
+    {
+        "name":  "Count Secure Operations 2",
+        "cover":  "/assets/imgs/g/Count_Secure_Operations_2.webp",
+        "url":  "https://app-256471.games.s3.yandex.net/256471/gctqmljj6yn6nvurax636mu4hme5gsqz/index.html?is-united-page=1\u0026skip-guard=1\u0026header=no\u0026clid=2818308\u0026flags=%7B%22adv_sticky_banner_disabled%22%3Atrue%7D\u0026sdk=%2Fsdk%2F_%2Fv2.40602063910d0212bbe3.js#origin=https%3A%2F%2Fyandex.com\u0026app-id=256471\u0026device-type=desktop"
+    },
+    {
+        "name":  "10-103",
+        "cover":  "/assets/imgs/g/10_103.webp",
+        "url":  "https://kdata1.com/2020/12/3100528/"
+    },
+    {
+        "name":  "10-103: Null Kevin",
+        "cover":  "/assets/imgs/g/10_103__Null_Kevin.webp",
+        "url":  "https://kdata1.com/2021/06/4056473/"
+    },
+    {
+        "name":  "Last Hope",
+        "cover":  "/assets/imgs/g/Last_Hope.webp",
+        "url":  "https://kdata1.com/2021/09/LastHope/"
+    },
+    {
+        "name":  "Make sure it\u0027s closed",
+        "cover":  "/assets/imgs/g/Make_sure_it_s_closed.webp",
+        "url":  "https://kdata1.com/2019/04/MSIC-WEBGL/"
+    },
+    {
+        "name":  "Gun Knight",
+        "cover":  "/assets/imgs/g/Gun_Knight.webp",
+        "url":  "https://stepford.itch.io/gun-knight"
+    },
+    {
+        "name":  "Mob Inc",
+        "cover":  "/assets/imgs/g/Mob_Inc.webp",
+        "url":  "https://html-classic.itch.zone/html/1796576/index.html?v=1577643878"
+    },
+    {
+        "name":  "Black Resin",
+        "cover":  "/assets/imgs/g/Black_Resin.webp",
+        "url":  "https://html-classic.itch.zone/html/6957140/BR_WEBGL_NO_WRONG_DRONG/index.html"
+    },
+    {
+        "name":  "Feedvid Live",
+        "cover":  "/assets/imgs/g/Feedvid_Live.webp",
+        "url":  "https://html-classic.itch.zone/html/4941980-683813/index.html"
+    },
+    {
+        "name":  "FNAF 1 (Scratch)",
+        "cover":  "/assets/imgs/g/FNAF_1__Scratch_.webp",
+        "url":  "https://run3.io/popgame/fnaf/fnaf1/"
+    },
+    {
+        "name":  "FNAF 4 (Scratch)",
+        "cover":  "/assets/imgs/g/FNAF_4__Scratch_.webp",
+        "url":  "https://ubg98.github.io/FNAF4/"
+    },
+    {
+        "name":  "Stumble Guys",
+        "cover":  "/assets/imgs/g/Stumble_Guys.webp",
+        "url":  "https://www.stumbleguys.com/play"
+    },
+    {
+        "name":  "Crossy Road",
+        "cover":  "/assets/imgs/g/Crossy_Road.webp",
+        "url":  "https://h52304.github.io/s77/crossy-road/"
+    },
+    {
+        "name":  "Survivor.io",
+        "cover":  "/assets/imgs/g/Survivor_io.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/f1c451e586c04b4c8cba01b0c50d9090/index.html"
+    },
+    {
+        "name":  "Super Mario 64",
+        "cover":  "/assets/imgs/g/Super_Mario_64.webp",
+        "url":  "https://probablykam.github.io/Mario64webgl/"
+    },
+    {
+        "name":  "Pokemon Emerald",
+        "cover":  "/assets/imgs/g/Pokemon_Emerald.webp",
+        "url":  "https://f.kbhgames.com/emujs/play.php?c=gba\u0026f=pokemon-emerald.gba"
+    },
+    {
+        "name":  "Vex 8",
+        "cover":  "/assets/imgs/g/Vex_8.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/949009d40a2846f89f887de2285d6c28/index.html?gd_sdk_referrer_url=https%3A%2F%2Farcadespot.com%2Fgame%2Fvex-8\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL2FyY2FkZXNwb3QuY29tL2dhbWUvdmV4LTgiLCJwYXJlbnREb21haW4iOiJhcmNhZGVzcG90LmNvbSIsInRvcERvbWFpbiI6ImFyY2FkZXNwb3QuY29tIiwiaGFzSW1wcmVzc2lvbiI6dHJ1ZSwibG9hZGVyRW5hYmxlZCI6dHJ1ZSwiaG9zdCI6Imh0bWw1LmdhbWVkaXN0cmlidXRpb24uY29tIiwidmVyc2lvbiI6IjEuNS4xNyJ9"
+    },
+    {
+        "name":  "Precision Client",
+        "cover":  "/assets/imgs/g/Precision_Client.webp",
+        "url":  "https://html-classic.itch.zone/html/7086310/PrecisionClient-Static-main/index.html"
+    },
+    {
+        "name":  "Idle Breakout",
+        "cover":  "/assets/imgs/g/Idle_Breakout.webp",
+        "url":  "https://www.coolmathgames.com/0-idle-breakout/play"
+    },
+    {
+        "name":  "Burrito Bison",
+        "cover":  "/assets/imgs/g/Burrito_Bison.webp",
+        "url":  "https://f.silvergames.com/awayfl/index.html?swf=burrito-bison.swf"
+    },
+    {
+        "name":  "Twitch Tetris",
+        "cover":  "/assets/imgs/g/Twitch_Tetris.webp",
+        "url":  "https://www.rossipotti.de/ausgabe28/tetris/index.html"
+    },
+    {
+        "name":  "Mario Kart 64",
+        "cover":  "/assets/imgs/g/Mario_Kart_64.webp",
+        "url":  "https://f.kbhgames.com/r/n64/game.php?file=mario-kart-64.zip"
+    },
+    {
+        "name":  "Pizza Tower",
+        "cover":  "/assets/imgs/g/Pizza_Tower.webp",
+        "url":  "https://kdata1.com/2021/03/3527391/2.1/"
+    },
+    {
+        "name":  "Shuttle.lol",
+        "cover":  "/assets/imgs/g/Shuttle_lol.webp",
+        "url":  "https://shuttle.lol"
+    },
+    {
+        "name":  "Subway Surfers",
+        "cover":  "/assets/imgs/g/Subway_Surfers.webp",
+        "url":  "https://subwaysurfersonlinegame.github.io/file/"
+    },
+    {
+        "name":  "Ragdoll Archers",
+        "cover":  "/assets/imgs/g/Ragdoll_Archers.webp",
+        "url":  "https://ragdoll-archers.game-files.crazygames.com/ragdoll-archers/30/index.html"
+    },
+    {
+        "name":  "Stick Archers Battle",
+        "cover":  "/assets/imgs/g/Stick_Archers_Battle.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/a2eafb6bfed84d56a10d6c57e1e72417/index.html?gd_sdk_referrer_url=https%3A%2F%2Fwww.twoplayergames.org%2Fgame%2Fstick-archers-battle\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy50d29wbGF5ZXJnYW1lcy5vcmcvZ2FtZS9zdGljay1hcmNoZXJzLWJhdHRsZSIsInBhcmVudERvbWFpbiI6InR3b3BsYXllcmdhbWVzLm9yZyIsInRvcERvbWFpbiI6InR3b3BsYXllcmdhbWVzLm9yZyIsImhhc0ltcHJlc3Npb24iOmZhbHNlLCJsb2FkZXJFbmFibGVkIjp0cnVlLCJob3N0IjoiaHRtbDUuZ2FtZWRpc3RyaWJ1dGlvbi5jb20iLCJ2ZXJzaW9uIjoiMS41LjE3In0%253D"
+    },
+    {
+        "name":  "Funny Shooter 2",
+        "cover":  "/assets/imgs/g/Funny_Shooter_2.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/a1b7ac4025214a5cb0bd01a4f675513a/index.html?gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL2Z1bm55c2hvb3RlcjIuY29tLyIsInBhcmVudERvbWFpbiI6ImZ1bm55c2hvb3RlcjIuY29tIiwidG9wRG9tYWluIjoiZnVubnlzaG9vdGVyMi5jb20iLCJoYXNJbXByZXNzaW9uIjpmYWxzZSwibG9hZGVyRW5hYmxlZCI6dHJ1ZSwiaG9zdCI6Imh0bWw1LmdhbWVkaXN0cmlidXRpb24uY29tIiwidmVyc2lvbiI6IjEuNS4xNyJ9"
+    },
+    {
+        "name":  "Tomb of the Mask",
+        "cover":  "/assets/imgs/g/Tomb_of_the_Mask.webp",
+        "url":  "https://tombofthemask.github.io/g8/tomb-of-the-mask/"
+    },
+    {
+        "name":  "Exit Path",
+        "cover":  "/assets/imgs/g/Exit_Path.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=606"
+    },
+    {
+        "name":  "Awesome Planes",
+        "cover":  "/assets/imgs/g/Awesome_Planes.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=2017"
+    },
+    {
+        "name":  "OvO 2",
+        "cover":  "/assets/imgs/g/OvO_2.webp",
+        "url":  "https://dedragames.com/games/ovo2/0.2alpha/"
+    },
+    {
+        "name":  "60 Seconds",
+        "cover":  "/assets/imgs/g/60_Seconds.webp",
+        "url":  "https://www.puzzlegame.com/games/60-Seconds-Atomic-Adventure/index.html?yad"
+    },
+    {
+        "name":  "BuildNow GG",
+        "cover":  "/assets/imgs/g/BuildNow_GG.webp",
+        "url":  "https://games.crazygames.com/en_US/buildnow-gg/index.html?v=1.282"
+    },
+    {
+        "name":  "Sans Fight",
+        "cover":  "/assets/imgs/g/Sans_Fight.webp",
+        "url":  "https://jcw87.github.io/c2-sans-fight/"
+    },
+    {
+        "name":  "Super Mario Bros",
+        "cover":  "/assets/imgs/g/Super_Mario_Bros.webp",
+        "url":  "https://jcw87.github.io/c2-smb1/"
+    },
+    {
+        "name":  "Friday night Funkin",
+        "cover":  "/assets/imgs/g/Friday_night_Funkin.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/1528000/1528775_alternate_113347_r112.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=6636730d4b7cd\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Baldis Basics",
+        "cover":  "/assets/imgs/g/Baldis_Basics.webp",
+        "url":  "https://en.gameslol.net/data/baldis-basics/index.html"
+    },
+    {
+        "name":  "Assessment Examination",
+        "cover":  "/assets/imgs/g/Assessment_Examination.webp",
+        "url":  "https://html-classic.itch.zone/html/5392404/Web5/index.html"
+    },
+    {
+        "name":  "Dome Romantik",
+        "cover":  "/assets/imgs/g/Dome_Romantik.webp",
+        "url":  "https://bippinbits.itch.io/dome-romantik"
+    },
+    {
+        "name":  "Nightclub Showdown",
+        "cover":  "/assets/imgs/g/Nightclub_Showdown.webp",
+        "url":  "https://html-classic.itch.zone/html/3198875/index.html"
+    },
+    {
+        "name":  "Goodnight Meowmie",
+        "cover":  "/assets/imgs/g/Goodnight_Meowmie.webp",
+        "url":  "https://ddrkirbyisq.itch.io/goodnight-meowmie"
+    },
+    {
+        "name":  "Blastronaut",
+        "cover":  "/assets/imgs/g/Blastronaut.webp",
+        "url":  "https://html-classic.itch.zone/html/2758024/index.html"
+    },
+    {
+        "name":  "UZG (COD Zombies)",
+        "cover":  "/assets/imgs/g/UZG__COD_Zombies_.webp",
+        "url":  "https://html-classic.itch.zone/html/5713982/UZG_webgl/index.html"
+    },
+    {
+        "name":  "Commonweal",
+        "cover":  "/assets/imgs/g/Commonweal.webp",
+        "url":  "https://html-classic.itch.zone/html/10287783/index.html"
+    },
+    {
+        "name":  "Holonomy",
+        "cover":  "/assets/imgs/g/Holonomy.webp",
+        "url":  "https://html-classic.itch.zone/html/7959084/Holonomy%20Web/index.html"
+    },
+    {
+        "name":  "Enchain Classic",
+        "cover":  "/assets/imgs/g/Enchain_Classic.webp",
+        "url":  "https://html-classic.itch.zone/html/793359/Enchain%20WebGL/index.html?v=1542781876"
+    },
+    {
+        "name":  "Hollow Knight Demake",
+        "cover":  "/assets/imgs/g/Hollow_Knight_Demake.webp",
+        "url":  "https://html-classic.itch.zone/html/4103396/web/index.html"
+    },
+    {
+        "name":  "Dustsim",
+        "cover":  "/assets/imgs/g/Dustsim.webp",
+        "url":  "https://kodub.itch.io/dustsim"
+    },
+    {
+        "name":  "Canabalt",
+        "cover":  "/assets/imgs/g/Canabalt.webp",
+        "url":  "https://html-classic.itch.zone/html/9680307/index.html"
+    },
+    {
+        "name":  "Home Alone",
+        "cover":  "/assets/imgs/g/Home_Alone.webp",
+        "url":  "https://html-classic.itch.zone/html/8471641/BGJ%202022.2%20-%20Home%20Alone%20WebGL/index.html"
+    },
+    {
+        "name":  "78 Hour Rain",
+        "cover":  "/assets/imgs/g/78_Hour_Rain.webp",
+        "url":  "https://html-classic.itch.zone/html/2937814/78HourRain_Webv1/index.html"
+    },
+    {
+        "name":  "Closing Doors",
+        "cover":  "/assets/imgs/g/Closing_Doors.webp",
+        "url":  "https://collarpill.itch.io/closing-doors"
+    },
+    {
+        "name":  "Backrooms 2D",
+        "cover":  "/assets/imgs/g/Backrooms_2D.webp",
+        "url":  "https://html-classic.itch.zone/html/8485327/index.html"
+    },
+    {
+        "name":  "Silhouette Showdown",
+        "cover":  "/assets/imgs/g/Silhouette_Showdown.webp",
+        "url":  "https://html-classic.itch.zone/html/7362417/SilhouetteShowdown080_HTML/index.html"
+    },
+    {
+        "name":  "Commando",
+        "cover":  "/assets/imgs/g/Commando.webp",
+        "url":  "https://html-classic.itch.zone/html/1824008/www/index.html?v=1577643784"
+    },
+    {
+        "name":  "Hollow Knight (Silksong Demake)",
+        "cover":  "/assets/imgs/g/Hollow_Knight__Silksong_Demake_.webp",
+        "url":  "https://html-classic.itch.zone/html/4927768/web/index.html"
+    },
+    {
+        "name":  "Nip for speed",
+        "cover":  "/assets/imgs/g/Nip_for_speed.webp",
+        "url":  "https://html-classic.itch.zone/html/9641909/index.html"
+    },
+    {
+        "name":  "Vacant",
+        "cover":  "/assets/imgs/g/Vacant.webp",
+        "url":  "https://html-classic.itch.zone/html/5747771-565757/html/index.html"
+    },
+    {
+        "name":  "Deep",
+        "cover":  "/assets/imgs/g/Deep.webp",
+        "url":  "https://html-classic.itch.zone/html/3316252/index.html"
+    },
+    {
+        "name":  "Darkness in Spaceship",
+        "cover":  "/assets/imgs/g/Darkness_in_Spaceship.webp",
+        "url":  "https://html-classic.itch.zone/html/9272800/index.html"
+    },
+    {
+        "name":  "Station 141",
+        "cover":  "/assets/imgs/g/Station_141.webp",
+        "url":  "https://html-classic.itch.zone/html/3793918/index.html"
+    },
+    {
+        "name":  "Pew Pew Live",
+        "cover":  "/assets/imgs/g/Pew_Pew_Live.webp",
+        "url":  "https://pewpew.live/webasm/pewpew.html"
+    },
+    {
+        "name":  "Marble Race Generator",
+        "cover":  "/assets/imgs/g/Marble_Race_Generator.webp",
+        "url":  "https://html-classic.itch.zone/html/2029874/WebV2/index.html?v=1591302253"
+    },
+    {
+        "name":  "Cats Cradle",
+        "cover":  "/assets/imgs/g/Cats_Cradle.webp",
+        "url":  "https://georgioklironomos.itch.io/cats-cradle"
+    },
+    {
+        "name":  "Blackbox",
+        "cover":  "/assets/imgs/g/Blackbox.webp",
+        "url":  "https://html-classic.itch.zone/html/3475546/index.html"
+    },
+    {
+        "name":  "This is your life now",
+        "cover":  "/assets/imgs/g/This_is_your_life_now.webp",
+        "url":  "https://html-classic.itch.zone/html/1398515/index.html?v=1574335650"
+    },
+    {
+        "name":  "Hinoken",
+        "cover":  "/assets/imgs/g/Hinoken.webp",
+        "url":  "https://html-classic.itch.zone/html/3435599/hinoken_web_1/index.html"
+    },
+    {
+        "name":  "Necrobomb",
+        "cover":  "/assets/imgs/g/Necrobomb.webp",
+        "url":  "https://html-classic.itch.zone/html/3433821/index.html"
+    },
+    {
+        "name":  "Rocket League 2D",
+        "cover":  "/assets/imgs/g/Rocket_League_2D.webp",
+        "url":  "https://html-classic.itch.zone/html/3325334/index.html"
+    },
+    {
+        "name":  "dud",
+        "cover":  "/assets/imgs/g/dud.webp",
+        "url":  "https://html-classic.itch.zone/html/10158091/index.html"
+    },
+    {
+        "name":  "Crater",
+        "cover":  "/assets/imgs/g/Crater.webp",
+        "url":  "https://html-classic.itch.zone/html/3300759/CraterWeb/index.html"
+    },
+    {
+        "name":  "Monolith",
+        "cover":  "/assets/imgs/g/Monolith.webp",
+        "url":  "https://html-classic.itch.zone/html/473205/index.html?v=1542781942  "
+    },
+    {
+        "name":  "D.A-V.E",
+        "cover":  "/assets/imgs/g/D_A_V_E.webp",
+        "url":  "https://html-classic.itch.zone/html/9967430/index.html"
+    },
+    {
+        "name":  "Bright Lancer",
+        "cover":  "/assets/imgs/g/Bright_Lancer.webp",
+        "url":  "https://html-classic.itch.zone/html/3228468/Bright%20Lancer%20Web%20Experimental/index.html"
+    },
+    {
+        "name":  "VSCS-I",
+        "cover":  "/assets/imgs/g/VSCS_I.webp",
+        "url":  "https://html-classic.itch.zone/html/7627512/index.html"
+    },
+    {
+        "name":  "Take out the trash",
+        "cover":  "/assets/imgs/g/Take_out_the_trash.webp",
+        "url":  "https://html-classic.itch.zone/html/10334699/takeOutTheTrash/index.html"
+    },
+    {
+        "name":  "Examination of Fear",
+        "cover":  "/assets/imgs/g/Examination_of_Fear.webp",
+        "url":  "https://html-classic.itch.zone/html/7312990/index.html"
+    },
+    {
+        "name":  "I am not what remains",
+        "cover":  "/assets/imgs/g/I_am_not_what_remains.webp",
+        "url":  "https://html-classic.itch.zone/html/2479198/index.html"
+    },
+    {
+        "name":  "Last train home",
+        "cover":  "/assets/imgs/g/Last_train_home.webp",
+        "url":  "https://html-classic.itch.zone/html/3300759/CraterWeb/index.html"
+    },
+    {
+        "name":  "Dodge \u0026 Slash",
+        "cover":  "/assets/imgs/g/Dodge___Slash.webp",
+        "url":  "https://kindanice.itch.io/dodge-and-slash"
+    },
+    {
+        "name":  "Like Them",
+        "cover":  "/assets/imgs/g/Like_Them.webp",
+        "url":  "https://html-classic.itch.zone/html/2367352/Like%20Them%20Demo%20HTML/index.html"
+    },
+    {
+        "name":  "Agent Pyxel",
+        "cover":  "/assets/imgs/g/Agent_Pyxel.webp",
+        "url":  "https://html-classic.itch.zone/html/4491958/index.html"
+    },
+    {
+        "name":  "A Day in the Office",
+        "cover":  "/assets/imgs/g/A_Day_in_the_Office.webp",
+        "url":  "https://html-classic.itch.zone/html/4268519/index.html"
+    },
+    {
+        "name":  "Station Saturn",
+        "cover":  "/assets/imgs/g/Station_Saturn.webp",
+        "url":  "https://html-classic.itch.zone/html/7537780/index.html"
+    },
+    {
+        "name":  "DriftR",
+        "cover":  "/assets/imgs/g/DriftR.webp",
+        "url":  "https://example.com"
+    },
+    {
+        "name":  "Synesthesia",
+        "cover":  "/assets/imgs/g/Synesthesia.webp",
+        "url":  "https://html-classic.itch.zone/html/6726608/browser/index.html"
+    },
+    {
+        "name":  "Spectral Slash",
+        "cover":  "/assets/imgs/g/Spectral_Slash.webp",
+        "url":  "https://kdata1.com/2023/07/spectral-slash/"
+    },
+    {
+        "name":  "Rogue Fable III",
+        "cover":  "/assets/imgs/g/Rogue_Fable_III.webp",
+        "url":  "https://cache.armorgames.com/files/games/rogue-fable-iii-18602/index.html?v=1550624919"
+    },
+    {
+        "name":  "Human or Not?",
+        "cover":  "/assets/imgs/g/Human_or_Not_.webp",
+        "url":  "https://humanornot.so/"
+    },
+    {
+        "name":  "OVO Modded",
+        "cover":  "/assets/imgs/g/OVO_Modded.webp",
+        "url":  "https://ovo-5yu.pages.dev/"
+    },
+    {
+        "name":  "We Become What We Behold",
+        "cover":  "/assets/imgs/g/We_Become_What_We_Behold.webp",
+        "url":  "https://html-classic.itch.zone/html/300364/index.html?v=1542781840"
+    },
+    {
+        "name":  "Buckshot Roulette",
+        "cover":  "/assets/imgs/g/Buckshot_Roulette.webp",
+        "url":  "https://buckshotroulette.online/game/v13/"
+    },
+    {
+        "name":  "Smash Karts.io",
+        "cover":  "/assets/imgs/g/Smash_Karts_io.webp",
+        "url":  "https://smashkarts.io/"
+    },
+    {
+        "name":  "Cat Mario",
+        "cover":  "/assets/imgs/g/Cat_Mario.webp",
+        "url":  "https://kdata1.com/2022/04/cat-marioo/"
+    },
+    {
+        "name":  "Rocket Bot Royale",
+        "cover":  "/assets/imgs/g/Rocket_Bot_Royale.webp",
+        "url":  "https://rocketbotroyale.winterpixel.io/"
+    },
+    {
+        "name":  "CSGO Clicker",
+        "cover":  "/assets/imgs/g/CSGO_Clicker.webp",
+        "url":  "https://mtsl.dk/csgo/"
+    },
+    {
+        "name":  "Arsonate",
+        "cover":  "/assets/imgs/g/Arsonate.webp",
+        "url":  "https://html-classic.itch.zone/html/10985323/ARSONATE%20-%20WEBGL_DEMO%20-%2020240722%20-%20RELEASE/index.html"
+    },
+    {
+        "name":  "Moon",
+        "cover":  "/assets/imgs/g/Moon.webp",
+        "url":  "https://html.itch.zone/html/10993820/Moon/index.html"
+    },
+    {
+        "name":  "Bullet Bunny",
+        "cover":  "/assets/imgs/g/Bullet_Bunny.webp",
+        "url":  "https://html-classic.itch.zone/html/8618172/Bullet%20Bunny/index.html"
+    },
+    {
+        "name":  "V.R.G.",
+        "cover":  "/assets/imgs/g/V_R_G_.webp",
+        "url":  "https://html.itch.zone/html/10999062/index.html"
+    },
+    {
+        "name":  "Everybody Must Die",
+        "cover":  "/assets/imgs/g/Everybody_Must_Die.webp",
+        "url":  "https://html-classic.itch.zone/html/4263236/index.html"
+    },
+    {
+        "name":  "Don\u0027t Let Her In",
+        "cover":  "/assets/imgs/g/Don_t_Let_Her_In.webp",
+        "url":  "https://html-classic.itch.zone/html/10594372/index.html"
+    },
+    {
+        "name":  "Monster Battlegrounds",
+        "cover":  "/assets/imgs/g/Monster_Battlegrounds.webp",
+        "url":  "https://html-classic.itch.zone/html/10505998/Monster%20Battlegrounds%20(v0_3_0)%20html/index.html"
+    },
+    {
+        "name":  "Cuckoo Castle",
+        "cover":  "/assets/imgs/g/Cuckoo_Castle.webp",
+        "url":  "https://html-classic.itch.zone/html/2315059/CuckooCastle/index.html?v=1591301542"
+    },
+    {
+        "name":  "The Lesser Evil",
+        "cover":  "/assets/imgs/g/The_Lesser_Evil.webp",
+        "url":  "https://html-classic.itch.zone/html/4604027/TheLesserEvil_Web/index.html"
+    },
+    {
+        "name":  "Flooded Caves",
+        "cover":  "/assets/imgs/g/Flooded_Caves.webp",
+        "url":  "https://html-classic.itch.zone/html/5535808/index.html"
+    },
+    {
+        "name":  "Subject 26",
+        "cover":  "/assets/imgs/g/Subject_26.webp",
+        "url":  "https://html-classic.itch.zone/html/196978/index.html?v=1542782131"
+    },
+    {
+        "name":  "Proctor",
+        "cover":  "/assets/imgs/g/Proctor.webp",
+        "url":  "https://html-classic.itch.zone/html/4833194-484298/index.html"
+    },
+    {
+        "name":  "Morphology",
+        "cover":  "/assets/imgs/g/Morphology.webp",
+        "url":  "https://html-classic.itch.zone/html/2174003/index.html?v=1591301905"
+    },
+    {
+        "name":  "Torchure",
+        "cover":  "/assets/imgs/g/Torchure.webp",
+        "url":  "https://html-classic.itch.zone/html/3473461/Builds/index.html"
+    },
+    {
+        "name":  "Hyper Jump",
+        "cover":  "/assets/imgs/g/Hyper_Jump.webp",
+        "url":  "https://html-classic.itch.zone/html/6364027/index.html"
+    },
+    {
+        "name":  "Void Golf",
+        "cover":  "/assets/imgs/g/Void_Golf.webp",
+        "url":  "https://html-classic.itch.zone/html/1669372/Void%20Golf%20Web/index.html?v=1574334979"
+    },
+    {
+        "name":  "Arena",
+        "cover":  "/assets/imgs/g/Arena.webp",
+        "url":  "https://html-classic.itch.zone/html/7053230/index.html"
+    },
+    {
+        "name":  "8 Ball Pool",
+        "cover":  "/assets/imgs/g/8_Ball_Pool.webp",
+        "url":  "https://8ballpool.com/en/game"
+    },
+    {
+        "name":  "Drift Boss",
+        "cover":  "/assets/imgs/g/Drift_Boss.webp",
+        "url":  "https://www.hoodamath.com/mobile/games/drift-boss/game.html"
+    },
+    {
+        "name":  "Google Snake Modded",
+        "cover":  "/assets/imgs/g/Google_Snake_Modded.webp",
+        "url":  "https://googlesnakemods.com/v/current/"
+    },
+    {
+        "name":  "Helix Jump",
+        "cover":  "/assets/imgs/g/Helix_Jump.webp",
+        "url":  "https://helixjumponline.com/"
+    },
+    {
+        "name":  "Mutilate-a-doll 2",
+        "cover":  "/assets/imgs/g/Mutilate_a_doll_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=4638"
+    },
+    {
+        "name":  "Superfighers 2",
+        "cover":  "/assets/imgs/g/Superfighers_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=6456"
+    },
+    {
+        "name":  "Superhot",
+        "cover":  "/assets/imgs/g/Superhot.webp",
+        "url":  "https://f3.silvergames.com/html5/super-hot/"
+    },
+    {
+        "name":  "Pandemic Simulator",
+        "cover":  "/assets/imgs/g/Pandemic_Simulator.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/f2a015a45b6443358238a54f8f4a557f/index.html?gdpr-targeting=1\u0026gd_sdk_referrer_url=https%3A%2F%2Fwww.silvergames.com%2Fen%2Fpandemic-simulator\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy5zaWx2ZXJnYW1lcy5jb20vZW4vcGFuZGVtaWMtc2ltdWxhdG9yIiwicGFyZW50RG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwidG9wRG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwiaGFzSW1wcmVzc2lvbiI6ZmFsc2UsImxvYWRlckVuYWJsZWQiOnRydWUsImhvc3QiOiJodG1sNS5nYW1lZGlzdHJpYnV0aW9uLmNvbSIsInZlcnNpb24iOiIxLjUuMTcifQ%253D%253D"
+    },
+    {
+        "name":  "Raze 2",
+        "cover":  "/assets/imgs/g/Raze_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=1594"
+    },
+    {
+        "name":  "Strike Force Heros 2",
+        "cover":  "/assets/imgs/g/Strike_Force_Heros_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=2879"
+    },
+    {
+        "name":  "Strike Force Heros 3",
+        "cover":  "/assets/imgs/g/Strike_Force_Heros_3.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=5067"
+    },
+    {
+        "name":  "Sift Heads World",
+        "cover":  "/assets/imgs/g/Sift_Heads_World.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=8950"
+    },
+    {
+        "name":  "Stickman Dismount",
+        "cover":  "/assets/imgs/g/Stickman_Dismount.webp",
+        "url":  "https://cdn.gamemonetize.com/d2pe3o8rrt57q6mro0vjkor7q0xequ04/"
+    },
+    {
+        "name":  "Sift Heads Cartels",
+        "cover":  "/assets/imgs/g/Sift_Heads_Cartels.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=3199"
+    },
+    {
+        "name":  "Cut the Rope",
+        "cover":  "/assets/imgs/g/Cut_the_Rope.webp",
+        "url":  "https://games.cdn.famobi.com/html5games/c/cut-the-rope/v070/?fg_domain=play.famobi.com\u0026fg_aid=A-SILVERGAMES\u0026fg_uid=4531b37c-a8e0-4a67-9ebd-e8d3190b6277\u0026fg_pid=8a24e5f2-94a8-4593-b4e5-81cc68f524c8\u0026fg_beat=969\u0026original_ref=https%3A%2F%2Fwww.silvergames.com%2F"
+    },
+    {
+        "name":  "Give Up 2",
+        "cover":  "/assets/imgs/g/Give_Up_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=4717"
+    },
+    {
+        "name":  "Draw Climber",
+        "cover":  "/assets/imgs/g/Draw_Climber.webp",
+        "url":  "https://f3.silvergames.com/m/draw-cube/"
+    },
+    {
+        "name":  "N-Game 2",
+        "cover":  "/assets/imgs/g/N_Game_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=2987"
+    },
+    {
+        "name":  "Stickman Ragdoll Playground",
+        "cover":  "/assets/imgs/g/Stickman_Ragdoll_Playground.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/1c0a1c13e443454a9a029c155b957778/index.html?gdpr-targeting=1\u0026gd_sdk_referrer_url=https%3A%2F%2Fwww.silvergames.com%2Fen%2Fstickman-ragdoll-playground\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy5zaWx2ZXJnYW1lcy5jb20vZW4vc3RpY2ttYW4tcmFnZG9sbC1wbGF5Z3JvdW5kIiwicGFyZW50RG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwidG9wRG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwiaGFzSW1wcmVzc2lvbiI6ZmFsc2UsImxvYWRlckVuYWJsZWQiOnRydWUsImhvc3QiOiJodG1sNS5nYW1lZGlzdHJpYnV0aW9uLmNvbSIsInZlcnNpb24iOiIxLjUuMTcifQ%253D%253D"
+    },
+    {
+        "name":  "Stealth Hunter 2",
+        "cover":  "/assets/imgs/g/Stealth_Hunter_2.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=1965"
+    },
+    {
+        "name":  "Castel Wars",
+        "cover":  "/assets/imgs/g/Castel_Wars.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Castel_Wars/index.html"
+    },
+    {
+        "name":  "Castel Wars Modern",
+        "cover":  "/assets/imgs/g/Castel_Wars_Modern.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Castel_Wars_Modern/index.html"
+    },
+    {
+        "name":  "Castel Wars New Era",
+        "cover":  "/assets/imgs/g/Castel_Wars_New_Era.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Castel_Wars_New_Era/index.html"
+    },
+    {
+        "name":  "Uno Online",
+        "cover":  "/assets/imgs/g/Uno_Online.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/f2520bae00624e93a4f4614732fa259e/index.html?gd_sdk_referrer_url=https%3A%2F%2Fwww.twoplayergames.org%2Fgame%2Funo-online\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy50d29wbGF5ZXJnYW1lcy5vcmcvZ2FtZS91bm8tb25saW5lIiwicGFyZW50RG9tYWluIjoidHdvcGxheWVyZ2FtZXMub3JnIiwidG9wRG9tYWluIjoidHdvcGxheWVyZ2FtZXMub3JnIiwiaGFzSW1wcmVzc2lvbiI6ZmFsc2UsImxvYWRlckVuYWJsZWQiOnRydWUsImhvc3QiOiJodG1sNS5nYW1lZGlzdHJpYnV0aW9uLmNvbSIsInZlcnNpb24iOiIxLjUuMTcifQ%253D%253D"
+    },
+    {
+        "name":  "Stick Duel Battle Hero",
+        "cover":  "/assets/imgs/g/Stick_Duel_Battle_Hero.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Stick_Duel_Battle_Hero/index.html"
+    },
+    {
+        "name":  "House of Hazards",
+        "cover":  "/assets/imgs/g/House_of_Hazards.webp",
+        "url":  "https://www.twoplayergames.org/gameframe/house-of-hazards"
+    },
+    {
+        "name":  "Tennis Physics",
+        "cover":  "/assets/imgs/g/House_of_Hazards.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Tennis_Physics/index.html"
+    },
+    {
+        "name":  "Pixel Smash Duel",
+        "cover":  "/assets/imgs/g/Pixel_Smash_Duel.webp",
+        "url":  "https://html5.gamedistribution.com/81c5e3e4cae448a5876b1c2e424fd96b/?gd_sdk_referrer_url=https%3A%2F%2Fwww.twoplayergames.org%2Fgame%2Fpixel-smash-duel"
+    },
+    {
+        "name":  "Volley Random",
+        "cover":  "/assets/imgs/g/Volley_Random.webp",
+        "url":  "https://files.twoplayergames.org/files/games/o1/Volley_random/index.html"
+    },
+    {
+        "name":  "Fancy Snowboarding",
+        "cover":  "/assets/imgs/g/Fancy_Snowboarding.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=10106"
+    },
+    {
+        "name":  "Line Rider",
+        "cover":  "/assets/imgs/g/Line_Rider.webp",
+        "url":  "https://www.linerider.com/"
+    },
+    {
+        "name":  "Leap of Life",
+        "cover":  "/assets/imgs/g/Leap_of_Life.webp",
+        "url":  "https://html5.gamedistribution.com/rvvASMiM/a3cddb497804491ca590c34ee5fa7339/index.html?gdpr-targeting=1\u0026gd_sdk_referrer_url=https%3A%2F%2Fwww.silvergames.com%2Fen%2Fleap-of-life\u0026gd_zone_config=eyJwYXJlbnRVUkwiOiJodHRwczovL3d3dy5zaWx2ZXJnYW1lcy5jb20vZW4vbGVhcC1vZi1saWZlIiwicGFyZW50RG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwidG9wRG9tYWluIjoic2lsdmVyZ2FtZXMuY29tIiwiaGFzSW1wcmVzc2lvbiI6ZmFsc2UsImxvYWRlckVuYWJsZWQiOnRydWUsImhvc3QiOiJodG1sNS5nYW1lZGlzdHJpYnV0aW9uLmNvbSIsInZlcnNpb24iOiIxLjUuMTcifQ%253D%253D"
+    },
+    {
+        "name":  "Geometry Neon Dash Subzero",
+        "cover":  "/assets/imgs/g/Geometry_Neon_Dash_Subzero.webp",
+        "url":  "https://html5.gamedistribution.com/1f37997f4c6845519807e0a335ed1c75/"
+    },
+    {
+        "name":  "Space Waves",
+        "cover":  "/assets/imgs/g/Space_Waves.webp",
+        "url":  "https://games.crazygames.com/en_US/space-waves/index.html"
+    },
+    {
+        "name":  "Worlds Hardest Game 3",
+        "cover":  "/assets/imgs/g/Worlds_Hardest_Game_3.webp",
+        "url":  "https://www.coolmathgames.com/0-worlds-hardest-game-3/play"
+    },
+    {
+        "name":  "Bad Dolls 2",
+        "cover":  "/assets/imgs/g/Bad_Dolls_2.webp",
+        "url":  "https://f3.silvergames.com/m/bad-dolls_v2/"
+    },
+    {
+        "name":  "Fire Circle",
+        "cover":  "/assets/imgs/g/Fire_Circle.webp",
+        "url":  "https://f3.silvergames.com/m/fire-circle/"
+    },
+    {
+        "name":  "Grandpas Minigun",
+        "cover":  "/assets/imgs/g/Grandpas_Minigun.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/1773000/1773956_alternate_160158_r103.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a97942d14be\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Seeking Peace Zombeez",
+        "cover":  "/assets/imgs/g/Seeking_Peace_Zombeez.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/5903000/5903058_alternate_273533_r1.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a979cdd610c\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Stealth Optional",
+        "cover":  "/assets/imgs/g/Stealth_Optional.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/5775000/5775059_alternate_266950_r2.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a987bbcbbc4\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Fruity Tower",
+        "cover":  "/assets/imgs/g/Fruity_Tower.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/4622000/4622142_alternate_215472_r10.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a98ce60a9a3\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Armed with Wings Culmination",
+        "cover":  "/assets/imgs/g/Armed_with_Wings_Culmination.webp",
+        "url":  "https://uploads.ungrounded.net/ruffle_wrapper/ruffleembed.html?v=1.0.67\u0026browsermode=default\u0026props=%7B%22ruffle%22%3A%22%2Fruffle_wrapper%2Flib%2Fruffle.js%3F1722140126%22%2C%22public_path%22%3A%22%2Fruffle_wrapper%2Flib%2F%22%2C%22swf%22%3A%22https%3A%2F%2Fuploads.ungrounded.net%2F584000%2F584398_Culmination_coolbuddy_v2.swf%3F1691321603%22%2C%22vars%22%3A%7B%22NewgroundsAPI_PublisherID%22%3A1%2C%22NewgroundsAPI_SandboxID%22%3A%2266a98da258f08%22%2C%22NewgroundsAPI_SessionID%22%3A%22%22%2C%22NewgroundsAPI_UserName%22%3A%22%26lt%3Bdeleted%26gt%3B%22%2C%22NewgroundsAPI_UserID%22%3A0%2C%22ng_username%22%3A%22%26lt%3Bdeleted%26gt%3B%22%7D%2C%22width%22%3A800%2C%22height%22%3A480%2C%22icon%22%3A%22https%3A%2F%2Fpicon.ngfiles.com%2F584000%2Fflash_584398_card.webp%3Ff1679409096%22%2C%22warnOnUnsupportedContent%22%3Afalse%7D"
+    },
+    {
+        "name":  "Armed with Wings Ashbelt",
+        "cover":  "/assets/imgs/g/Armed_with_Wings_Ashbelt.webp",
+        "url":  "https://uploads.ungrounded.net/ruffle_wrapper/ruffleembed.html?v=1.0.67\u0026browsermode=default\u0026props=%7B%22ruffle%22%3A%22%2Fruffle_wrapper%2Flib%2Fruffle.js%3F1722140126%22%2C%22public_path%22%3A%22%2Fruffle_wrapper%2Flib%2F%22%2C%22swf%22%3A%22https%3A%2F%2Fuploads.ungrounded.net%2F782000%2F782748_game.swf%3F1616075212%22%2C%22vars%22%3A%7B%22NewgroundsAPI_PublisherID%22%3A1%2C%22NewgroundsAPI_SandboxID%22%3A%2266a98e02c7e2c%22%2C%22NewgroundsAPI_SessionID%22%3A%22%22%2C%22NewgroundsAPI_UserName%22%3A%22%26lt%3Bdeleted%26gt%3B%22%2C%22NewgroundsAPI_UserID%22%3A0%2C%22ng_username%22%3A%22%26lt%3Bdeleted%26gt%3B%22%7D%2C%22width%22%3A1280%2C%22height%22%3A720%2C%22icon%22%3A%22https%3A%2F%2Fpicon.ngfiles.com%2F782000%2Fflash_782748_card.png%3Ff1614591642%22%2C%22warnOnUnsupportedContent%22%3Afalse%7D"
+    },
+    {
+        "name":  "The I of It",
+        "cover":  "/assets/imgs/g/The_I_of_It.webp",
+        "url":  "https://uploads.ungrounded.net/ruffle_wrapper/ruffleembed.html?v=1.0.67\u0026browsermode=default\u0026props=%7B%22ruffle%22%3A%22%2Fruffle_wrapper%2Flib%2Fruffle.js%3F1722140126%22%2C%22public_path%22%3A%22%2Fruffle_wrapper%2Flib%2F%22%2C%22swf%22%3A%22https%3A%2F%2Fuploads.ungrounded.net%2F570000%2F570709_theIofIt_640x400.swf%3F1306330288%22%2C%22vars%22%3A%7B%22NewgroundsAPI_PublisherID%22%3A1%2C%22NewgroundsAPI_SandboxID%22%3A%2266a98e3dc2710%22%2C%22NewgroundsAPI_SessionID%22%3A%22%22%2C%22NewgroundsAPI_UserName%22%3A%22%26lt%3Bdeleted%26gt%3B%22%2C%22NewgroundsAPI_UserID%22%3A0%2C%22ng_username%22%3A%22%26lt%3Bdeleted%26gt%3B%22%7D%2C%22width%22%3A640%2C%22height%22%3A400%2C%22icon%22%3A%22https%3A%2F%2Fpicon.ngfiles.com%2F570000%2Fflash_570709_card.png%3Ff1664325606%22%2C%22warnOnUnsupportedContent%22%3Afalse%7D"
+    },
+    {
+        "name":  "Armed with Wings Rearmed Trials",
+        "cover":  "/assets/imgs/g/Armed_with_Wings_Rearmed_Trials.webp",
+        "url":  "https://uploads.ungrounded.net/ruffle_wrapper/ruffleembed.html?v=1.0.67\u0026browsermode=default\u0026props=%7B%22ruffle%22%3A%22%2Fruffle_wrapper%2Flib%2Fruffle.js%3F1722140126%22%2C%22public_path%22%3A%22%2Fruffle_wrapper%2Flib%2F%22%2C%22swf%22%3A%22https%3A%2F%2Fuploads.ungrounded.net%2F682000%2F682880_rearmed-survival.swf%3F1477582558%22%2C%22vars%22%3A%7B%22NewgroundsAPI_PublisherID%22%3A1%2C%22NewgroundsAPI_SandboxID%22%3A%2266a991c001117%22%2C%22NewgroundsAPI_SessionID%22%3A%22%22%2C%22NewgroundsAPI_UserName%22%3A%22%26lt%3Bdeleted%26gt%3B%22%2C%22NewgroundsAPI_UserID%22%3A0%2C%22ng_username%22%3A%22%26lt%3Bdeleted%26gt%3B%22%7D%2C%22width%22%3A960%2C%22height%22%3A540%2C%22icon%22%3A%22https%3A%2F%2Fpicon.ngfiles.com%2F682000%2Fflash_682880_card.png%3Ff1691322341%22%2C%22warnOnUnsupportedContent%22%3Afalse%7D"
+    },
+    {
+        "name":  "Bunny Bun",
+        "cover":  "/assets/imgs/g/Bunny_Bun.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/1524000/1524514_alternate_251347_r26.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a994378fd7d\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Dark Sword: Light of Ainn",
+        "cover":  "/assets/imgs/g/Dark_Sword__Light_of_Ainn.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/5580000/5580932_alternate_257601_r8.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a9951709f9b\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Dark Sword",
+        "cover":  "/assets/imgs/g/Dark_Sword.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/4465000/4465067_alternate_208055_r41.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a9965971fd6\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Parking Ticket Mayhem",
+        "cover":  "/assets/imgs/g/Parking_Ticket_Mayhem.webp",
+        "url":  "https://uploads.ungrounded.net/alternate/5144000/5144516_alternate_238037_r1.zip/?NewgroundsAPI_PublisherID=1\u0026NewgroundsAPI_SandboxID=66a9959e79ce0\u0026NewgroundsAPI_SessionID=\u0026NewgroundsAPI_UserName=%26lt%3Bdeleted%26gt%3B\u0026NewgroundsAPI_UserID=0\u0026ng_username=%26lt%3Bdeleted%26gt%3B"
+    },
+    {
+        "name":  "Sans Last Breath",
+        "cover":  "/assets/imgs/g/Sans_Last_Breath.webp",
+        "url":  "https://mario1d240.github.io/undertale-last-breath-remake-bad-time-simulator"
+    },
+    {
+        "name":  "Burger \u0026 Frights",
+        "cover":  "/assets/imgs/g/Burger___Frights.webp",
+        "url":  "https://html-classic.itch.zone/html/5033568/index.html"
+    },
+    {
+        "name":  "Falling Art Ragdoll Simulator",
+        "cover":  "/assets/imgs/g/Falling_Art_Ragdoll_Simulator.webp",
+        "url":  "https://games.crazygames.com/en_US/falling-art-ragdoll-simulator/index.html"
+    },
+    {
+        "name":  "Zombie Survival v2",
+        "cover":  "/assets/imgs/g/Zombie_Survival_v2.webp",
+        "url":  "https://f3.silvergames.com/html5/zombie-survival_v2/"
+    },
+    {
+        "name":  "Lonewolf",
+        "cover":  "/assets/imgs/g/Lonewolf.webp",
+        "url":  "https://f.silvergames.com/ruffle/player.php?id=5668"
+    },
+    {
+        "name":  "Evo-F4",
+        "cover":  "/assets/imgs/g/Evo_F4.webp",
+        "url":  "https://www.gamearter.com/game/evo-f4/"
+    },
+    {
+        "name":  "Pixel Warfare",
+        "cover":  "/assets/imgs/g/Pixel_Warfare.webp",
+        "url":  "https://games.crazygames.com/en_US/pixel-warfare/index.html?v=1.295"
+    },
+    {
+        "name":  "Mine Shooter - Save your world",
+        "cover":  "/assets/imgs/g/Mine_Shooter___Save_your_world.webp",
+        "url":  "https://games.crazygames.com/en_US/mine-shooter---save-your-world/index.html?v=1.295"
+    },
+    {
+        "name":  "Bodycamera Shooter",
+        "cover":  "/assets/imgs/g/Bodycamera_Shooter.webp",
+        "url":  "https://games.crazygames.com/en_US/bodycamera-shooter/index.html?v=1.295"
+    },
+    {
+        "name":  "Bank Robbery 3",
+        "cover":  "/assets/imgs/g/Bank_Robbery_3.webp",
+        "url":  "https://games.crazygames.com/en_US/bank-robbery-3/index.html?v=1.295"
+    },
+    {
+        "name":  "Sniper Shot - Bullet Time",
+        "cover":  "/assets/imgs/g/Sniper_Shot___Bullet_Time.webp",
+        "url":  "https://games.crazygames.com/en_US/sniper-shot-bullet-time/index.html?v=1.295"
+    },
+    {
+        "name":  "Spy Highway",
+        "cover":  "/assets/imgs/g/Spy_Highway.webp",
+        "url":  "https://games.crazygames.com/en_US/shotgun-highway/index.html?v=1.295"
+    },
+    {
+        "name":  "Save the Hostages",
+        "cover":  "/assets/imgs/g/Burger___Frights.webp",
+        "url":  "https://games.crazygames.com/en_US/save-the-hostages/index.html?v=1.295"
+    },
+    {
+        "name":  "Zombie Shooter: Part 2",
+        "cover":  "/assets/imgs/g/Zombie_Shooter__Part_2.webp",
+        "url":  "https://games.crazygames.com/en_US/zombies-shooter-part-2/index.html?v=1.295"
+    },
+    {
+        "name":  "Sandbox City",
+        "cover":  "/assets/imgs/g/Sandbox_City.webp",
+        "url":  "https://games.crazygames.com/en_US/sandbox-city---cars-zombies-ragdolls/index.html?v=1.295"
+    },
+    {
+        "name":  "Resident Zombies: Horror Shooter",
+        "cover":  "/assets/imgs/g/Resident_Zombies__Horror_Shooter.webp",
+        "url":  "https://games.crazygames.com/en_US/resident-zombies---horror-shooter/index.html?v=1.295"
+    },
+    {
+        "name":  "Stickman Zombie Annihilation",
+        "cover":  "/assets/imgs/g/Stickman_Zombie_Annihilation.webp",
+        "url":  "https://games.crazygames.com/en_US/stickman-zombie-annihilation/index.html?v=1.295"
+    },
+    {
+        "name":  "Deadly Red Spikes",
+        "cover":  "/assets/imgs/g/Deadly_Red_Spikes.webp",
+        "url":  "https://games.crazygames.com/en_US/deadly-red-spikes/index.html?v=1.295"
+    },
+    {
+        "name":  "Crazy Stunt Cars Multiplayer",
+        "cover":  "/assets/imgs/g/Crazy_Stunt_Cars_Multiplayer.webp",
+        "url":  "https://games.crazygames.com/en_US/crazy-stunt-cars-multiplayer/index.html?v=1.295"
+    },
+    {
+        "name":  "Supreme Bomb Tag",
+        "cover":  "/assets/imgs/g/Supreme_Bomb_Tag.webp",
+        "url":  "https://games.crazygames.com/en_US/supreme-bomb-tag/index.html?v=1.295"
+    },
+    {
+        "name":  "Mini-Caps: Arena",
+        "cover":  "/assets/imgs/g/Mini_Caps__Arena.webp",
+        "url":  "https://games.crazygames.com/en_US/mini-caps-arena/index.html?v=1.295"
+    },
+    {
+        "name":  "Mini-Caps: Bombs",
+        "cover":  "/assets/imgs/g/Mini_Caps__Bombs.webp",
+        "url":  "https://games.crazygames.com/en_US/mini-caps-bombs/index.html?v=1.295"
+    },
+    {
+        "name":  "Stickman Zombie Annihilation 2",
+        "cover":  "/assets/imgs/g/Stickman_Zombie_Annihilation_2.webp",
+        "url":  "https://games.crazygames.com/en_US/stickman-annihilation-2/index.html?v=1.295"
+    },
+    {
+        "name":  "Derby Crash 5",
+        "cover":  "/assets/imgs/g/Derby_Crash_5.webp",
+        "url":  "https://games.crazygames.com/en_US/derby-crash-5/index.html?v=1.295"
+    },
+    {
+        "name":  "Night City Racing",
+        "cover":  "/assets/imgs/g/Night_City_Racing.webp",
+        "url":  "https://games.crazygames.com/en_US/night-city-racing/index.html?v=1.295"
+    },
+    {
+        "name":  "Crazy for Speed",
+        "cover":  "/assets/imgs/g/Crazy_for_Speed.webp",
+        "url":  "https://games.crazygames.com/en_US/crazy-for-speed/index.html?v=1.295"
+    }
+]
