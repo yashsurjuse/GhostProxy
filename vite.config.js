@@ -117,8 +117,8 @@ export default defineConfig(({ command }) => {
           server.middlewares.use((req, res, next) => routeRequest(req, res) || next());
         },
       },
-              // epoxyPath logic removed for Cloudflare compatibility
-              // let epoxyPath = '';
+      {
+        name: 'search',
         apply: 'serve',
         configureServer(s) {
           s.middlewares.use('/return', async (req, res) => {
