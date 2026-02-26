@@ -84,7 +84,7 @@ export default defineConfig(({ command }) => {
       viteStaticCopy({
         targets: [
           { src: [normalizePath(resolve(libcurlPath, '*'))], dest: 'libcurl' },
-          { src: [normalizePath(resolve(epoxyPath, '*')), '!' + normalizePath(resolve(epoxyPath, 'dist/**'))], dest: 'epoxy-raw' },
+          // { src: [normalizePath(resolve(epoxyPath, '*')), '!' + normalizePath(resolve(epoxyPath, 'dist/**'))], dest: 'epoxy-raw' },
           { src: [normalizePath(resolve(baremuxPath, '*'))], dest: 'baremux' },
           { src: [normalizePath(resolve(scramjetPath, '*'))], dest: 'scram' },
           useBare && { src: [normalizePath(resolve(bareModulePath, '*'))], dest: 'baremod' },
