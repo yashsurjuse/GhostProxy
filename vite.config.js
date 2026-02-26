@@ -205,5 +205,5 @@ export default defineConfig(({ command }) => {
       __ENVIRONMENT__: JSON.stringify(environment),
       isStaticBuild: isStatic
     },
-  };
+
 });
