@@ -117,8 +117,8 @@ export default defineConfig(({ command }) => {
           server.middlewares.use((req, res, next) => routeRequest(req, res) || next());
         },
       },
-      {
-        name: 'search',
+              // epoxyPath logic removed for Cloudflare compatibility
+              // let epoxyPath = '';
         apply: 'serve',
         configureServer(s) {
           s.middlewares.use('/return', async (req, res) => {
@@ -169,18 +169,7 @@ export default defineConfig(({ command }) => {
             const pkg = m.startsWith('@') ? m.split('/').slice(0, 2).join('/') : m.split('/')[0];
             if (/react-router|react-dom|react\b/.test(pkg)) return 'react';
             if (/^@mui\//.test(pkg) || /^@emotion\//.test(pkg)) return 'mui';
-            if (/lucide/.test(pkg)) return 'icons';
-            if (/react-ga4/.test(pkg)) return 'analytics';
-            if (/nprogress/.test(pkg)) return 'progress';
-            return 'vendor';
-          },
-        },
-        treeshake: {
-          moduleSideEffects: 'no-external',
-        },
-      },
-      minify: 'esbuild',
-      sourcemap: false,
+                // epoxyPath logic removed for Cloudflare compatibility
     },
     css: {
       modules: {
