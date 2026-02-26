@@ -12,18 +12,8 @@ import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 
-// Use dynamic import of require for ESM compatibility
-let epoxyPath;
-try {
-  const { createRequire } = await import('node:module');
-  const require = createRequire(import.meta.url);
-  epoxyPath = normalizePath(
-    resolve(dirname(require.resolve('@mercuryworkshop/epoxy-transport')), '.')
-  );
-} catch (e) {
-  // fallback or error handling
-  epoxyPath = '';
-}
+// epoxyPath will be resolved inside defineConfig
+let epoxyPath = '';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -73,6 +63,19 @@ const obf = {
 
 export default defineConfig(({ command }) => {
   const environment = isStatic ? 'static' : command === 'serve' ? 'dev' : 'stable';
+
+  // Safely resolve epoxyPath using createRequire for ESM compatibility
+  try {
+    // Only require when building, not at top-level
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { createRequire } = require('module');
+    const requireFunc = createRequire(import.meta.url);
+    epoxyPath = normalizePath(
+      resolve(dirname(requireFunc.resolve('@mercuryworkshop/epoxy-transport')), '.')
+    );
+  } catch (e) {
+    epoxyPath = '';
+  }
 
   return {
     plugins: [
