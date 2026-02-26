@@ -24,11 +24,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 logging.set_level(logging.NONE);
 let bare;
 
+
 Object.assign(wisp.options, {
   dns_method: 'resolve',
   dns_servers: ['1.1.1.3', '1.0.0.3'],
   dns_result_order: 'ipv4first',
-}
+});
 
 const routeRequest = (req, resOrSocket, head) => {
   if (req.url?.startsWith('/wisp/')) return wisp.routeRequest(req, resOrSocket, head);
