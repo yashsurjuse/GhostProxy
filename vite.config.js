@@ -11,11 +11,11 @@ import { libcurlPath } from '@mercuryworkshop/libcurl-transport';
 import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
+import dotenv from 'dotenv';
 
 const epoxyPath = normalizePath(
   resolve(dirname(fileURLToPath(import.meta.resolve('@mercuryworkshop/epoxy-transport'))), '.')
 );
-import dotenv from 'dotenv';
 
 dotenv.config();
 const useBare = process.env.BARE === 'false' ? false : true;
