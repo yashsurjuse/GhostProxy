@@ -13,7 +13,8 @@ import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 import dotenv from 'dotenv';
 import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
+const __dirname = process.cwd();
+const require = createRequire(__dirname + '/vite.config.js');
 
 const epoxyPath = normalizePath(
   dirname(require.resolve('@mercuryworkshop/epoxy-transport'))
@@ -22,8 +23,6 @@ const epoxyPath = normalizePath(
 dotenv.config();
 const useBare = process.env.BARE === 'false' ? false : true;
 const isStatic = process.env.STATIC === 'true';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 logging.set_level(logging.NONE);
 let bare;
 
@@ -34,7 +33,7 @@ Object.assign(wisp.options, {
 });
 
 const routeRequest = (req, resOrSocket, head) => {
-  if (req.url?.startsWith('/wisp/')) return wisp.routeRequest(req, resOrSocket, head);
+  if (req.url && req.url.startsWith('/wisp/')) return wisp.routeRequest(req, resOrSocket, head);
   if (bare.shouldRoute(req))
     return head ? bare.routeUpgrade(req, resOrSocket, head) : bare.routeRequest(req, resOrSocket);
 };
@@ -103,7 +102,7 @@ export default defineConfig(({ command }) => {
         apply: 'serve',
         configureServer(server) {
           bare = createBareServer('/seal/');
-          server.httpServer?.on('upgrade', (req, sock, head) => routeRequest(req, sock, head));
+          if (server.httpServer) server.httpServer.on('upgrade', (req, sock, head) => routeRequest(req, sock, head));
           server.middlewares.use((req, res, next) => routeRequest(req, res) || next());
         },
       },
@@ -117,7 +116,7 @@ export default defineConfig(({ command }) => {
               const r = q && (await fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(q)}`));
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify(r ? await r.json() : { error: 'query parameter?' }));
-            } catch {
+            } catch (e) {
               res.end(JSON.stringify({ error: 'request failed' }));
             }
           });
