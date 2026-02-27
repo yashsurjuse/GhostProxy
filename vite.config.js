@@ -151,16 +151,12 @@ export default defineConfig(({ command }) => {
           entryFileNames: '[hash].js',
           chunkFileNames: 'chunks/[name].[hash].js',
           assetFileNames: 'assets/[hash].[ext]',
-          manualChunks: (id) => {
-            if (!id.includes('node_modules')) return;
-            const m = id.split('node_modules/')[1];
-            const pkg = m.startsWith('@') ? m.split('/').slice(0, 2).join('/') : m.split('/')[0];
-            if (/react-router|react-dom|react\b/.test(pkg)) return 'react';
-            if (/^@mui\//.test(pkg) || /^@emotion\//.test(pkg)) return 'mui';
-            if (/lucide/.test(pkg)) return 'icons';
-            if (/react-ga4/.test(pkg)) return 'analytics';
-            if (/nprogress/.test(pkg)) return 'progress';
-            return 'vendor';
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            mui: ['@mui/material', '@emotion/react', '@emotion/styled'],
+            icons: ['lucide', 'lucide-react'],
+            analytics: ['react-ga4'],
+            progress: ['nprogress']
           }
         },
         treeshake: {
