@@ -90,6 +90,8 @@ const Settings = () => {
   const inGhostBrowserMode = new URLSearchParams(location.search).get('ghost') === '1';
   const [q, setQ] = useState('');
   const [content, setContent] = useState('Privacy');
+  const [loaded, setLoaded] = useState(false);
+  const [windowHeight, setWindowHeight] = useState('100vh');
 
   useEffect(() => {
     const section = new URLSearchParams(location.search).get('section');
@@ -101,7 +103,6 @@ const Settings = () => {
     }
   }, [location.search]);
 
-  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     let m = true;
     import('/src/data/settings.js').then((mod) => {
@@ -118,12 +119,12 @@ const Settings = () => {
     () =>
       loaded
         ? asyncConfs.map(({ fn, ...c }) => ({
-            ...c,
-            items: Object.values(fn({ options, updateOption })).map(({ name, desc }) => ({
-              name,
-              desc,
-            })),
-          }))
+          ...c,
+          items: Object.values(fn({ options, updateOption })).map(({ name, desc }) => ({
+            name,
+            desc,
+          })),
+        }))
         : [],
     [options, updateOption, loaded],
   );
@@ -135,11 +136,11 @@ const Settings = () => {
       !fq
         ? settings
         : settings.filter(
-            ({ name, keywords, items }) =>
-              name.toLowerCase().includes(fq) ||
-              keywords.some((kw) => kw.toLowerCase().includes(fq)) ||
-              items.some((i) => i.name.toLowerCase().includes(fq)),
-          ),
+          ({ name, keywords, items }) =>
+            name.toLowerCase().includes(fq) ||
+            keywords.some((kw) => kw.toLowerCase().includes(fq)) ||
+            items.some((i) => i.name.toLowerCase().includes(fq)),
+        ),
     [settings, fq],
   );
 
@@ -159,7 +160,7 @@ const Settings = () => {
     filtered.some((s) => s.keywords.some((kw) => kw.toLowerCase().includes(fq)));
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full overflow-hidden">
       {!inGhostBrowserMode && (
         <div className="shrink-0">
           <Nav />
@@ -171,19 +172,19 @@ const Settings = () => {
           className={clsx(
             theme['settings-panelColor'],
             theme[`theme-${options.theme || 'default'}`],
-            'w-60 shrink-0 overflow-y-auto p-2',
+            'w-20 md:w-60 shrink-0 overflow-y-auto p-2',
             inGhostBrowserMode ? 'pt-6' : 'pt-3',
           )}
         >
           <div
-            className="flex items-center max-w-52 h-7 rounded-lg mx-auto px-2"
+            className="flex items-center w-full max-w-52 h-7 rounded-lg mx-auto px-2"
             style={{ backgroundColor: options.settingsSearchBar || '#3c475a' }}
           >
-            <Search className="w-4 mr-1.5" />
+            <Search className="w-4 md:mr-1.5" />
             <input
               type="text"
               placeholder="Filter settings"
-              className="bg-transparent outline-hidden w-full text-sm"
+              className="bg-transparent outline-none hidden md:block w-full text-sm"
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -207,7 +208,7 @@ const Settings = () => {
                 <div
                   key={name}
                   className={clsx(
-                    'w-full flex flex-col rounded-xl duration-75 cursor-pointer px-5 py-2',
+                    'w-full flex flex-col md:rounded-xl rounded-md duration-75 cursor-pointer md:px-5 px-2 py-2',
                     content !== name && 'bg-transparent hover:bg-[#ffffff23]',
                   )}
                   style={{
@@ -217,13 +218,14 @@ const Settings = () => {
                         : undefined,
                   }}
                   onClick={() => setContent((prev) => (prev === name ? '' : name))}
+                  title={name}
                 >
-                  <div className="flex items-center h-6">
+                  <div className="flex items-center justify-center md:justify-start h-6">
                     <Icon className="w-5" />
-                    <p className="mx-4">{name}</p>
+                    <p className="hidden md:block mx-4">{name}</p>
                   </div>
                   {matched.length > 0 && (
-                    <p className="ml-9 text-xs text-gray-400 truncate">
+                    <p className="hidden md:block ml-9 text-xs text-gray-400 truncate">
                       {matched.map((i) => i.name).join(', ')}
                     </p>
                   )}

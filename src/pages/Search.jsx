@@ -57,7 +57,7 @@ const getSitePolicies = () => {
 const setSitePolicies = (next) => {
   try {
     localStorage.setItem(SITE_POLICY_KEY, JSON.stringify(next || {}));
-  } catch {}
+  } catch { }
   window.dispatchEvent(new Event('ghost-site-policies-updated'));
 };
 
@@ -82,12 +82,12 @@ const sanitizeHydratedUrl = (raw) => {
   try {
     const parsed = new URL(value, location.origin);
     if (parsed.origin === location.origin) return parsed.toString();
-  } catch {}
+  } catch { }
 
   let opts = {};
   try {
     opts = JSON.parse(localStorage.getItem('options') || '{}');
-  } catch {}
+  } catch { }
 
   return process(value, false, opts.prType || 'auto', opts.engine || null);
 };
@@ -156,6 +156,18 @@ export default function Loader({ url, ui = true, zoom }) {
   const findInputRef = useRef(null);
   const debugDragRef = useRef({ active: false, startX: 0, startY: 0, originX: 0, originY: 0 });
   const logRestoreRef = useRef(null);
+  const [timeState, setTimeState] = useState(Date.now());
+  const [windowHeight, setWindowHeight] = useState('100vh');
+
+  useEffect(() => {
+    const handleResize = () => {
+      const scale = Number(options?.uiScale || document.documentElement.style.getPropertyValue('--ui-scale') || 1);
+      setWindowHeight(`${window.innerHeight / scale}px`);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [options?.uiScale]);
 
   useEffect(() => {
     if (!ui) return;
@@ -338,7 +350,7 @@ export default function Loader({ url, ui = true, zoom }) {
       if (raw.includes('/uv/service/') || raw.includes('/scramjet/')) {
         decoded = process(raw, true, options.prType || 'auto', options.engine || null);
       }
-    } catch {}
+    } catch { }
 
     try {
       const parsed = new URL(decoded, location.origin);
@@ -368,7 +380,7 @@ export default function Loader({ url, ui = true, zoom }) {
           tabs: loaderStore.getState().tabs,
         }),
       );
-    } catch {}
+    } catch { }
   };
   const barStyle = {
     backgroundColor: options.barColor || '#09121e',
@@ -410,7 +422,7 @@ export default function Loader({ url, ui = true, zoom }) {
         win.eruda?.show('elements');
       };
       doc.body.appendChild(s);
-    } catch {}
+    } catch { }
   };
 
   const disableDevTools = (frameRef) => {
@@ -420,7 +432,7 @@ export default function Loader({ url, ui = true, zoom }) {
       const win = frameRef.contentWindow;
       if (!doc?.body) return;
       win.eruda?.destroy?.();
-    } catch {}
+    } catch { }
   };
 
   const toggleDevToolsForTab = (tabId, frameRef) => {
@@ -441,11 +453,24 @@ export default function Loader({ url, ui = true, zoom }) {
   const navigateActiveTab = (rawUrl) => {
     const store = loaderStore.getState();
     const activeTab = store.tabs.find((tab) => tab.active) || store.tabs[0];
-    if (!activeTab) return;
     const processed = process(rawUrl, false, options.prType || 'auto', options.engine || null);
-    updateUrl(activeTab.id, processed);
-    if (String(rawUrl).toLowerCase() === 'ghost://home') {
-      setIframeUrl(activeTab.id, 'ghost://home');
+
+    if (activeTab && activeTab.url === processed) return;
+
+    if (options.openSidebarInNewTab) {
+      if (store.tabs.length < 20) {
+        const id = createId();
+        addTab({ title: 'New Tab', id, url: processed });
+        if (String(rawUrl).toLowerCase() === 'ghost://home') {
+          setIframeUrl(id, 'ghost://home');
+        }
+        setActive(id);
+      }
+    } else if (activeTab) {
+      updateUrl(activeTab.id, processed);
+      if (String(rawUrl).toLowerCase() === 'ghost://home') {
+        setIframeUrl(activeTab.id, 'ghost://home');
+      }
     }
   };
 
@@ -479,7 +504,7 @@ export default function Loader({ url, ui = true, zoom }) {
       if (raw.includes('/uv/service/') || raw.includes('/scramjet/')) {
         decoded = process(raw, true, options.prType || 'auto', options.engine || null);
       }
-    } catch {}
+    } catch { }
 
     try {
       const parsed = new URL(decoded, location.origin);
@@ -596,7 +621,7 @@ export default function Loader({ url, ui = true, zoom }) {
         listener = () => updateBattery();
         battery.addEventListener('chargingchange', listener);
         battery.addEventListener('levelchange', listener);
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     return () => {
@@ -783,40 +808,11 @@ export default function Loader({ url, ui = true, zoom }) {
       meta.longitude >= -180 &&
       meta.longitude <= 180;
 
-    const getBrowserCoords = () =>
-      new Promise((resolve) => {
-        try {
-          if (!navigator.geolocation) {
-            resolve(null);
-            return;
-          }
 
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              resolve({
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-                latitude: Number(position.coords?.latitude),
-                longitude: Number(position.coords?.longitude),
-                city: '',
-              });
-            },
-            () => resolve(null),
-            { enableHighAccuracy: false, timeout: 6000, maximumAge: 60 * 1000 },
-          );
-        } catch {
-          resolve(null);
-        }
-      });
 
     const fetchIpMeta = async () => {
-      const geo = await getBrowserCoords();
-      if (!canceled && isValidMeta(geo)) {
-        setIpMeta(geo);
-        return;
-      }
 
       const providers = [
-        { url: 'https://ipapi.co/json/', source: 'ipapi' },
         { url: 'https://ipwho.is/', source: 'ipwho' },
         { url: 'https://ipinfo.io/json', source: 'ipinfo' },
       ];
@@ -831,7 +827,7 @@ export default function Loader({ url, ui = true, zoom }) {
           if (canceled) return;
           setIpMeta(parsed);
           return;
-        } catch {}
+        } catch { }
       }
     };
 
@@ -1012,7 +1008,7 @@ export default function Loader({ url, ui = true, zoom }) {
           setTabsHydrated(true);
           return;
         }
-      } catch {}
+      } catch { }
     }
 
     loaderStore.getState().clearStore();
@@ -1033,7 +1029,7 @@ export default function Loader({ url, ui = true, zoom }) {
             tabs: state.tabs,
           }),
         );
-      } catch {}
+      } catch { }
     });
 
     return () => {
@@ -1233,7 +1229,7 @@ export default function Loader({ url, ui = true, zoom }) {
       const markReturnHint = () => {
         try {
           sessionStorage.setItem('ghostReturnToBrowserHint', '1');
-        } catch {}
+        } catch { }
       };
 
       const viewSource = () => {
@@ -1408,234 +1404,227 @@ export default function Loader({ url, ui = true, zoom }) {
 
   return (
     <div
-      className={`flex w-full ${ui ? 'h-screen' : 'h-full'}`}
+      className="flex w-full h-full"
       style={{ color: options.siteTextColor || '#a0b0c8' }}
     >
       {ui && (
-      <aside
-        className="w-[52px] h-full flex flex-col items-center px-1.5 py-2.5 z-[140] border-r border-white/10"
-        style={{ backgroundColor: options.tabBarColor || '#070e15' }}
-      >
-        <div className="relative" ref={ghostMenuRef}>
-          <SidebarButton
-            label="Ghost Menu"
-            onClick={() => setGhostMenuOpen((prev) => !prev)}
-            className="w-10 h-10 rounded-xl text-white hover:bg-white/10"
-            iconSize={20}
-            hideTooltip={true}
-          >
-            <img
-              src="/ghost.png"
-              alt="Ghost"
-              className="w-6 h-6 object-contain"
-              style={{ filter: 'invert(1) brightness(1.8)' }}
-              draggable={false}
-            />
-          </SidebarButton>
-
-          <div
-            className={`absolute left-[calc(100%+2px)] top-0 w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition-all duration-150 ${ghostMenuOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-1 pointer-events-none'}`}
-          >
-            <div className="px-2.5 py-1.5 mb-1 rounded-lg border border-white/10 bg-[#111722]">
-              <div className="text-[11px] font-semibold tracking-wide text-white/90 flex items-center justify-between">
-                <span>{menuTimeLabel}</span>
-                <span className="inline-flex items-center gap-1 opacity-85">
-                  <Battery size={12} />
-                  {Number.isFinite(batteryInfo.level) ? `${batteryInfo.level}%` : '--'}
-                </span>
-              </div>
-              <div className="mt-1 flex items-center justify-between text-[11px] text-white/80">
-                <span className="truncate max-w-[7.2rem]">{ipMeta.city || 'Your Location'}</span>
-                <span className="inline-flex items-center gap-1">
-                  {(() => {
-                    const WxIcon = weatherIcon;
-                    return <WxIcon size={12} />;
-                  })()}
-                  {Number.isFinite(menuWeather.temp)
-                    ? `${Math.round(menuWeather.temp)}°${weatherUnitLabel}`
-                    : '--'}
-                </span>
-              </div>
-            </div>
-
-            {[
-              { label: 'Home', action: () => navigateActiveTab('ghost://home') },
-              { label: 'Apps', action: () => navigateActiveTab('ghost://apps') },
-              { label: 'Games', action: () => navigateActiveTab('ghost://games') },
-              { label: 'TV', action: () => navigateActiveTab('ghost://tv') },
-              { label: 'Music', action: () => openDefaultMusicProvider() },
-              { label: 'Remote Access', action: () => navigateActiveTab('ghost://remote') },
-              { label: 'Artificial Intelligence', action: () => navigateActiveTab('ghost://ai') },
-              {
-                label: 'Ad Block',
-                action: () => {
-                  setAdBlockPopupOpen(true);
-                  setGhostMenuOpen(false);
-                },
-              },
-              { label: 'Code Runner', action: () => navigateActiveTab('ghost://code') },
-              { label: 'Docs', action: () => navigateActiveTab('ghost://docs') },
-              { label: 'Settings', action: () => navigateActiveTab('ghost://settings') },
-            ].map((item) => (
-              <button
-                key={item.label}
-                className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors"
-                onClick={() => {
-                  item.action();
-                  setGhostMenuOpen(false);
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-2 flex flex-col items-center gap-2">
-          <SidebarButton label="Apps" onClick={() => navigateActiveTab('ghost://apps')}>
-            <Blocks size={16} />
-          </SidebarButton>
-          <SidebarButton label="Games" onClick={() => navigateActiveTab('ghost://games')}>
-            <Gamepad2 size={16} />
-          </SidebarButton>
-          <SidebarButton label="TV" onClick={() => navigateActiveTab('ghost://tv')}>
-            <TvMinimalPlay size={16} />
-          </SidebarButton>
-          <SidebarButton label="Music" onClick={() => openDefaultMusicProvider()}>
-            <Music size={16} />
-          </SidebarButton>
-          <SidebarButton label="Remote Access" onClick={() => navigateActiveTab('ghost://remote')}>
-            <Monitor size={16} />
-          </SidebarButton>
-          <SidebarButton label="AI" onClick={() => navigateActiveTab('ghost://ai')}>
-            <Bot size={16} />
-          </SidebarButton>
-        </div>
-
-        <div className="my-6 w-7 h-[2px] rounded-full bg-white/20" />
-
-        <div className="flex flex-col items-center gap-2">
-          <SidebarButton label="Bookmarks" onClick={() => window.dispatchEvent(new Event('ghost-open-bookmarks'))}>
-            <BookOpen size={16} />
-          </SidebarButton>
-          <div className="relative" ref={adBlockPopupRef}>
+        <aside
+          className="w-[52px] h-full flex flex-col items-center px-1.5 py-2.5 z-[140] border-r border-white/10"
+          style={{ backgroundColor: options.tabBarColor || '#070e15' }}
+        >
+          <div className="relative" ref={ghostMenuRef}>
             <SidebarButton
-              label="Ad Block"
-              onClick={() => setAdBlockPopupOpen((prev) => !prev)}
-              hideTooltip={adBlockPopupOpen}
+              label="Ghost Menu"
+              onClick={() => setGhostMenuOpen((prev) => !prev)}
+              className="w-10 h-10 rounded-xl text-white hover:bg-white/10"
+              iconSize={20}
+              hideTooltip={true}
             >
-              <ShieldMinus size={16} />
+              <img
+                src="/ghost.png"
+                alt="Ghost"
+                className="w-6 h-6 object-contain"
+                style={{ filter: 'invert(1) brightness(1.8)' }}
+                draggable={false}
+              />
             </SidebarButton>
-            <div
-              className={`absolute left-[calc(100%+8px)] top-0 w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-            >
-              {currentSitePolicy?.site ? (
-                <>
-                  <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                    onClick={() =>
-                      updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
-                    }
-                  >
-                    <span>Ad Block</span>
-                    <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
-                      {currentSitePolicy.adBlock ? 'On' : 'Off'}
-                    </span>
-                  </button>
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                    onClick={() =>
-                      updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
-                    }
-                  >
-                    <span>Popup Blocker</span>
-                    <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
-                      {currentSitePolicy.popupBlock ? 'On' : 'Off'}
-                    </span>
-                  </button>
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                    onClick={() =>
-                      updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
-                    }
-                  >
-                    <span>Download Blocker</span>
-                    <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
-                      {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
-                    </span>
-                  </button>
-                </>
-              ) : (
-                <p className="text-[12px] opacity-70 px-2.5 py-2">
-                  Ad block not available on internal Ghost pages.
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="relative" ref={devOptionsRef}>
-            <SidebarButton
-              label="Developer Options"
-              onClick={() => setDevOptionsOpen((prev) => !prev)}
-              hideTooltip={devOptionsOpen}
-            >
-              <Wrench size={16} />
-            </SidebarButton>
-            <div
-              className={`absolute left-[calc(100%+8px)] top-0 w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-left ${devOptionsOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-            >
-              <button
-                className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                onClick={() => {
-                  openDevToolsForActiveTab();
-                  setDevOptionsOpen(false);
-                }}
-              >
-                <Wrench size={14} /> DevTools
-              </button>
-              <button
-                className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                onClick={() => {
-                  navigateActiveTab('ghost://code');
-                  setDevOptionsOpen(false);
-                }}
-              >
-                <Code2 size={14} /> Code Runner
-              </button>
-              <button
-                className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                onClick={() => updateOption({ debugMode: !options.debugMode })}
-              >
-                <span>Debug Mode</span>
-                <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
-                  {options.debugMode ? 'On' : 'Off'}
-                </span>
-              </button>
-            </div>
-          </div>
-          <SidebarButton label="History" onClick={openProxyHistoryPopup}>
-            <History size={16} />
-          </SidebarButton>
-        </div>
 
-        <div className="mt-auto flex flex-col items-center gap-2 pb-1">
-          <SidebarButton label="Changelog" onClick={() => setIsChangelogOpen(true)}>
-            <Sparkles size={16} />
-          </SidebarButton>
-          <SidebarButton label="Docs" onClick={() => navigateActiveTab('ghost://docs')}>
-            <Book size={16} />
-          </SidebarButton>
-          <SidebarButton
-            label="Discord"
-            onClick={() => setGhostMenuOpen(false)}
-          >
-            <span className="inline-flex items-center justify-center w-4 h-4"><Discord fill="currentColor" /></span>
-          </SidebarButton>
-          <SidebarButton label="Settings" onClick={() => navigateActiveTab('ghost://settings')}>
-            <Settings size={16} />
-          </SidebarButton>
-        </div>
-      </aside>
+            <div
+              className={`absolute left-[calc(100%+2px)] top-0 w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition-all duration-150 ${ghostMenuOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-1 pointer-events-none'}`}
+            >
+              <div className="px-2.5 py-1.5 mb-1 rounded-lg border border-white/10 bg-[#111722]">
+                <div className="text-[11px] font-semibold tracking-wide text-white/90 flex items-center justify-between">
+                  <span>{menuTimeLabel}</span>
+                  <span className="inline-flex items-center gap-1 opacity-85">
+                    <Battery size={12} />
+                    {Number.isFinite(batteryInfo.level) ? `${batteryInfo.level}%` : '--'}
+                  </span>
+                </div>
+                <div className="mt-1 flex items-center justify-between text-[11px] text-white/80">
+                  <span className="truncate max-w-[7.2rem]">{ipMeta.city || 'Your Location'}</span>
+                  <span className="inline-flex items-center gap-1">
+                    {(() => {
+                      const WxIcon = weatherIcon;
+                      return <WxIcon size={12} />;
+                    })()}
+                    {Number.isFinite(menuWeather.temp)
+                      ? `${Math.round(menuWeather.temp)}°${weatherUnitLabel}`
+                      : '--'}
+                  </span>
+                </div>
+              </div>
+
+              {[
+                { label: 'Home', action: () => navigateActiveTab('ghost://home') },
+                { label: 'Apps', action: () => navigateActiveTab('ghost://apps') },
+                { label: 'Games', action: () => navigateActiveTab('ghost://games') },
+                { label: 'TV', action: () => navigateActiveTab('ghost://tv') },
+                { label: 'Music', action: () => openDefaultMusicProvider() },
+                { label: 'Remote Access', action: () => navigateActiveTab('ghost://remote') },
+                { label: 'Artificial Intelligence', action: () => navigateActiveTab('ghost://ai') },
+                { label: 'Code Runner', action: () => navigateActiveTab('ghost://code') },
+                { label: 'Docs', action: () => navigateActiveTab('ghost://docs') },
+                { label: 'Settings', action: () => navigateActiveTab('ghost://settings') },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors"
+                  onClick={() => {
+                    item.action();
+                    setGhostMenuOpen(false);
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <SidebarButton label="Apps" onClick={() => navigateActiveTab('ghost://apps')}>
+              <Blocks size={16} />
+            </SidebarButton>
+            <SidebarButton label="Games" onClick={() => navigateActiveTab('ghost://games')}>
+              <Gamepad2 size={16} />
+            </SidebarButton>
+            <SidebarButton label="TV" onClick={() => navigateActiveTab('ghost://tv')}>
+              <TvMinimalPlay size={16} />
+            </SidebarButton>
+            <SidebarButton label="Music" onClick={() => openDefaultMusicProvider()}>
+              <Music size={16} />
+            </SidebarButton>
+            <SidebarButton label="Remote Access" onClick={() => navigateActiveTab('ghost://remote')}>
+              <Monitor size={16} />
+            </SidebarButton>
+            <SidebarButton label="AI" onClick={() => navigateActiveTab('ghost://ai')}>
+              <Bot size={16} />
+            </SidebarButton>
+          </div>
+
+          <div className="my-6 w-7 h-[2px] rounded-full bg-white/20" />
+
+          <div className="flex flex-col items-center gap-2">
+            <SidebarButton label="Bookmarks" onClick={() => window.dispatchEvent(new Event('ghost-open-bookmarks'))}>
+              <BookOpen size={16} />
+            </SidebarButton>
+            <div className="relative" ref={adBlockPopupRef}>
+              <SidebarButton
+                label="Ad Block"
+                onClick={() => setAdBlockPopupOpen((prev) => !prev)}
+                hideTooltip={adBlockPopupOpen}
+              >
+                <ShieldMinus size={16} />
+              </SidebarButton>
+              <div
+                className={`absolute left-[calc(100%+8px)] top-0 w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
+              >
+                {currentSitePolicy?.site ? (
+                  <>
+                    <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                      onClick={() =>
+                        updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
+                      }
+                    >
+                      <span>Ad Block</span>
+                      <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
+                        {currentSitePolicy.adBlock ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                      onClick={() =>
+                        updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
+                      }
+                    >
+                      <span>Popup Blocker</span>
+                      <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
+                        {currentSitePolicy.popupBlock ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                      onClick={() =>
+                        updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
+                      }
+                    >
+                      <span>Download Blocker</span>
+                      <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
+                        {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-[12px] opacity-70 px-2.5 py-2">
+                    Ad block not available on internal Ghost pages.
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="relative" ref={devOptionsRef}>
+              <SidebarButton
+                label="Developer Options"
+                onClick={() => setDevOptionsOpen((prev) => !prev)}
+                hideTooltip={devOptionsOpen}
+              >
+                <Wrench size={16} />
+              </SidebarButton>
+              <div
+                className={`absolute left-[calc(100%+8px)] top-0 w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-left ${devOptionsOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
+              >
+                <button
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    openDevToolsForActiveTab();
+                    setDevOptionsOpen(false);
+                  }}
+                >
+                  <Wrench size={14} /> DevTools
+                </button>
+                <button
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    navigateActiveTab('ghost://code');
+                    setDevOptionsOpen(false);
+                  }}
+                >
+                  <Code2 size={14} /> Code Runner
+                </button>
+                <button
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                  onClick={() => updateOption({ debugMode: !options.debugMode })}
+                >
+                  <span>Debug Mode</span>
+                  <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
+                    {options.debugMode ? 'On' : 'Off'}
+                  </span>
+                </button>
+              </div>
+            </div>
+            <SidebarButton label="History" onClick={openProxyHistoryPopup}>
+              <History size={16} />
+            </SidebarButton>
+          </div>
+
+          <div className="mt-auto flex flex-col items-center gap-2 pb-1">
+            <SidebarButton label="Changelog" onClick={() => setIsChangelogOpen(true)}>
+              <Sparkles size={16} />
+            </SidebarButton>
+            <SidebarButton label="Docs" onClick={() => navigateActiveTab('ghost://docs')}>
+              <Book size={16} />
+            </SidebarButton>
+            <SidebarButton
+              label="Discord"
+              onClick={() => setGhostMenuOpen(false)}
+            >
+              <span className="inline-flex items-center justify-center w-4 h-4"><Discord fill="currentColor" /></span>
+            </SidebarButton>
+            <SidebarButton label="Settings" onClick={() => navigateActiveTab('ghost://settings')}>
+              <Settings size={16} />
+            </SidebarButton>
+          </div>
+        </aside>
       )}
 
       {ui && anySidebarPopupOpen && (
@@ -1651,7 +1640,7 @@ export default function Loader({ url, ui = true, zoom }) {
         />
       )}
 
-      <div className={`flex flex-col flex-1 min-w-0 ${ui ? 'h-screen' : 'h-full'}`}>
+      <div className="flex flex-col flex-1 min-w-0 h-full">
         {ui && (
           <>
             <div
@@ -1766,7 +1755,7 @@ export default function Loader({ url, ui = true, zoom }) {
         <div className={"fixed inset-0 z-[10000] flex items-center justify-center p-4 transition-opacity duration-200 " + (historyPopupAnim ? 'opacity-100' : 'opacity-0')}>
           <div className="absolute inset-0 bg-black/50" onClick={() => setHistoryPopupOpen(false)} />
           <div
-            className={"relative w-full max-w-4xl max-h-[80vh] rounded-xl border border-white/10 overflow-hidden transition-all duration-200 " + (historyPopupAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}
+            className={"relative w-full max-w-4xl max-h-[80dvh] rounded-xl border border-white/10 overflow-hidden transition-all duration-200 " + (historyPopupAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}
             style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
@@ -1785,7 +1774,7 @@ export default function Loader({ url, ui = true, zoom }) {
                 </button>
               </div>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[calc(80vh-4rem)] space-y-2">
+            <div className="p-4 overflow-y-auto max-h-[calc(80dvh-4rem)] space-y-2">
               <div className="sticky top-0 z-10 pb-2 pt-1" style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}>
                 <input
                   value={historyQuery}
@@ -1858,169 +1847,178 @@ export default function Loader({ url, ui = true, zoom }) {
             <X size={15} />
           </button>
         </div>
-      )}
+      )
+      }
 
-      {ui && changelogRender && (
-        <div className={"fixed inset-0 z-[10002] flex items-center justify-center p-4 transition-opacity duration-200 " + (changelogAnim ? 'opacity-100' : 'opacity-0')}>
-          <div className="fixed inset-0 bg-black/50" onClick={() => setIsChangelogOpen(false)} />
+      {
+        ui && changelogRender && (
+          <div className={"fixed inset-0 z-[10002] flex items-center justify-center p-4 transition-opacity duration-200 " + (changelogAnim ? 'opacity-100' : 'opacity-0')}>
+            <div className="fixed inset-0 bg-black/50" onClick={() => setIsChangelogOpen(false)} />
 
-          <div className={"relative w-full max-w-2xl max-h-[80vh] rounded-lg border border-white/10 shadow-lg overflow-hidden bg-[#1a252f] transition-all duration-200 " + (changelogAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}>
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <h2 className="text-lg font-medium">Changelog</h2>
-              <button
-                className="p-1 rounded-md hover:bg-[#ffffff0c]"
-                onClick={() => setIsChangelogOpen(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
+            <div className={"relative w-full max-w-2xl max-h-[80dvh] rounded-lg border border-white/10 shadow-lg overflow-hidden bg-[#1a252f] transition-all duration-200 " + (changelogAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}>
+              <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <h2 className="text-lg font-medium">Changelog</h2>
+                <button
+                  className="p-1 rounded-md hover:bg-[#ffffff0c]"
+                  onClick={() => setIsChangelogOpen(false)}
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-            <div className="p-4 overflow-y-auto max-h-[calc(80vh-5rem)]">
-              {changelogEntries.map((entry) => (
-                <div key={entry.version} className="mb-6 last:mb-0">
-                  <h3 className="font-medium text-lg mb-2">Version {entry.version}</h3>
-                  <p className="text-xs opacity-70 mb-3">{entry.date}</p>
-                  <ul className="space-y-2 text-sm">
-                    {entry.changes.map((change, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="text-white/60 mt-0.5">•</span>
-                        <span>{change}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {ui && activeMusicPrompt && (
-        <div className="fixed inset-0 z-[10004] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative w-full max-w-md rounded-xl border border-white/10 bg-[#1a252f] p-5 shadow-2xl">
-            <h3 className="text-lg font-semibold">Is this your default music provider?</h3>
-            <p className="mt-2 text-sm opacity-80">
-              In settings, you can choose to make this service open every time you open music.
-            </p>
-            <div className="mt-4 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setMusicPromptByTab((prev) => {
-                    const next = { ...prev };
-                    delete next[activeMusicPrompt.tabId];
-                    return next;
-                  });
-                }}
-                className="h-9 px-3 rounded-md border border-white/15 hover:bg-[#ffffff10] text-sm"
-              >
-                Ok
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMusicPromptByTab((prev) => {
-                    const next = { ...prev };
-                    delete next[activeMusicPrompt.tabId];
-                    return next;
-                  });
-                  navigateActiveTab('ghost://settings');
-                }}
-                className="h-9 px-3 rounded-md bg-[#1f3a58] hover:bg-[#29507a] text-sm"
-              >
-                Take me to settings
-              </button>
+              <div className="p-4 overflow-y-auto max-h-[calc(80dvh-5rem)]">
+                {changelogEntries.map((entry) => (
+                  <div key={entry.version} className="mb-6 last:mb-0">
+                    <h3 className="font-medium text-lg mb-2">Version {entry.version}</h3>
+                    <p className="text-xs opacity-70 mb-3">{entry.date}</p>
+                    <ul className="space-y-2 text-sm">
+                      {entry.changes.map((change, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-white/60 mt-0.5">•</span>
+                          <span>{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {ui && debugLogsOpen && (
-        <div className="fixed inset-0 z-[10005] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/55" onClick={() => setDebugLogsOpen(false)} />
-          <div className="relative w-full max-w-6xl h-[78vh] rounded-xl border border-white/15 bg-[#101722] shadow-2xl overflow-hidden">
-            <div className="h-12 px-4 border-b border-white/10 flex items-center justify-between">
-              <h3 className="text-base font-semibold">Console Logs</h3>
-              <div className="flex items-center gap-2">
+      {
+        ui && activeMusicPrompt && (
+          <div className="fixed inset-0 z-[10004] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="relative w-full max-w-md rounded-xl border border-white/10 bg-[#1a252f] p-5 shadow-2xl">
+              <h3 className="text-lg font-semibold">Is this your default music provider?</h3>
+              <p className="mt-2 text-sm opacity-80">
+                In settings, you can choose to make this service open every time you open music.
+              </p>
+              <div className="mt-4 flex items-center justify-end gap-2">
                 <button
                   type="button"
-                  className="h-8 px-2.5 rounded-md border border-white/15 hover:bg-white/10 text-xs"
-                  onClick={() => setDebugLogs([])}
+                  onClick={() => {
+                    setMusicPromptByTab((prev) => {
+                      const next = { ...prev };
+                      delete next[activeMusicPrompt.tabId];
+                      return next;
+                    });
+                  }}
+                  className="h-9 px-3 rounded-md border border-white/15 hover:bg-[#ffffff10] text-sm"
                 >
-                  Clear
+                  Ok
                 </button>
                 <button
                   type="button"
-                  className="h-8 px-2.5 rounded-md border border-white/15 hover:bg-white/10 text-xs"
-                  onClick={() => setDebugLogsOpen(false)}
+                  onClick={() => {
+                    setMusicPromptByTab((prev) => {
+                      const next = { ...prev };
+                      delete next[activeMusicPrompt.tabId];
+                      return next;
+                    });
+                    navigateActiveTab('ghost://settings');
+                  }}
+                  className="h-9 px-3 rounded-md bg-[#1f3a58] hover:bg-[#29507a] text-sm"
                 >
-                  Close
+                  Take me to settings
                 </button>
               </div>
             </div>
-            <div className="h-[calc(78vh-3rem)] overflow-y-auto p-3 space-y-1 text-xs font-mono bg-[#0a0f17]">
-              {debugLogs.length === 0 && <p className="opacity-70">No logs yet.</p>}
-              {debugLogs.map((log) => (
-                <div key={log.id} className="break-words">
-                  <span className="opacity-70">[{new Date(log.t).toLocaleTimeString()}] </span>
-                  <span className={log.level === 'error' ? 'text-red-300' : log.level === 'warn' ? 'text-yellow-200' : 'text-blue-200'}>
-                    {log.level.toUpperCase()}
-                  </span>
-                  <span>: {log.text}</span>
+          </div>
+        )
+      }
+
+      {
+        ui && debugLogsOpen && (
+          <div className="fixed inset-0 z-[10005] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/55" onClick={() => setDebugLogsOpen(false)} />
+            <div className="relative w-full max-w-6xl h-[78dvh] rounded-xl border border-white/15 bg-[#101722] shadow-2xl overflow-hidden">
+              <div className="h-12 px-4 border-b border-white/10 flex items-center justify-between">
+                <h3 className="text-base font-semibold">Console Logs</h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="h-8 px-2.5 rounded-md border border-white/15 hover:bg-white/10 text-xs"
+                    onClick={() => setDebugLogs([])}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    className="h-8 px-2.5 rounded-md border border-white/15 hover:bg-white/10 text-xs"
+                    onClick={() => setDebugLogsOpen(false)}
+                  >
+                    Close
+                  </button>
                 </div>
-              ))}
+              </div>
+              <div className="h-[calc(78dvh-3rem)] overflow-y-auto p-3 space-y-1 text-xs font-mono bg-[#0a0f17]">
+                {debugLogs.length === 0 && <p className="opacity-70">No logs yet.</p>}
+                {debugLogs.map((log) => (
+                  <div key={log.id} className="break-words">
+                    <span className="opacity-70">[{new Date(log.t).toLocaleTimeString()}] </span>
+                    <span className={log.level === 'error' ? 'text-red-300' : log.level === 'warn' ? 'text-yellow-200' : 'text-blue-200'}>
+                      {log.level.toUpperCase()}
+                    </span>
+                    <span>: {log.text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {ui && options.debugMode && (
-        <div
-          className="fixed z-[10004] w-[312px] rounded-lg border border-white/20 bg-[#7c7f85]/35 backdrop-blur-sm px-3 py-2 text-[11px] shadow-2xl"
-          style={{ left: `${debugPanelPos.x}px`, top: `${debugPanelPos.y}px` }}
-        >
+      {
+        ui && options.debugMode && (
           <div
-            className="flex items-center justify-between gap-2 cursor-move select-none"
-            onPointerDown={(event) => {
-              debugDragRef.current = {
-                active: true,
-                startX: event.clientX,
-                startY: event.clientY,
-                originX: debugPanelPos.x,
-                originY: debugPanelPos.y,
-              };
-            }}
+            className="fixed z-[10004] w-[312px] rounded-lg border border-white/20 bg-[#7c7f85]/35 backdrop-blur-sm px-3 py-2 text-[11px] shadow-2xl"
+            style={{ left: `${debugPanelPos.x}px`, top: `${debugPanelPos.y}px` }}
           >
-            <span className="font-semibold">Debug Mode</span>
-            <button
-              type="button"
-              className="h-5 w-5 rounded hover:bg-black/20 flex items-center justify-center"
-              onClick={() => updateOption({ debugMode: false })}
+            <div
+              className="flex items-center justify-between gap-2 cursor-move select-none"
+              onPointerDown={(event) => {
+                debugDragRef.current = {
+                  active: true,
+                  startX: event.clientX,
+                  startY: event.clientY,
+                  originX: debugPanelPos.x,
+                  originY: debugPanelPos.y,
+                };
+              }}
             >
-              <X size={12} />
-            </button>
-          </div>
+              <span className="font-semibold">Debug Mode</span>
+              <button
+                type="button"
+                className="h-5 w-5 rounded hover:bg-black/20 flex items-center justify-center"
+                onClick={() => updateOption({ debugMode: false })}
+              >
+                <X size={12} />
+              </button>
+            </div>
 
-          <div className="mt-2 space-y-1 text-white/95">
-            <div>FPS: {debugStats.fps}</div>
-            <div>RAM Usage: {debugStats.ram || 'N/A'}</div>
-            <div>User Agent: {navigator.userAgent}</div>
-            <div>Resolution: {window.innerWidth}×{window.innerHeight}</div>
-            <div>Connection Speed: {debugStats.connection}</div>
-          </div>
+            <div className="mt-2 space-y-1 text-white/95">
+              <div>FPS: {debugStats.fps}</div>
+              <div>RAM Usage: {debugStats.ram || 'N/A'}</div>
+              <div>User Agent: {navigator.userAgent}</div>
+              <div>Resolution: {window.innerWidth}×{window.innerHeight}</div>
+              <div>Connection Speed: {debugStats.connection}</div>
+            </div>
 
-          <div className="mt-2 flex items-center justify-between">
-            <button
-              type="button"
-              className="h-7 px-2 rounded border border-white/20 hover:bg-black/15"
-              onClick={() => setDebugLogsOpen((prev) => !prev)}
-            >
-              View Console Logs
-            </button>
+            <div className="mt-2 flex items-center justify-between">
+              <button
+                type="button"
+                className="h-7 px-2 rounded border border-white/20 hover:bg-black/15"
+                onClick={() => setDebugLogsOpen((prev) => !prev)}
+              >
+                View Console Logs
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }

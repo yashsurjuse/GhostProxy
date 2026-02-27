@@ -36,7 +36,7 @@ const getStoredProjects = () => {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-  } catch {}
+  } catch { }
   return [createDefaultProject()];
 };
 
@@ -68,7 +68,7 @@ const CodeRunner = () => {
     setProjects(next);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    } catch {}
+    } catch { }
   };
 
   const activeProject = useMemo(
@@ -168,7 +168,7 @@ const CodeRunner = () => {
   if (fullscreenRun) {
     const runDoc = sessionStorage.getItem(RUN_DOC_KEY) || srcDoc;
     return (
-      <div className="h-screen w-full bg-black overflow-hidden">
+      <div className="h-full w-full bg-black overflow-hidden">
         <iframe
           title="Code Runner Fullscreen"
           sandbox="allow-scripts allow-forms allow-modals"
@@ -182,7 +182,7 @@ const CodeRunner = () => {
   const runInNewGhostTab = () => {
     try {
       sessionStorage.setItem(RUN_DOC_KEY, srcDoc);
-    } catch {}
+    } catch { }
 
     const blob = new Blob([srcDoc], { type: 'text/html' });
     const blobUrl = URL.createObjectURL(blob);
@@ -193,7 +193,7 @@ const CodeRunner = () => {
         const opened = opener(blobUrl);
         if (opened) return;
       }
-    } catch {}
+    } catch { }
 
     navigate('/search', {
       state: {
@@ -209,7 +209,7 @@ const CodeRunner = () => {
   const textColor = options.siteTextColor || '#ffffff';
 
   return (
-    <div className="h-screen w-full overflow-hidden" style={{ backgroundColor: pageBg, color: textColor }}>
+    <div className="h-full w-full overflow-hidden" style={{ backgroundColor: pageBg, color: textColor }}>
       <div className="h-full grid grid-rows-[auto_1fr] gap-3 p-3">
         <div className="rounded-xl border border-white/10 px-3 py-2.5 flex items-center justify-between" style={{ backgroundColor: panelBg }}>
           <div>

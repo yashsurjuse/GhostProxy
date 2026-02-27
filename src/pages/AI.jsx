@@ -506,7 +506,7 @@ export default function AIPage() {
   useEffect(() => {
     try {
       localStorage.setItem('ghostAiProfile', JSON.stringify(aiProfile || {}));
-    } catch {}
+    } catch { }
   }, [aiProfile]);
 
   useEffect(() => {
@@ -540,25 +540,25 @@ export default function AIPage() {
   const isLight = theme === 'light';
   const ui = isLight
     ? {
-        page: 'bg-[#f3f5f8] text-[#0f172a]',
-        side: 'bg-[#f7f8fb] border-black/10',
-        panel: 'bg-white border-black/10',
-        muted: 'text-[#5b6474]',
-        input: 'bg-white border-black/10',
-        card: 'bg-white border-black/10 hover:border-black/20',
-        bubbleUser: 'bg-[#e2e8f0] text-[#0f172a] border-black/10',
-        bubbleAssistant: 'bg-white text-[#0f172a] border-black/10',
-      }
+      page: 'bg-[#f3f5f8] text-[#0f172a]',
+      side: 'bg-[#f7f8fb] border-black/10',
+      panel: 'bg-white border-black/10',
+      muted: 'text-[#5b6474]',
+      input: 'bg-white border-black/10',
+      card: 'bg-white border-black/10 hover:border-black/20',
+      bubbleUser: 'bg-[#e2e8f0] text-[#0f172a] border-black/10',
+      bubbleAssistant: 'bg-white text-[#0f172a] border-black/10',
+    }
     : {
-        page: 'bg-[#030507] text-white',
-        side: 'bg-[#0c0d10] border-white/10',
-        panel: 'bg-[#030507] border-white/10',
-        muted: 'text-white/55',
-        input: 'bg-[#05070b] border-white/15',
-        card: 'bg-[#05070b] border-white/15 hover:border-white/30',
-        bubbleUser: 'bg-[#27272a] text-white border-white/10',
-        bubbleAssistant: 'bg-[#07090d] text-white border-white/10',
-      };
+      page: 'bg-[#030507] text-white',
+      side: 'bg-[#0c0d10] border-white/10',
+      panel: 'bg-[#030507] border-white/10',
+      muted: 'text-white/55',
+      input: 'bg-[#05070b] border-white/15',
+      card: 'bg-[#05070b] border-white/15 hover:border-white/30',
+      bubbleUser: 'bg-[#27272a] text-white border-white/10',
+      bubbleAssistant: 'bg-[#07090d] text-white border-white/10',
+    };
 
   const createChat = () => {
     const next = createNewChat();
@@ -597,7 +597,7 @@ export default function AIPage() {
       setCopiedMessageId(messageId);
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
       copyTimerRef.current = setTimeout(() => setCopiedMessageId(''), 1100);
-    } catch {}
+    } catch { }
   };
 
   const regenerateMessage = async (messageId) => {
@@ -692,12 +692,11 @@ export default function AIPage() {
   };
 
   return (
-    <div className={`h-screen w-full overflow-hidden ${ui.page}`}>
+    <div className={`h-full w-full overflow-hidden ${ui.page}`}>
       <div className="h-full flex min-w-0">
         <aside
-          className={`h-full border-r overflow-hidden transition-all duration-300 ease-out ${ui.side} ${
-            sidebarOpen ? 'w-[260px]' : 'w-0 border-r-0'
-          }`}
+          className={`h-full border-r overflow-hidden transition-all duration-300 ease-out ${ui.side} ${sidebarOpen ? 'w-[260px]' : 'w-0 border-r-0'
+            }`}
         >
           <div className="h-full w-[260px] flex flex-col">
             <div className="px-3 pt-5 pb-0">
@@ -723,13 +722,12 @@ export default function AIPage() {
                 .map((chat) => (
                   <div
                     key={chat.id}
-                    className={`group rounded-xl border transition-all duration-200 ${
-                      chat.id === activeChat?.id
-                        ? isLight
-                          ? 'bg-[#e5e7eb] border-black/10'
-                          : 'bg-[#22252b] border-white/10'
-                        : 'border-transparent hover:border-white/10'
-                    }`}
+                    className={`group rounded-xl border transition-all duration-200 ${chat.id === activeChat?.id
+                      ? isLight
+                        ? 'bg-[#e5e7eb] border-black/10'
+                        : 'bg-[#22252b] border-white/10'
+                      : 'border-transparent hover:border-white/10'
+                      }`}
                   >
                     <div
                       onClick={() => {
@@ -808,9 +806,8 @@ export default function AIPage() {
                 {aiSettingsMounted && (
                   <div
                     ref={aiSettingsRef}
-                    className={`absolute right-0 top-9 w-80 rounded-xl border z-30 p-3 shadow-2xl ${ui.card} ${
-                      aiSettingsVisible ? 'ghost-anim-card' : 'ghost-anim-leave'
-                    } ai-settings-no-outline text-white`}
+                    className={`absolute right-0 top-9 w-80 rounded-xl border z-30 p-3 shadow-2xl ${ui.card} ${aiSettingsVisible ? 'ghost-anim-card' : 'ghost-anim-leave'
+                      } ai-settings-no-outline text-white`}
                     style={{ minWidth: '18rem', backgroundColor: options.settingsContainerColor || '#2f363b' }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
@@ -896,15 +893,13 @@ export default function AIPage() {
               <button
                 type="button"
                 onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-                className={`h-8 w-14 rounded-full border p-1 transition-all duration-300 flex items-center ${
-                  isLight ? 'justify-start border-black/15 bg-[#dbe1ea]' : 'justify-end border-white/20 bg-[#1b1f28]'
-                }`}
+                className={`h-8 w-14 rounded-full border p-1 transition-all duration-300 flex items-center ${isLight ? 'justify-start border-black/15 bg-[#dbe1ea]' : 'justify-end border-white/20 bg-[#1b1f28]'
+                  }`}
                 title="Toggle light/dark mode"
               >
                 <span
-                  className={`h-6 w-6 rounded-full grid place-items-center transition-transform duration-300 ${
-                    isLight ? 'bg-[#f8fafc] text-[#0f172a]' : 'bg-[#0b1020] text-[#f8fafc]'
-                  }`}
+                  className={`h-6 w-6 rounded-full grid place-items-center transition-transform duration-300 ${isLight ? 'bg-[#f8fafc] text-[#0f172a]' : 'bg-[#0b1020] text-[#f8fafc]'
+                    }`}
                 >
                   {isLight ? <Sun size={13} /> : <Moon size={13} />}
                 </span>
@@ -950,15 +945,14 @@ export default function AIPage() {
                   return (
                     <div key={message.id} className={message.role === 'user' ? 'ml-auto w-fit max-w-[86%]' : 'w-fit max-w-[86%]'}>
                       <div
-                        className={`rounded-2xl border px-4 py-3 text-[0.95rem] transition-all duration-200 ${
-                          message.role === 'user'
-                            ? `${ui.bubbleUser}`
-                            : message.role === 'assistant'
-                              ? `${ui.bubbleAssistant}`
-                              : isLight
-                                ? 'border-red-200 text-red-700 bg-red-100'
-                                : 'border-red-500/50 text-red-300 bg-red-900/20'
-                        }`}
+                        className={`rounded-2xl border px-4 py-3 text-[0.95rem] transition-all duration-200 ${message.role === 'user'
+                          ? `${ui.bubbleUser}`
+                          : message.role === 'assistant'
+                            ? `${ui.bubbleAssistant}`
+                            : isLight
+                              ? 'border-red-200 text-red-700 bg-red-100'
+                              : 'border-red-500/50 text-red-300 bg-red-900/20'
+                          }`}
                       >
                         {richMessage ? renderMessageContent(message.content, message.id) : (
                           <div className="whitespace-pre-wrap">{message.content}</div>
@@ -1032,9 +1026,8 @@ export default function AIPage() {
                     }
                   }}
                   placeholder={loading ? 'Waiting for response...' : 'Send a message...'}
-                  className={`w-full h-10 bg-transparent outline-none text-[0.95rem] ${
-                    isLight ? 'placeholder:text-[#111827]' : 'placeholder:text-white/60'
-                  }`}
+                  className={`w-full h-10 bg-transparent outline-none text-[0.95rem] ${isLight ? 'placeholder:text-[#111827]' : 'placeholder:text-white/60'
+                    }`}
                 />
 
                 <div className="h-9 mt-1 flex items-center justify-between">
@@ -1052,9 +1045,8 @@ export default function AIPage() {
                     onClick={send}
                     disabled={!canSend}
                     title={cooldownRemaining > 0 ? `Wait ${cooldownLabel}s` : 'Send'}
-                    className={`h-8 w-8 rounded-md grid place-items-center transition-all duration-200 ${
-                      canSend ? 'opacity-85 hover:opacity-100 hover:translate-y-[-1px]' : 'opacity-35 cursor-not-allowed'
-                    }`}
+                    className={`h-8 w-8 rounded-md grid place-items-center transition-all duration-200 ${canSend ? 'opacity-85 hover:opacity-100 hover:translate-y-[-1px]' : 'opacity-35 cursor-not-allowed'
+                      }`}
                   >
                     <ArrowUp size={18} />
                   </button>

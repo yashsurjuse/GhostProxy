@@ -61,7 +61,7 @@ const appendBrowserHistory = (url, title = '') => {
       ...(Array.isArray(list) ? list : []),
     ].slice(0, 500);
     localStorage.setItem(BROWSER_HISTORY_KEY, JSON.stringify(next));
-  } catch {}
+  } catch { }
 };
 
 const store = create((set) => ({
@@ -134,14 +134,21 @@ const store = create((set) => ({
         tabs: state.tabs.filter(({ id }) => id != tabId),
         closedTabs: removed
           ? [
-              {
-                ...removed,
-                active: false,
-              },
-              ...state.closedTabs,
-            ].slice(0, 20)
+            {
+              ...removed,
+              active: false,
+            },
+            ...state.closedTabs,
+          ].slice(0, 20)
           : state.closedTabs,
       };
+    }),
+  reorderTab: (startIndex, endIndex) =>
+    set((state) => {
+      const result = Array.from(state.tabs);
+      const [removed] = result.splice(startIndex, 1);
+      result.splice(endIndex, 0, removed);
+      return { tabs: result };
     }),
   reopenClosedTab: () =>
     set((state) => {

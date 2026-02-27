@@ -94,6 +94,8 @@ const Docs = memo(() => {
   const { category, topicId } = useParams();
   const [query, setQuery] = useState('');
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
+  const [dictionaryRender, setDictionaryRender] = useState(false);
+  const [dictionaryAnim, setDictionaryAnim] = useState(false);
   const [dictionaryQuery, setDictionaryQuery] = useState('');
   const [markdown, setMarkdown] = useState('');
   const [loading, setLoading] = useState(false);
@@ -140,6 +142,24 @@ const Docs = memo(() => {
   }, [isMac]);
 
   useEffect(() => {
+    if (dictionaryOpen) {
+      setDictionaryAnim(false);
+      setDictionaryRender(true);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setDictionaryAnim(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
+    }
+    setDictionaryAnim(false);
+    const t = setTimeout(() => setDictionaryRender(false), 200);
+    return () => clearTimeout(t);
+  }, [dictionaryOpen]);
+
+  useEffect(() => {
     if (!activeTopic?.file) {
       setMarkdown('');
       return;
@@ -182,7 +202,7 @@ const Docs = memo(() => {
 
   if (topicId) {
     return (
-      <div className="min-h-screen px-4 md:px-8 pt-6 pb-10">
+      <div className="min-h-full px-4 md:px-8 pt-6 pb-10">
         <div className="mx-auto max-w-5xl">
           <button
             type="button"
@@ -224,7 +244,7 @@ const Docs = memo(() => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-full">
       {!inGhostBrowserMode && (
         <div
           className="sticky top-0 z-50 border-b border-white/10 backdrop-blur"

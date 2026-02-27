@@ -120,7 +120,7 @@ const NewTab = ({ id, updateFn }) => {
         update();
         battery.addEventListener('levelchange', update);
         battery.addEventListener('chargingchange', update);
-      } catch {}
+      } catch { }
     };
 
     loadBattery();
@@ -175,30 +175,7 @@ const NewTab = ({ id, updateFn }) => {
       meta.longitude >= -180 &&
       meta.longitude <= 180;
 
-    const getBrowserCoords = () =>
-      new Promise((resolve) => {
-        try {
-          if (!navigator.geolocation) {
-            resolve(null);
-            return;
-          }
 
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              resolve({
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-                latitude: Number(position.coords?.latitude),
-                longitude: Number(position.coords?.longitude),
-                city: '',
-              });
-            },
-            () => resolve(null),
-            { enableHighAccuracy: false, timeout: 6000, maximumAge: 60 * 1000 },
-          );
-        } catch {
-          resolve(null);
-        }
-      });
 
     const fetchIpMeta = async () => {
       const geo = await getBrowserCoords();
@@ -208,7 +185,6 @@ const NewTab = ({ id, updateFn }) => {
       }
 
       const providers = [
-        { url: 'https://ipapi.co/json/', source: 'ipapi' },
         { url: 'https://ipwho.is/', source: 'ipwho' },
         { url: 'https://ipinfo.io/json', source: 'ipinfo' },
       ];
@@ -223,7 +199,7 @@ const NewTab = ({ id, updateFn }) => {
           if (cancelled) return;
           setIpMeta(parsed);
           return;
-        } catch {}
+        } catch { }
       }
     };
 
@@ -269,7 +245,7 @@ const NewTab = ({ id, updateFn }) => {
           weatherCode: Number.isFinite(Number(current.weather_code)) ? Number(current.weather_code) : null,
           isDay: Number(current.is_day) === 1,
         });
-      } catch {}
+      } catch { }
     };
 
     fetchWeather();

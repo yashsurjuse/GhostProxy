@@ -178,13 +178,17 @@ const ThemedApp = memo(() => {
       options.bgDesign === 'None'
         ? 'none'
         : (
-            bgDesign.find((d) => d.value.bgDesign === options.bgDesign) || bgDesign[0]
-          ).value.getCSS?.(options.bgDesignColor || '102, 105, 109') || 'none';
+          bgDesign.find((d) => d.value.bgDesign === options.bgDesign) || bgDesign[0]
+        ).value.getCSS?.(options.bgDesignColor || '102, 105, 109') || 'none';
 
     return `
-      html, body, #root {
-        min-height: 100%;
+      :root {
+        ${options.customFontFamily ? `--font-family: ${options.customFontFamily} !important;` : ''}
+        ${options.customPadding ? `--main-padding: ${options.customPadding} !important;` : ''}
+        ${options.customBorderRadius ? `--border-radius: ${options.customBorderRadius} !important;` : ''}
       }
+
+      ${options.customFontFamily ? `* { font-family: ${options.customFontFamily} !important; }` : ''}
 
       ${options.customGlobalCss || ''}
 
@@ -199,11 +203,10 @@ const ThemedApp = memo(() => {
 
       body {
         color: ${options.siteTextColor || '#a0b0c8'};
-        background-image: ${
-          resolvedCustomBg
-            ? `url("${resolvedCustomBg}")`
-            : bgDesignConfig
-        };
+        background-image: ${resolvedCustomBg
+        ? `url("${resolvedCustomBg}")`
+        : bgDesignConfig
+      };
         background-size: ${resolvedCustomBg ? '100% 100% !important' : options.bgDesign === 'grid' ? '24px 24px' : 'auto'};
         background-repeat: ${resolvedCustomBg ? 'no-repeat !important' : 'repeat'};
         background-position: center;
@@ -235,16 +238,25 @@ const ThemedApp = memo(() => {
         color: var(--ghost-muted-text-color);
       }
 
-      ${
-        options.performanceMode
-          ? `
+      ${options.performanceMode
+        ? `
       *, *::before, *::after {
         animation: none !important;
         transition: none !important;
         scroll-behavior: auto !important;
       }
+      
+      img:not(#ghost-font-link ~ img), video, iframe[src*="youtube"] {
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+
+      html, body {
+        background-image: none !important;
+        background-color: ${options.bgColor || '#111827'} !important;
+      }
       `
-          : ''
+        : ''
       }
     `;
   }, [

@@ -69,7 +69,7 @@ const Loader = ({ theme, app }) => {
   return (
     <div
       className={clsx(
-        'flex flex-col h-[calc(100vh-38px)] w-full rounded-xl',
+        'flex flex-col h-full w-full rounded-xl',
         theming.appItemColor,
         theming[`theme-${theme || 'default'}`],
       )}

@@ -162,13 +162,13 @@ const Viewer = ({ zoom }) => {
         win.__ghostDownloadBlocked = false;
         doc.removeEventListener('click', win.__ghostDownloadBlockHandler, true);
       }
-    } catch {}
+    } catch { }
   };
 
   const removeAdNodes = (doc) => {
     try {
       doc.querySelectorAll(AD_SELECTORS).forEach((node) => node.remove());
-    } catch {}
+    } catch { }
   };
 
   const setPopupBlock = (doc, enabled) => {
@@ -203,7 +203,7 @@ const Viewer = ({ zoom }) => {
         win.__ghostPopupBlocked = false;
         doc.removeEventListener('click', win.__ghostPopupClickHandler, true);
       }
-    } catch {}
+    } catch { }
   };
 
   const setAdBlock = (doc, enabled) => {
@@ -230,7 +230,7 @@ const Viewer = ({ zoom }) => {
         doc.defaultView.__ghostAdObserver?.disconnect?.();
         doc.defaultView.__ghostAdObserver = null;
       }
-    } catch {}
+    } catch { }
   };
 
   const applyProtection = (tab, iframe) => {
@@ -251,7 +251,7 @@ const Viewer = ({ zoom }) => {
         };
         doc.addEventListener('pointerdown', win.__ghostCloseUiHandler, true);
       }
-    } catch {}
+    } catch { }
   };
 
   const getFrameUrl = (rawUrl) => {
@@ -267,7 +267,7 @@ const Viewer = ({ zoom }) => {
       if (parsed.origin === location.origin) {
         return parsed.toString();
       }
-    } catch {}
+    } catch { }
     return process(value, false, options.prType || 'auto', options.engine || null);
   };
 
@@ -345,7 +345,7 @@ const Viewer = ({ zoom }) => {
               delete errorRetries.current[tab.id];
             }
           }
-        } catch {}
+        } catch { }
       };
       const checkState = () => {
         try {
@@ -360,7 +360,7 @@ const Viewer = ({ zoom }) => {
             prevTitle.current[tab.id] = curTTL;
             updateTitle(tab.id, curTTL);
           }
-        } catch (e) {}
+        } catch (e) { }
       };
       iframe.addEventListener('load', handleLoad);
       iframe.addEventListener('load', checkState);
@@ -394,7 +394,7 @@ const Viewer = ({ zoom }) => {
             prevTitle.current[tab.id] = curTTL;
             updateTitle(tab.id, curTTL);
           }
-        } catch (e) {}
+        } catch (e) { }
       });
     }, 220);
     return () => {
@@ -412,7 +412,7 @@ const Viewer = ({ zoom }) => {
     if (activeFrameRef?.current) {
       try {
         activeFrameRef.current.contentWindow.document.body.style.zoom = zoom;
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [activeFrameRef, zoom]);
 

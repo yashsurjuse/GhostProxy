@@ -21,7 +21,7 @@ const NotFound = () => {
         window.top.location.replace(target);
         return;
       }
-    } catch {}
+    } catch { }
     nav(target, { replace: true });
   };
 
@@ -47,7 +47,7 @@ const NotFound = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-6"
+      className="min-h-full flex flex-col items-center justify-center p-6"
       style={{ fontFamily: 'SFProText, system-ui, sans-serif' }}
     >
       <h1 className="text-2xl font-medium mb-2" style={{ color: colorConfig.text }}>

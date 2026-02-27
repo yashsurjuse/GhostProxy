@@ -1,6 +1,6 @@
 import { defineConfig, normalizePath } from 'vite';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react-swc';
 import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -12,8 +12,9 @@ import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 
-// epoxyPath will be resolved inside defineConfig
-let epoxyPath = '';
+const epoxyPath = normalizePath(
+  resolve(dirname(fileURLToPath(import.meta.resolve('@mercuryworkshop/epoxy-transport'))), '.')
+);
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -24,12 +25,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 logging.set_level(logging.NONE);
 let bare;
 
-
 Object.assign(wisp.options, {
   dns_method: 'resolve',
   dns_servers: ['1.1.1.3', '1.0.0.3'],
   dns_result_order: 'ipv4first',
-}
+});
 
 const routeRequest = (req, resOrSocket, head) => {
   if (req.url?.startsWith('/wisp/')) return wisp.routeRequest(req, resOrSocket, head);
@@ -65,19 +65,6 @@ const obf = {
 export default defineConfig(({ command }) => {
   const environment = isStatic ? 'static' : command === 'serve' ? 'dev' : 'stable';
 
-  // Safely resolve epoxyPath using createRequire for ESM compatibility
-  try {
-    // Only require when building, not at top-level
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { createRequire } = require('module');
-    const requireFunc = createRequire(import.meta.url);
-    epoxyPath = normalizePath(
-      resolve(dirname(requireFunc.resolve('@mercuryworkshop/epoxy-transport')), '.')
-    );
-  } catch (e) {
-    epoxyPath = '';
-  }
-
   return {
     plugins: [
       react(),
@@ -85,7 +72,7 @@ export default defineConfig(({ command }) => {
       viteStaticCopy({
         targets: [
           { src: [normalizePath(resolve(libcurlPath, '*'))], dest: 'libcurl' },
-          // { src: [normalizePath(resolve(epoxyPath, '*')), '!' + normalizePath(resolve(epoxyPath, 'dist/**'))], dest: 'epoxy-raw' },
+          { src: [normalizePath(resolve(epoxyPath, '*'))], dest: 'epoxy-raw' },
           { src: [normalizePath(resolve(baremuxPath, '*'))], dest: 'baremux' },
           { src: [normalizePath(resolve(scramjetPath, '*'))], dest: 'scram' },
           useBare && { src: [normalizePath(resolve(bareModulePath, '*'))], dest: 'baremod' },
@@ -170,7 +157,18 @@ export default defineConfig(({ command }) => {
             const pkg = m.startsWith('@') ? m.split('/').slice(0, 2).join('/') : m.split('/')[0];
             if (/react-router|react-dom|react\b/.test(pkg)) return 'react';
             if (/^@mui\//.test(pkg) || /^@emotion\//.test(pkg)) return 'mui';
-                // epoxyPath logic removed for Cloudflare compatibility
+            if (/lucide/.test(pkg)) return 'icons';
+            if (/react-ga4/.test(pkg)) return 'analytics';
+            if (/nprogress/.test(pkg)) return 'progress';
+            return 'vendor';
+          },
+        },
+        treeshake: {
+          moduleSideEffects: 'no-external',
+        },
+      },
+      minify: 'esbuild',
+      sourcemap: false,
     },
     css: {
       modules: {
@@ -181,7 +179,7 @@ export default defineConfig(({ command }) => {
     },
     server: {
       host: true,
-      port: 5173,
+      port: 5174,
       strictPort: true,
       cors: true,
       allowedHosts: true,
@@ -206,5 +204,5 @@ export default defineConfig(({ command }) => {
       __ENVIRONMENT__: JSON.stringify(environment),
       isStaticBuild: isStatic
     },
-
+  };
 });

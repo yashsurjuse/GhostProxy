@@ -23,7 +23,7 @@ const WHITE_MUSIC_ICON = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles, actionLabel = 'Play', options }) => {
   const [loaded, setLoaded] = useState(false);
   const hideIcon = !!options?.performanceMode || !!app.noIcon;
-  
+
   return (
     <div
       key={app.appName}
@@ -128,7 +128,7 @@ const CategoryRow = memo(({ category, games, onClick, onViewMore, fallback, onIm
 
 const GAME_SOURCE_CONFIG = [
   { key: 'gnmath', label: 'gn-math', type: 'mix', data: gnmathCatalog },
-  { key: 'local', label: 'Local Library', type: 'local', data: null },
+  { key: 'local', label: 'DogeUB', type: 'local', data: null },
   {
     key: 'petezah',
     label: 'Petezah',
@@ -278,7 +278,7 @@ const Games = memo(() => {
       const gms = await loader.getAllGms();
       setDlCount(gms.length);
       setDlGames(gms);
-    } catch {}
+    } catch { }
   }, []);
 
   useEffect(() => {
@@ -339,7 +339,7 @@ const Games = memo(() => {
     }
 
     let toFilter = all;
-    
+
     if (showDl) {
       const dlNames = new Set(dlGames.map(g => g.name));
       toFilter = all.filter(game => {
@@ -350,7 +350,7 @@ const Games = memo(() => {
     } else if (category) {
       toFilter = data[category] || [];
     }
-    
+
     if (q) {
       const fq = q.toLowerCase().trim();
       toFilter = toFilter.filter((game) => {
@@ -358,7 +358,7 @@ const Games = memo(() => {
         return gameName.includes(fq);
       });
     }
-    
+
     const total = Math.ceil(toFilter.length / perPage);
     const paged = toFilter.slice((page - 1) * perPage, page * perPage);
     return { filteredGames: toFilter, paged, totalPages: total };
@@ -460,9 +460,9 @@ const Games = memo(() => {
       if (!useRawHtmlLoader) {
         const tabId = typeof opener === 'function'
           ? opener(game.url, {
-              title: game.appName || 'New Tab',
-              skipProxy: isNowGG,
-            })
+            title: game.appName || 'New Tab',
+            skipProxy: isNowGG,
+          })
           : null;
         if (tabId && typeof updater === 'function') {
           updater(tabId, game.url, { skipProxy: isNowGG });
@@ -955,7 +955,7 @@ const GamesLayout = () => {
   );
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col overflow-hidden h-full">
       {!inGhostBrowserMode && <Nav />}
       <div className={clsx('flex-1 overflow-y-auto', scrollCls)}>
         <div className="w-full flex justify-center pt-6 px-4">

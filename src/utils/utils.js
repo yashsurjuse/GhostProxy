@@ -49,7 +49,7 @@ export const ckOff = () => {
         if (window.top && window.top.location.origin === window.location.origin) {
           return window.top;
         }
-      } catch {}
+      } catch { }
       return window;
     })();
 
@@ -179,7 +179,7 @@ export const check = (() => {
 
       Object.assign(f, { src: location.href });
       Object.assign(f.style, { width: '100%', height: '100%', border: 'none' });
-      Object.assign(d.body.style, { margin: 0, height: '100vh' });
+      Object.assign(d.body.style, { margin: 0, height: '100%' });
       d.documentElement.style.height = '100%';
       d.head.appendChild(Object.assign(document.createElement('link'), { rel: 'icon', href: '', sizes: '16x16' }));
       d.body.append(f);

@@ -38,7 +38,7 @@ const NavItem = ({ items }) => {
                 size={Math.round(item.size * scale)}
               />
             )}
-            <span>{item.name}</span>
+            <span className="hidden md:inline">{item.name}</span>
           </span>
         );
       })}

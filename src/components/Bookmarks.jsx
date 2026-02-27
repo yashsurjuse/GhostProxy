@@ -13,7 +13,7 @@ import { createId } from '../utils/id';
 const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
   const { options: o, updateOption } = useOptions();
   const nav = useNavigate();
-  const { addTab, setActive } = loaderStore();
+  const { tabs, addTab, setActive, updateUrl } = loaderStore();
 
   const [bms, setBms] = useState([]);
   const [url, setUrl] = useState('');
@@ -72,7 +72,7 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
     const regex = u => (/^(https?:)?\/\//.test(u) ? u : `https://${u}`);
     const oldBm = bms.find(b => b.id === editId);
     const newIcon = ico.trim() ? regex(ico.trim()) : null;
-    
+
     if (oldBm && oldBm.icon !== newIcon) {
       setLoadedIcons(p => {
         const n = new Set(p);
@@ -85,15 +85,15 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
         return n;
       });
     }
-    
+
     save(bms.map(b =>
       b.id === editId
         ? {
-            ...b,
-            name: uniq(nm.trim() || 'New Bookmark', editId),
-            url: regex(url.trim()),
-            icon: newIcon,
-          }
+          ...b,
+          name: uniq(nm.trim() || 'New Bookmark', editId),
+          url: regex(url.trim()),
+          icon: newIcon,
+        }
         : b
     ));
     reset();
@@ -124,7 +124,7 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
 
       <div
         className={clsx(
-          'relative w-full max-w-2xl max-h-[80vh] rounded-lg border shadow-lg overflow-hidden transition-all',
+          'relative w-full max-w-2xl max-h-[80dvh] rounded-lg border shadow-lg overflow-hidden transition-all',
           anim ? 'scale-100 opacity-100' : 'scale-95 opacity-0',
         )}
         style={{ backgroundColor: o.menuColor || '#1a252f' }}
@@ -154,7 +154,7 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
           </button>
         </div>
 
-        <div className="p-4 overflow-y-auto max-h-[calc(80vh-4rem)]">
+        <div className="p-4 overflow-y-auto max-h-[calc(80dvh-4rem)]">
           {showForm ? (
             <div className="space-y-2">
               {[
@@ -213,13 +213,19 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
                   onClick={() => {
                     if (inLoader) {
                       const processedUrl = process(fixUrl(b.url), false, o.prType || 'auto', o.engine || null);
-                      const id = createId();
-                      addTab({
-                        title: b.name || 'New Tab',
-                        id,
-                        url: processedUrl,
-                      });
-                      setActive(id);
+                      const activeTab = tabs.find(t => t.active);
+
+                      if (!o.openSidebarInNewTab && activeTab) {
+                        updateUrl(activeTab.id, processedUrl);
+                      } else {
+                        const id = createId();
+                        addTab({
+                          title: b.name || 'New Tab',
+                          id,
+                          url: processedUrl,
+                        });
+                        setActive(id);
+                      }
                       onClose();
                     } else {
                       nav('/search', { state: { url: fixUrl(b.url), openInGhostNewTab: true } });

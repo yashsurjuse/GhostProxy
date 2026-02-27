@@ -51,13 +51,13 @@ const Nav = memo(() => {
         nav.nav,
         theme['nav-backgroundColor'],
         theme[`theme-${options.theme || 'default'}`],
-        ' w-full shadow-x1/20 flex items-center pl-6 pr-5 gap-5 z-50',
+        ' w-full shadow-x1/20 flex items-center md:pl-6 pl-3 md:pr-5 pr-3 md:gap-5 gap-3 z-50',
       )}
       style={{ height: `${dimensions.navHeight}px` }}
     >
       <Logo width={dimensions.logoWidth} height={dimensions.logoHeight} action={handleLogoClick} />
       <div
-        className="border rounded-full text-center"
+        className="border rounded-full text-center hidden sm:block"
         style={{
           fontSize: `${dimensions.versionFont}px`,
           marginLeft: `${dimensions.versionMargin}px`,
@@ -67,7 +67,7 @@ const Nav = memo(() => {
       >
         {isStaticBuild ? 'Static Version' : 'v' + version}
       </div>
-      <div className="flex items-center gap-5 ml-auto" style={{ height: 'calc(100% - 0.5rem)' }}>
+      <div className="flex items-center md:gap-5 gap-3 ml-auto" style={{ height: 'calc(100% - 0.5rem)' }}>
         <NavItem items={items} />
       </div>
     </div>

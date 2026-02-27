@@ -46,9 +46,9 @@ const Type = ({ type, title }) => {
       <h2 className="text-xl font-medium mb-3 px-1">{title}</h2>
       <div className="rounded-xl overflow-visible">
         {entries.map(([key, setting], index) => (
-          <SettingsContainerItem 
+          <SettingsContainerItem
             key={`${key}-${valueToken(setting?.value)}`}
-            {...setting} 
+            {...setting}
             isFirst={index === 0}
             isLast={index === entries.length - 1}
           >
@@ -245,12 +245,17 @@ const Setting = ({ setting }) => {
   const [historyQuery, setHistoryQuery] = useState('');
   const [dataOpen, setDataOpen] = useState(false);
   const [cssEditorOpen, setCssEditorOpen] = useState(false);
+  const [cssEditorRender, setCssEditorRender] = useState(false);
+  const [cssEditorAnim, setCssEditorAnim] = useState(false);
   const [selectedPresetId, setSelectedPresetId] = useState('');
   const [newPresetName, setNewPresetName] = useState('');
   const [cssDraft, setCssDraft] = useState('');
   const [textColorDraft, setTextColorDraft] = useState('#a0b0c8');
   const [bgColorDraft, setBgColorDraft] = useState('#111827');
   const [logoColorDraft, setLogoColorDraft] = useState('#ffffff');
+  const [fontFamilyDraft, setFontFamilyDraft] = useState('');
+  const [paddingDraft, setPaddingDraft] = useState('');
+  const [radiusDraft, setRadiusDraft] = useState('');
 
   const cssPresets = useMemo(
     () => (Array.isArray(options.cssEditorPresets) ? options.cssEditorPresets : []),
@@ -286,12 +291,37 @@ const Setting = ({ setting }) => {
   }, [cssEditorOpen, cssPresets, options.activeCssPresetId, options.customGlobalCss, options.siteTextColor, options.bgColor, options.logoColor]);
 
   useEffect(() => {
-    if (!cssEditorOpen || !activePreset) return;
+    if (!cssEditorOpen && !cssEditorRender && !activePreset) return;
+    if (!activePreset) {
+      setCssDraft(options.customGlobalCss || '');
+      setTextColorDraft(options.siteTextColor || '#a0b0c8');
+      setBgColorDraft(options.bgColor || '#111827');
+      setLogoColorDraft(options.logoColor || '#ffffff');
+      return;
+    }
     setCssDraft(activePreset.css || '');
     setTextColorDraft(activePreset.siteTextColor || options.siteTextColor || '#a0b0c8');
     setBgColorDraft(activePreset.bgColor || options.bgColor || '#111827');
     setLogoColorDraft(activePreset.logoColor || options.logoColor || '#ffffff');
-  }, [cssEditorOpen, activePreset, options.siteTextColor, options.bgColor, options.logoColor]);
+  }, [cssEditorOpen, cssEditorRender, activePreset, options.siteTextColor, options.bgColor, options.logoColor]);
+
+  useEffect(() => {
+    if (cssEditorOpen) {
+      setCssEditorAnim(false);
+      setCssEditorRender(true);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setCssEditorAnim(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
+    }
+    setCssEditorAnim(false);
+    const t = setTimeout(() => setCssEditorRender(false), 200);
+    return () => clearTimeout(t);
+  }, [cssEditorOpen]);
 
   const privSettings = settings.privacyConfig({
     options,
@@ -426,6 +456,9 @@ const Setting = ({ setting }) => {
       siteTextColor: textColorDraft,
       bgColor: bgColorDraft,
       logoColor: logoColorDraft,
+      fontFamily: fontFamilyDraft,
+      padding: paddingDraft,
+      borderRadius: radiusDraft,
     };
 
     const exists = cssPresets.some((p) => p.id === nextPreset.id);
@@ -440,6 +473,9 @@ const Setting = ({ setting }) => {
       bgColor: nextPreset.bgColor,
       logoColor: nextPreset.logoColor,
       customGlobalCss: nextPreset.css,
+      customFontFamily: nextPreset.fontFamily,
+      customPadding: nextPreset.padding,
+      customBorderRadius: nextPreset.borderRadius,
     });
     setSelectedPresetId(nextPreset.id);
     setNewPresetName('');
@@ -455,6 +491,9 @@ const Setting = ({ setting }) => {
       siteTextColor: textColorDraft,
       bgColor: bgColorDraft,
       logoColor: logoColorDraft,
+      fontFamily: fontFamilyDraft,
+      padding: paddingDraft,
+      borderRadius: radiusDraft,
     };
 
     updateOption({
@@ -464,6 +503,9 @@ const Setting = ({ setting }) => {
       bgColor: nextPreset.bgColor,
       logoColor: nextPreset.logoColor,
       customGlobalCss: nextPreset.css,
+      customFontFamily: nextPreset.fontFamily,
+      customPadding: nextPreset.padding,
+      customBorderRadius: nextPreset.borderRadius,
     });
     setSelectedPresetId(id);
     setNewPresetName('');
@@ -483,6 +525,9 @@ const Setting = ({ setting }) => {
       bgColor: fallback?.bgColor || bgColorDraft,
       logoColor: fallback?.logoColor || logoColorDraft,
       customGlobalCss: fallback?.css || cssDraft,
+      customFontFamily: fallback?.fontFamily || fontFamilyDraft,
+      customPadding: fallback?.padding || paddingDraft,
+      customBorderRadius: fallback?.borderRadius || radiusDraft,
     });
     setSelectedPresetId(fallback?.id || '');
   };
@@ -502,6 +547,9 @@ const Setting = ({ setting }) => {
     setTextColorDraft(preset.siteTextColor || '#a0b0c8');
     setBgColorDraft(preset.bgColor || '#111827');
     setLogoColorDraft(preset.logoColor || '#ffffff');
+    setFontFamilyDraft(preset.fontFamily || '');
+    setPaddingDraft(preset.padding || '');
+    setRadiusDraft(preset.borderRadius || '');
 
     updateOption({
       activeCssPresetId: preset.id,
@@ -509,6 +557,9 @@ const Setting = ({ setting }) => {
       siteTextColor: preset.siteTextColor || '#a0b0c8',
       bgColor: preset.bgColor || '#111827',
       logoColor: preset.logoColor || '#ffffff',
+      customFontFamily: preset.fontFamily || '',
+      customPadding: preset.padding || '',
+      customBorderRadius: preset.borderRadius || '',
     });
   };
 
@@ -534,12 +585,15 @@ const Setting = ({ setting }) => {
         shortcuts={options.shortcuts}
         onSave={(shortcuts) => updateOption({ shortcuts })}
       />
-      {cssEditorOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+      {cssEditorRender && (
+        <div className={`fixed inset-0 z-[10000] flex items-center justify-center p-4 transition-all duration-200 ${cssEditorAnim ? 'opacity-100' : 'opacity-0'}`}>
           <div className="absolute inset-0 bg-black/50" onClick={() => setCssEditorOpen(false)} />
           <div
-            className="relative w-full max-w-5xl max-h-[85vh] rounded-xl border border-white/10 overflow-hidden"
-            style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}
+            className={clsx(
+              theme[`theme-${options.theme || 'default'}`],
+              `relative w-full max-w-5xl max-h-[85dvh] rounded-xl border border-white/10 overflow-hidden transition-all duration-200 ${cssEditorAnim ? 'scale-100 translate-y-0' : 'scale-[0.965] translate-y-[6px]'}`
+            )}
+            style={{ backgroundColor: options.quickModalBgColor || options.menuColor || '#1a252f' }}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <h2 className="text-lg font-semibold">CSS Editor</h2>
@@ -548,19 +602,91 @@ const Setting = ({ setting }) => {
               </button>
             </div>
 
-            <div className="p-4 overflow-y-auto max-h-[calc(85vh-4rem)] space-y-4">
+            <div className="p-4 overflow-y-auto max-h-[calc(85dvh-4rem)] space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="rounded-lg bg-[#ffffff0d] p-3">
                   <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Text Color</p>
-                  <input type="color" value={textColorDraft} onChange={(e) => setTextColorDraft(e.target.value)} className="h-10 w-full rounded-md" />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={textColorDraft}
+                      onChange={(e) => setTextColorDraft(e.target.value)}
+                      className="h-10 w-12 p-1 rounded-md cursor-pointer border-none bg-transparent"
+                    />
+                    <input
+                      type="text"
+                      value={textColorDraft}
+                      onChange={(e) => setTextColorDraft(e.target.value)}
+                      className="h-10 flex-1 rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm uppercase"
+                    />
+                  </div>
                 </div>
                 <div className="rounded-lg bg-[#ffffff0d] p-3">
                   <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Background Color</p>
-                  <input type="color" value={bgColorDraft} onChange={(e) => setBgColorDraft(e.target.value)} className="h-10 w-full rounded-md" />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={bgColorDraft}
+                      onChange={(e) => setBgColorDraft(e.target.value)}
+                      className="h-10 w-12 p-1 rounded-md cursor-pointer border-none bg-transparent"
+                    />
+                    <input
+                      type="text"
+                      value={bgColorDraft}
+                      onChange={(e) => setBgColorDraft(e.target.value)}
+                      className="h-10 flex-1 rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm uppercase"
+                    />
+                  </div>
                 </div>
                 <div className="rounded-lg bg-[#ffffff0d] p-3">
                   <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Logo Color</p>
-                  <input type="color" value={logoColorDraft} onChange={(e) => setLogoColorDraft(e.target.value)} className="h-10 w-full rounded-md" />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={logoColorDraft}
+                      onChange={(e) => setLogoColorDraft(e.target.value)}
+                      className="h-10 w-12 p-1 rounded-md cursor-pointer border-none bg-transparent"
+                    />
+                    <input
+                      type="text"
+                      value={logoColorDraft}
+                      onChange={(e) => setLogoColorDraft(e.target.value)}
+                      className="h-10 flex-1 rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm uppercase"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="rounded-lg bg-[#ffffff0d] p-3">
+                  <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Font Family</p>
+                  <input
+                    type="text"
+                    value={fontFamilyDraft}
+                    onChange={(e) => setFontFamilyDraft(e.target.value)}
+                    placeholder="e.g. 'Roboto', sans-serif"
+                    className="h-10 w-full rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm"
+                  />
+                </div>
+                <div className="rounded-lg bg-[#ffffff0d] p-3">
+                  <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Main Padding</p>
+                  <input
+                    type="text"
+                    value={paddingDraft}
+                    onChange={(e) => setPaddingDraft(e.target.value)}
+                    placeholder="e.g. 1rem or 16px"
+                    className="h-10 w-full rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm"
+                  />
+                </div>
+                <div className="rounded-lg bg-[#ffffff0d] p-3">
+                  <p className="text-xs uppercase tracking-wide opacity-70 mb-2">Border Radius</p>
+                  <input
+                    type="text"
+                    value={radiusDraft}
+                    onChange={(e) => setRadiusDraft(e.target.value)}
+                    placeholder="e.g. 8px or 50%"
+                    className="h-10 w-full rounded-md bg-[#00000030] outline-none border border-white/10 px-3 text-sm"
+                  />
                 </div>
               </div>
 
@@ -619,8 +745,11 @@ const Setting = ({ setting }) => {
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setHistoryOpen(false)} />
           <div
-            className="relative w-full max-w-4xl max-h-[80vh] rounded-xl border border-white/10 overflow-hidden"
-            style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}
+            className={clsx(
+              theme[`theme-${options.theme || 'default'}`],
+              "relative w-full max-w-4xl max-h-[80dvh] rounded-xl border border-white/10 overflow-hidden"
+            )}
+            style={{ backgroundColor: options.quickModalBgColor || options.menuColor || '#1a252f' }}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <h2 className="text-lg font-semibold">View History</h2>
@@ -635,8 +764,8 @@ const Setting = ({ setting }) => {
                 </button>
               </div>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[calc(80vh-4rem)] space-y-2">
-              <div className="sticky top-0 z-10 pb-2 pt-1" style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}>
+            <div className="p-4 overflow-y-auto max-h-[calc(80dvh-4rem)] space-y-2">
+              <div className="sticky top-0 z-10 pb-2 pt-1" style={{ backgroundColor: options.quickModalBgColor || options.menuColor || '#1a252f' }}>
                 <input
                   value={historyQuery}
                   onChange={(e) => setHistoryQuery(e.target.value)}
@@ -664,8 +793,11 @@ const Setting = ({ setting }) => {
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50" onClick={() => setDataOpen(false)} />
           <div
-            className="relative w-full max-w-5xl max-h-[85vh] rounded-xl border border-white/10 overflow-hidden"
-            style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}
+            className={clsx(
+              theme[`theme-${options.theme || 'default'}`],
+              "relative w-full max-w-5xl max-h-[85dvh] rounded-xl border border-white/10 overflow-hidden"
+            )}
+            style={{ backgroundColor: options.quickModalBgColor || options.menuColor || '#1a252f' }}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <h2 className="text-lg font-semibold">View Data</h2>
@@ -673,7 +805,7 @@ const Setting = ({ setting }) => {
                 <X size={18} />
               </button>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[calc(85vh-4rem)] space-y-6">
+            <div className="p-4 overflow-y-auto max-h-[calc(85dvh-4rem)] space-y-6">
               <div>
                 <h3 className="text-sm font-semibold mb-2">Local Storage ({storageEntries.local.length})</h3>
                 <div className="space-y-2">

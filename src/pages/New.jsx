@@ -49,7 +49,7 @@ export default function NewTab() {
   }).format(time);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 gap-8">
+    <div className="min-h-full flex flex-col items-center justify-center p-6 gap-8">
       <div className="-mt-10 text-center">
         <div
           className="text-5xl font-light mb-2"

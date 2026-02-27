@@ -131,7 +131,7 @@ const resolveGhostRoute = (input) => {
         if (parsed.origin === location.origin) {
           route = parsed.pathname.replace(/^\/+/, '').split(/[?#]/)[0] || 'home';
         }
-      } catch {}
+      } catch { }
     }
   }
 
@@ -181,7 +181,7 @@ import appsData from '/src/data/apps.json';
 
 const scrwlist = new Set([
   ...whitelist,
-  ...Object.values(appsData.games || {}).flatMap(cat => 
+  ...Object.values(appsData.games || {}).flatMap(cat =>
     cat.filter(g => g.url && !g.local).map(g => {
       try { return new URL(g.url.startsWith('http') ? g.url : `https://${g.url}`).hostname.replace(/^www\./, ''); }
       catch { return null; }
@@ -263,7 +263,7 @@ export const process = (input, decode = false, prType, engine = "https://duckduc
               : `https://${rawRemote}`;
         base = new URL(normalized).origin;
       }
-    } catch {}
+    } catch { }
 
     return `${base}${prefix}${encoded}`;
   }
@@ -272,7 +272,7 @@ export const process = (input, decode = false, prType, engine = "https://duckduc
 export function openEmbed(url) {
   var win = window.open();
   win.document.body.style.margin = "0";
-  win.document.body.style.height = "100vh";
+  win.document.body.style.height = '100%';
   var iframe = win.document.createElement("iframe");
   iframe.style.border = "none";
   iframe.style.width = "100%";

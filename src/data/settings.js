@@ -244,20 +244,27 @@ export const browsingConfig = ({ options, updateOption, openShortcuts }) => ({
     action: (b) => setTimeout(() => updateOption({ downloadBlockDefault: b }), 100),
   },
   9: {
+    name: 'Open Sidebar In New Tab',
+    desc: 'When clicking a bookmark or an app in the side menu, open it in a new tab instead of replacing the current one.',
+    value: !!options.openSidebarInNewTab,
+    type: 'switch',
+    action: (b) => setTimeout(() => updateOption({ openSidebarInNewTab: b }), 100),
+  },
+  10: {
     name: 'Keyboard Shortcuts',
     desc: 'Edit/disable browser shortcuts.',
     type: 'button',
     value: 'Customize Shortcuts',
     action: openShortcuts,
   },
-  10: {
+  11: {
     name: 'Clock Format',
     desc: 'Use 12-hour or 24-hour time in the Ghost menu. Default is 12-hour.',
     value: !!options.clock24Hour,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ clock24Hour: b }), 100),
   },
-  11: {
+  12: {
     name: 'Timezone Override',
     desc: 'Optional IANA timezone (example: America/New_York). Leave empty to auto-detect from your IP.',
     value: options.timezoneOverride || '',
@@ -265,14 +272,14 @@ export const browsingConfig = ({ options, updateOption, openShortcuts }) => ({
     placeholder: 'Auto (IP timezone)',
     action: (v) => updateOption({ timezoneOverride: (v || '').trim() || null }),
   },
-  12: {
+  13: {
     name: 'Use Your Location (IP)',
     desc: 'Use your IP-based location for menu weather.',
     value: options.weatherUseIpLocation !== false,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ weatherUseIpLocation: b }), 100),
   },
-  13: {
+  14: {
     name: 'Weather Unit',
     desc: 'Choose the temperature unit shown in the Ghost menu weather.',
     config: weatherUnitConfig,
@@ -280,7 +287,7 @@ export const browsingConfig = ({ options, updateOption, openShortcuts }) => ({
     type: 'select',
     action: (a) => updateOption(a),
   },
-  14: {
+  15: {
     name: 'Weather Coords Override',
     desc: 'Optional coordinates when IP location is disabled (format: lat,lon).',
     value: options.weatherCoordsOverride || '',
@@ -289,7 +296,7 @@ export const browsingConfig = ({ options, updateOption, openShortcuts }) => ({
     action: (v) => updateOption({ weatherCoordsOverride: (v || '').trim() }),
     hidden: options.weatherUseIpLocation !== false,
   },
-  15: {
+  16: {
     name: 'Music Player',
     desc: 'What music player opens when music is opened normally.',
     config: musicPlayerConfig,

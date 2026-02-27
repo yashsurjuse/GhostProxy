@@ -33,7 +33,7 @@ const ShortcutsDialog = ({ open, onClose, shortcuts, onSave }) => {
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div
-        className="relative w-full max-w-5xl max-h-[85vh] rounded-xl border border-white/10 overflow-hidden"
+        className="relative w-full max-w-5xl max-h-[85dvh] rounded-xl border border-white/10 overflow-hidden"
         style={{ backgroundColor: options.quickModalBgColor || '#252f3e' }}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
@@ -43,7 +43,7 @@ const ShortcutsDialog = ({ open, onClose, shortcuts, onSave }) => {
           </button>
         </div>
 
-        <div className="p-4 overflow-y-auto max-h-[calc(85vh-7.5rem)] space-y-5">
+        <div className="p-4 overflow-y-auto max-h-[calc(85dvh-7.5rem)] space-y-5">
           {Object.entries(grouped).map(([section, items]) => (
             <div key={section}>
               <h3 className="text-sm font-semibold mb-2 opacity-90">{section}</h3>

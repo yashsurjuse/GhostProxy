@@ -3,6 +3,7 @@
 @plugin 'tailwind-scrollbar';
 
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -10,15 +11,23 @@
   ::file-selector-button {
     border-color: rgba(255, 255, 255, 0.11);
   }
+
   :root {
     --ui-scale: 1;
     --nav-scale: 1;
   }
 
   html,
-  body,
+  body {
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
   #root {
-    min-height: 100%;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
   }
 
   #root {
@@ -70,7 +79,7 @@
   @media (max-width: 1500px) {
     #root {
       width: calc(100% / var(--ui-scale));
-      min-height: calc(100% / var(--ui-scale));
+      height: calc(100% / var(--ui-scale));
       transform: scale(var(--ui-scale));
     }
   }

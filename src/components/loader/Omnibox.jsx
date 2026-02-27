@@ -24,7 +24,7 @@ import SwitchComponent from '../settings/components/Switch';
 import ComboBox from '../settings/components/Combobox';
 import TextInput from '../settings/components/Input';
 
-const Action = ({ Icon, size = 15, action = () => {}, disabled = false }) => {
+const Action = ({ Icon, size = 15, action = () => { }, disabled = false }) => {
   const { options } = useOptions();
   return (
     <button
@@ -91,8 +91,9 @@ const Omnibox = () => {
   };
 
   const getActiveDecodedUrl = () => {
-    if (!activeTab?.url || activeTab.url === 'tabs://new') return '';
-    return normalizeUrl(process(activeTab.url, true, options.prType || 'auto', options.engine || undefined));
+    const raw = getPreferredRawUrl(activeTab, activeFrameUrl);
+    if (!raw || raw === 'tabs://new') return '';
+    return normalizeUrl(process(raw, true, options.prType || 'auto', options.engine || undefined));
   };
 
   const isCurrentBookmarked = useMemo(() => {
@@ -109,7 +110,7 @@ const Omnibox = () => {
     latestQuery.current = '';
     // Also reset input if not editing
     if (!isEditingRef.current && activeTab) {
-       // logic is handled in other useEffect, but ensure suggestions are gone.
+      // logic is handled in other useEffect, but ensure suggestions are gone.
     }
   }, [activeTab?.id]);
 
@@ -471,100 +472,100 @@ const Omnibox = () => {
               }
               style={{ backgroundColor: options.menuColor || '#171d29' }}
             >
-            <p className="text-[11px] uppercase tracking-wide opacity-60 mb-2.5">Quick Browsing Settings</p>
+              <p className="text-[11px] uppercase tracking-wide opacity-60 mb-2.5">Quick Browsing Settings</p>
 
-            <div className="space-y-2.5 text-sm">
-              <label className="block">
-                <span className="text-xs opacity-70 mb-1 block">Proxy Backend</span>
-                <ComboBox
-                  config={prConfig}
-                  selectedValue={prConfig.find((x) => x.value.prType === (options.prType || 'scr')) || prConfig[0]}
-                  action={(item) => updateOption({ prType: item?.prType || 'scr' })}
-                  maxW={58}
-                  compact
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-xs opacity-70 mb-1 block">Wisp Server</span>
-                <TextInput
-                  defValue={options.wServer || ''}
-                  onChange={(val) => updateOption({ wServer: val || null })}
-                  placeholder={`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/wisp/`}
-                  maxW={58}
-                  compact
-                  live
-                />
-              </label>
-
-              <label className="block">
-                <span className="text-xs opacity-70 mb-1 block">Proxy Routing</span>
-                <ComboBox
-                  config={[
-                    { option: 'Direct', value: 'direct' },
-                    { option: 'Remote Proxy Server', value: 'remote' },
-                  ]}
-                  selectedValue={[
-                    { option: 'Direct', value: 'direct' },
-                    { option: 'Remote Proxy Server', value: 'remote' },
-                  ].find((x) => x.value === (options.proxyRouting || 'direct'))}
-                  action={(item) => updateOption({ proxyRouting: item || 'direct' })}
-                  maxW={58}
-                  compact
-                />
-              </label>
-
-              {(options.proxyRouting || 'direct') === 'remote' && (
+              <div className="space-y-2.5 text-sm">
                 <label className="block">
-                  <span className="text-xs opacity-70 mb-1 block">Remote Proxy Server</span>
+                  <span className="text-xs opacity-70 mb-1 block">Proxy Backend</span>
+                  <ComboBox
+                    config={prConfig}
+                    selectedValue={prConfig.find((x) => x.value.prType === (options.prType || 'scr')) || prConfig[0]}
+                    action={(item) => updateOption({ prType: item?.prType || 'scr' })}
+                    maxW={58}
+                    compact
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="text-xs opacity-70 mb-1 block">Wisp Server</span>
                   <TextInput
-                    defValue={options.remoteProxyServer || ''}
-                    onChange={(val) => updateOption({ remoteProxyServer: (val || '').trim() })}
-                    placeholder="https://your-proxy-domain"
+                    defValue={options.wServer || ''}
+                    onChange={(val) => updateOption({ wServer: val || null })}
+                    placeholder={`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/wisp/`}
                     maxW={58}
                     compact
                     live
                   />
                 </label>
-              )}
 
-              <label className="block">
-                <span className="text-xs opacity-70 mb-1 block">Transport</span>
-                <ComboBox
-                  config={[
-                    { option: 'Epoxy', value: 'epoxy' },
-                    { option: 'LibCurl', value: 'libcurl' },
-                  ]}
-                  selectedValue={[
-                    { option: 'Epoxy', value: 'epoxy' },
-                    { option: 'LibCurl', value: 'libcurl' },
-                  ].find((x) => x.value === (options.transport || 'libcurl'))}
-                  action={(item) => updateOption({ transport: item || 'libcurl' })}
-                  maxW={58}
-                  compact
-                />
-              </label>
+                <label className="block">
+                  <span className="text-xs opacity-70 mb-1 block">Proxy Routing</span>
+                  <ComboBox
+                    config={[
+                      { option: 'Direct', value: 'direct' },
+                      { option: 'Remote Proxy Server', value: 'remote' },
+                    ]}
+                    selectedValue={[
+                      { option: 'Direct', value: 'direct' },
+                      { option: 'Remote Proxy Server', value: 'remote' },
+                    ].find((x) => x.value === (options.proxyRouting || 'direct'))}
+                    action={(item) => updateOption({ proxyRouting: item || 'direct' })}
+                    maxW={58}
+                    compact
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-xs opacity-70 mb-1 block">Theme</span>
-                <ComboBox
-                  config={themeConfig}
-                  selectedValue={themeConfig.find((x) => x.value.themeName === (options.themeName || 'defaultTheme')) || themeConfig[0]}
-                  action={(item) => updateOption(item || {})}
-                  maxW={58}
-                  compact
-                />
-              </label>
+                {(options.proxyRouting || 'direct') === 'remote' && (
+                  <label className="block">
+                    <span className="text-xs opacity-70 mb-1 block">Remote Proxy Server</span>
+                    <TextInput
+                      defValue={options.remoteProxyServer || ''}
+                      onChange={(val) => updateOption({ remoteProxyServer: (val || '').trim() })}
+                      placeholder="https://your-proxy-domain"
+                      maxW={58}
+                      compact
+                      live
+                    />
+                  </label>
+                )}
 
-              <label className="flex items-center justify-between rounded-lg border border-white/10 px-3 py-2.5" style={{ backgroundColor: '#00000020' }}>
-                <span className="text-xs opacity-80">Search Recommendations</span>
-                <SwitchComponent
-                  value={options.searchRecommendationsTop !== false}
-                  action={(val) => updateOption({ searchRecommendationsTop: val })}
-                  size="sm"
-                />
-              </label>
-            </div>
+                <label className="block">
+                  <span className="text-xs opacity-70 mb-1 block">Transport</span>
+                  <ComboBox
+                    config={[
+                      { option: 'Epoxy', value: 'epoxy' },
+                      { option: 'LibCurl', value: 'libcurl' },
+                    ]}
+                    selectedValue={[
+                      { option: 'Epoxy', value: 'epoxy' },
+                      { option: 'LibCurl', value: 'libcurl' },
+                    ].find((x) => x.value === (options.transport || 'libcurl'))}
+                    action={(item) => updateOption({ transport: item || 'libcurl' })}
+                    maxW={58}
+                    compact
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="text-xs opacity-70 mb-1 block">Theme</span>
+                  <ComboBox
+                    config={themeConfig}
+                    selectedValue={themeConfig.find((x) => x.value.themeName === (options.themeName || 'defaultTheme')) || themeConfig[0]}
+                    action={(item) => updateOption(item || {})}
+                    maxW={58}
+                    compact
+                  />
+                </label>
+
+                <label className="flex items-center justify-between rounded-lg border border-white/10 px-3 py-2.5" style={{ backgroundColor: '#00000020' }}>
+                  <span className="text-xs opacity-80">Search Recommendations</span>
+                  <SwitchComponent
+                    value={options.searchRecommendationsTop !== false}
+                    action={(val) => updateOption({ searchRecommendationsTop: val })}
+                    size="sm"
+                  />
+                </label>
+              </div>
             </div>
           </>
         )}

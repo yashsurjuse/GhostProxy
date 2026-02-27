@@ -205,7 +205,7 @@ const DEVELOPER_APPS = [
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles, onDelete, options }) => {
   const [loaded, setLoaded] = useState(false);
   const hideIcon = !!options?.performanceMode || !!app.noIcon;
-  
+
   return (
     <div
       key={app.appName}
@@ -271,24 +271,24 @@ const PlusCard = memo(({ onClick, itemTheme, itemStyles }) => (
   </div>
 ));
 
-  const DeveloperToggleCard = memo(({ enabled, onToggle, itemTheme, itemStyles }) => (
-    <div
-      className={clsx(
-        itemStyles.app,
-        itemTheme.appItemColor,
-        itemTheme[`theme-${itemTheme.current || 'default'}`],
-        'cursor-pointer ghost-anim-card border border-white/10',
-        enabled && 'ring-1 ring-white/40',
-      )}
-      onClick={onToggle}
-    >
-      <div className="w-20 h-20 rounded-[12px] mb-4 overflow-hidden relative bg-[#ffffff14] flex items-center justify-center">
-        <Hammer size={34} />
-      </div>
-      <p className="text-m font-semibold">Developer Apps</p>
-      <p className="text-sm mt-2">Press to only view developer apps.</p>
+const DeveloperToggleCard = memo(({ enabled, onToggle, itemTheme, itemStyles }) => (
+  <div
+    className={clsx(
+      itemStyles.app,
+      itemTheme.appItemColor,
+      itemTheme[`theme-${itemTheme.current || 'default'}`],
+      'cursor-pointer ghost-anim-card border border-white/10',
+      enabled && 'ring-1 ring-white/40',
+    )}
+    onClick={onToggle}
+  >
+    <div className="w-20 h-20 rounded-[12px] mb-4 overflow-hidden relative bg-[#ffffff14] flex items-center justify-center">
+      <Hammer size={34} />
     </div>
-  ));
+    <p className="text-m font-semibold">Developer Apps</p>
+    <p className="text-sm mt-2">Press to only view developer apps.</p>
+  </div>
+));
 
 const Apps = memo(() => {
   const nav = useNavigate();
@@ -323,7 +323,7 @@ const Apps = memo(() => {
           })),
         );
       }
-    } catch {}
+    } catch { }
   }, []);
 
   const [q, setQ] = useState('');
@@ -397,7 +397,7 @@ const Apps = memo(() => {
       nav("/search", {
         state: {
           url: app.url,
-          openInGhostNewTab: true,
+          openInGhostNewTab: !!options.openSidebarInNewTab,
           skipProxy: true,
         }
       });
@@ -419,7 +419,7 @@ const Apps = memo(() => {
     setCustomApps(next);
     try {
       localStorage.setItem(CUSTOM_APPS_KEY, JSON.stringify(next));
-    } catch {}
+    } catch { }
   }, []);
 
   const addCustomApp = useCallback(() => {
@@ -634,7 +634,7 @@ const AppLayout = () => {
   );
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col overflow-hidden h-full">
       {!inGhostBrowserMode && <Nav />}
       <div className={clsx('flex-1 overflow-y-auto', scrollCls)}>
         <Apps />

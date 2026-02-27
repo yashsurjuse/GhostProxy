@@ -62,7 +62,7 @@ const getGhostTabLabel = (url) => {
 };
 
 const TabBar = () => {
-  const { tabs, addTab, removeTab, setActive, showTabs, setLastActive, showUI, updateUrl, updateTitle } = loaderStore();
+  const { tabs, addTab, removeTab, setActive, showTabs, setLastActive, showUI, updateUrl, updateTitle, reorderTab } = loaderStore();
   const { options } = useOptions();
   const [profilesOpen, setProfilesOpen] = useState(false);
   const [profilesRender, setProfilesRender] = useState(false);
@@ -75,6 +75,7 @@ const TabBar = () => {
   const fileInputRef = useRef(null);
   const panelRef = useRef(null);
   const triggerRef = useRef(null);
+  const [draggedIdx, setDraggedIdx] = useState(null);
 
   useEffect(() => {
     try {
@@ -205,7 +206,7 @@ const TabBar = () => {
           updatedAt: Date.now(),
         };
         persistProfiles([...profiles, imported], activeProfileId);
-      } catch {}
+      } catch { }
     };
     reader.readAsText(file);
     event.target.value = '';
@@ -325,110 +326,111 @@ const TabBar = () => {
                 (profilesAnim ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none')
               }
             >
-            <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-              <p className="text-sm font-semibold">Profile Manager</p>
-              <div className="flex items-center gap-1">
-                <button className="p-1.5 rounded-md hover:bg-[#ffffff10]" title="Export profile" onClick={exportActiveProfile}>
-                  <Download size={14} />
-                </button>
+              <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+                <p className="text-sm font-semibold">Profile Manager</p>
+                <div className="flex items-center gap-1">
+                  <button className="p-1.5 rounded-md hover:bg-[#ffffff10]" title="Export profile" onClick={exportActiveProfile}>
+                    <Download size={14} />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="px-4 pt-3 pb-2 border-b border-white/10">
-              <p className="text-xs opacity-70">Current Profile</p>
-              <p className="text-sm font-semibold truncate">{activeProfile?.name || 'Default'}</p>
-            </div>
+              <div className="px-4 pt-3 pb-2 border-b border-white/10">
+                <p className="text-xs opacity-70">Current Profile</p>
+                <p className="text-sm font-semibold truncate">{activeProfile?.name || 'Default'}</p>
+              </div>
 
-            <div className="p-3 space-y-2 max-h-[290px] overflow-y-auto">
-              <p className="text-xs opacity-70 px-1">Available Profiles</p>
-              {profiles.map((profile) => {
-                const active = profile.id === activeProfileId;
-                const isRenaming = renameId === profile.id;
-                return (
-                  <div key={profile.id} className={clsx('rounded-lg border px-2 py-2', active ? 'border-white/25 bg-white/12' : 'border-white/10 bg-white/5')}>
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        {isRenaming ? (
-                          <input
-                            value={renameValue}
-                            onChange={(e) => setRenameValue(e.target.value)}
-                            className="w-full bg-[#ffffff10] border border-white/15 rounded px-2 py-1 text-sm"
-                            placeholder="Profile name"
-                          />
-                        ) : (
-                          <p className="text-sm font-medium truncate">{profile.name}</p>
-                        )}
-                        <p className="text-[11px] opacity-70">{active ? '• Active' : '• Available'}</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {isRenaming ? (
-                          <button className="p-1 rounded hover:bg-white/10" onClick={saveRename} title="Save name">
-                            <Check size={13} />
-                          </button>
-                        ) : (
-                          <button className="p-1 rounded hover:bg-white/10" onClick={() => { setRenameId(profile.id); setRenameValue(profile.name); }} title="Rename">
-                            <Pencil size={13} />
-                          </button>
-                        )}
-                        {!active && (
-                          <button className="p-1 rounded hover:bg-white/10" onClick={() => switchProfile(profile.id)} title="Switch to profile">
-                            <Check size={13} />
-                          </button>
-                        )}
-                        {profiles.length > 1 && (
-                          <button className="p-1 rounded hover:bg-white/10" onClick={() => deleteProfile(profile.id)} title="Delete">
-                            <Trash2 size={13} />
-                          </button>
-                        )}
+              <div className="p-3 space-y-2 max-h-[290px] overflow-y-auto">
+                <p className="text-xs opacity-70 px-1">Available Profiles</p>
+                {profiles.map((profile) => {
+                  const active = profile.id === activeProfileId;
+                  const isRenaming = renameId === profile.id;
+                  return (
+                    <div key={profile.id} className={clsx('rounded-lg border px-2 py-2', active ? 'border-white/25 bg-white/12' : 'border-white/10 bg-white/5')}>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          {isRenaming ? (
+                            <input
+                              value={renameValue}
+                              onChange={(e) => setRenameValue(e.target.value)}
+                              className="w-full bg-[#ffffff10] border border-white/15 rounded px-2 py-1 text-sm"
+                              placeholder="Profile name"
+                            />
+                          ) : (
+                            <p className="text-sm font-medium truncate">{profile.name}</p>
+                          )}
+                          <p className="text-[11px] opacity-70">{active ? '• Active' : '• Available'}</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {isRenaming ? (
+                            <button className="p-1 rounded hover:bg-white/10" onClick={saveRename} title="Save name">
+                              <Check size={13} />
+                            </button>
+                          ) : (
+                            <button className="p-1 rounded hover:bg-white/10" onClick={() => { setRenameId(profile.id); setRenameValue(profile.name); }} title="Rename">
+                              <Pencil size={13} />
+                            </button>
+                          )}
+                          {!active && (
+                            <button className="p-1 rounded hover:bg-white/10" onClick={() => switchProfile(profile.id)} title="Switch to profile">
+                              <Check size={13} />
+                            </button>
+                          )}
+                          {profiles.length > 1 && (
+                            <button className="p-1 rounded hover:bg-white/10" onClick={() => deleteProfile(profile.id)} title="Delete">
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
-            <div className="p-3 border-t border-white/10 flex items-center gap-2">
-              <input
-                value={newProfileName}
-                onChange={(e) => setNewProfileName(e.target.value)}
-                placeholder="New profile name"
-                className="flex-1 h-9 rounded-md bg-[#ffffff10] border border-white/10 px-2 text-sm"
-              />
-              <button className="h-9 px-3 rounded-md bg-[#ffffff18] hover:bg-[#ffffff28] text-sm font-medium flex items-center gap-1.5" onClick={createProfile}>
-                <UserPlus size={13} /> Create
-              </button>
-            </div>
+              <div className="p-3 border-t border-white/10 flex items-center gap-2">
+                <input
+                  value={newProfileName}
+                  onChange={(e) => setNewProfileName(e.target.value)}
+                  placeholder="New profile name"
+                  className="flex-1 h-9 rounded-md bg-[#ffffff10] border border-white/10 px-2 text-sm"
+                />
+                <button className="h-9 px-3 rounded-md bg-[#ffffff18] hover:bg-[#ffffff28] text-sm font-medium flex items-center gap-1.5" onClick={createProfile}>
+                  <UserPlus size={13} /> Create
+                </button>
+              </div>
 
-            <div className="px-3 pb-3 grid grid-cols-2 gap-2">
-              <button
-                className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload size={13} /> Import
-              </button>
-              <button
-                className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
-                onClick={clearActiveProfileData}
-              >
-                <Trash2 size={13} /> Clear Data
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={importProfile}
-              />
-            </div>
+              <div className="px-3 pb-3 grid grid-cols-2 gap-2">
+                <button
+                  className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload size={13} /> Import
+                </button>
+                <button
+                  className="h-9 rounded-md border border-white/10 bg-[#ffffff08] hover:bg-[#ffffff14] text-sm flex items-center justify-center gap-1.5"
+                  onClick={clearActiveProfileData}
+                >
+                  <Trash2 size={13} /> Clear Data
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="application/json"
+                  className="hidden"
+                  onChange={importProfile}
+                />
+              </div>
             </div>
           </>
         )}
       </div>
 
-      {tabs.map(({ title, id, active, isLoading, url, pinned, group }) => {
+      {tabs.map(({ title, id, active, isLoading, url, pinned, group }, index) => {
         const showGlobe = url === 'tabs://new' || !isLoading;
         const ghostLabel = getGhostTabLabel(url);
         const displayTitle = ghostLabel || (url === 'tabs://new' ? 'New Tab' : title);
+
         return (
           <div
             className={clsx(
@@ -437,7 +439,29 @@ const TabBar = () => {
             )}
             onClick={() => setActive(id)}
             key={id}
-            style={{ backgroundColor: active ? options.tabColor || "#111e2fb0" : "", borderColor: active ? options.tabOutline || "#344646" : "#ffffff0c" }}
+            draggable={true}
+            onDragStart={(e) => {
+              setDraggedIdx(index);
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/html', e.target.parentNode);
+              e.dataTransfer.setDragImage(e.target, 20, 20);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (draggedIdx === null || draggedIdx === index) return;
+              reorderTab(draggedIdx, index);
+              setDraggedIdx(null);
+            }}
+            onDragEnd={() => setDraggedIdx(null)}
+            style={{
+              backgroundColor: active ? options.tabColor || "#111e2fb0" : "",
+              borderColor: active ? options.tabOutline || "#344646" : "#ffffff0c",
+              opacity: draggedIdx === index ? 0.3 : 1
+            }}
           >
             {showGlobe ? (
               <Globe size={15} className="flex-shrink-0" />
