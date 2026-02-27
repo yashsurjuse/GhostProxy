@@ -161,7 +161,7 @@ export default defineConfig(({ command }) => {
             if (/react-ga4/.test(pkg)) return 'analytics';
             if (/nprogress/.test(pkg)) return 'progress';
             return 'vendor';
-          },
+          }
         },
         treeshake: {
           moduleSideEffects: 'no-external',
