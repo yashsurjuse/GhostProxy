@@ -12,9 +12,11 @@ import { baremuxPath } from '@mercuryworkshop/bare-mux/node';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 import dotenv from 'dotenv';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 const epoxyPath = normalizePath(
-  resolve(dirname(fileURLToPath(import.meta.resolve('@mercuryworkshop/epoxy-transport'))), '.')
+  dirname(require.resolve('@mercuryworkshop/epoxy-transport'))
 );
 
 dotenv.config();
