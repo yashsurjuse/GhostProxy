@@ -76,7 +76,7 @@ export default defineConfig(({ command }) => {
           { src: [normalizePath(resolve(epoxyPath, '*'))], dest: 'epoxy-raw' },
           { src: [normalizePath(resolve(baremuxPath, '*'))], dest: 'baremux' },
           { src: [normalizePath(resolve(scramjetPath, '*'))], dest: 'scram' },
-          useBare && { src: [normalizePath(resolve(bareModulePath, '*'))], dest: 'baremod' },
+          ...(useBare ? [{ src: [normalizePath(resolve(bareModulePath, '*'))], dest: 'baremod' }] : []),
           {
             src: [
               normalizePath(resolve(uvPath, 'uv.handler.js')),
@@ -85,9 +85,9 @@ export default defineConfig(({ command }) => {
             ],
             dest: 'uv',
           },
-        ].filter(Boolean),
+        ]
       }),
-      isStatic && {
+      ...(isStatic ? [{
         name: 'replace-cdn',
         transform(code, id) {
           if (id.endsWith('apps.json')) {
@@ -96,7 +96,7 @@ export default defineConfig(({ command }) => {
               .replace(/\/assets\/img\//g, 'https://cdn.jsdelivr.net/gh/DogeNetwork/v5-assets/img/');
           }
         },
-      },
+      }] : []),
       {
         name: 'server',
         apply: 'serve',
@@ -136,7 +136,7 @@ export default defineConfig(({ command }) => {
           });
         },
       },
-    ].filter(Boolean),
+    ],
     build: {
       target: 'es2022',
       reportCompressedSize: false,
