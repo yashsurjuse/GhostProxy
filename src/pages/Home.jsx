@@ -27,7 +27,7 @@ const Home = memo(() => {
   return (
     <>
       <Nav />
-      <div className="relative min-h-full flex-1 flex flex-col items-center justify-center gap-6 pb-24 overflow-hidden">
+      <div className="relative min-h-full flex-1 flex flex-col items-center justify-center gap-6 pb-24">
         <div
           className="w-full flex flex-col items-center gap-6"
           style={{ transform: `scale(${HOME_HERO_SCALE})`, transformOrigin: 'center center' }}

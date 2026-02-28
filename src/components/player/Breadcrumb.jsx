@@ -15,7 +15,7 @@ const Breadcrumb = ({ theme, name }) => {
       )}
     >
       <Gamepad2 size="16" /> &nbsp;
-      <span className="hover:underline cursor-pointer" onClick={() => nav('/discover?ghost=1')}>
+      <span className="hover:underline cursor-pointer" onClick={() => nav('/discover?tab=games&ghost=1')}>
         Entertainment
       </span>
       <span className="mx-1">&gt;</span>

@@ -37,10 +37,12 @@ import {
   Wrench,
   X,
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { createId } from '/src/utils/id';
 import { showAlert, showConfirm } from '/src/utils/uiDialog';
 import changelogEntries from '/src/data/changelog.json';
 import Discord from '/src/components/Discord';
+import { getLucideIcon } from '/src/components/settings/components/SidebarEditor';
 
 const SAVED_TABS_KEY = 'ghostSavedTabs';
 const SITE_POLICY_KEY = 'ghostSitePolicies';
@@ -1133,8 +1135,6 @@ export default function Loader({ url, ui = true, zoom }) {
 
       const matched = matchedEntries[0];
 
-      if (isTypingTarget(e.target) && matched[0] !== 'focusAddressBar') return;
-
       const store = loaderStore.getState();
       const getActiveTab = () => loaderStore.getState().tabs.find((t) => t.active);
       const activeTab = getActiveTab();
@@ -1481,145 +1481,197 @@ export default function Loader({ url, ui = true, zoom }) {
           </div>
 
           <div className="mt-2 flex flex-col items-center gap-2">
-            <SidebarButton label="Apps" onClick={() => navigateActiveTab('ghost://apps')}>
-              <Blocks size={16} />
-            </SidebarButton>
-            <SidebarButton label="Games" onClick={() => navigateActiveTab('ghost://games')}>
-              <Gamepad2 size={16} />
-            </SidebarButton>
-            <SidebarButton label="TV" onClick={() => navigateActiveTab('ghost://tv')}>
-              <TvMinimalPlay size={16} />
-            </SidebarButton>
-            <SidebarButton label="Music" onClick={() => openDefaultMusicProvider()}>
-              <Music size={16} />
-            </SidebarButton>
-            <SidebarButton label="Remote Access" onClick={() => navigateActiveTab('ghost://remote')}>
-              <Monitor size={16} />
-            </SidebarButton>
-            <SidebarButton label="AI" onClick={() => navigateActiveTab('ghost://ai')}>
-              <Bot size={16} />
-            </SidebarButton>
+            {options?.sidebarToggles?.showApps !== false && (
+              <SidebarButton label="Apps" onClick={() => navigateActiveTab('ghost://apps')}>
+                <Blocks size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showGames !== false && (
+              <SidebarButton label="Games" onClick={() => navigateActiveTab('ghost://games')}>
+                <Gamepad2 size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showTV !== false && (
+              <SidebarButton label="TV" onClick={() => navigateActiveTab('ghost://tv')}>
+                <TvMinimalPlay size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showMusic !== false && (
+              <SidebarButton label="Music" onClick={() => openDefaultMusicProvider()}>
+                <Music size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showChat === true && (
+              <SidebarButton
+                label="Chat"
+                onClick={() => navigateActiveTab('https://discord.com/app')}
+              >
+                <LucideIcons.MessageSquare size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showRemote !== false && (
+              <SidebarButton label="Remote Access" onClick={() => navigateActiveTab('ghost://remote')}>
+                <Monitor size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showAI !== false && (
+              <SidebarButton label="AI" onClick={() => navigateActiveTab('ghost://ai')}>
+                <Bot size={16} />
+              </SidebarButton>
+            )}
+
+            {Array.isArray(options?.sidebarCustomApps) && options.sidebarCustomApps.length > 0 && (
+              <>
+                <div className="my-2 w-7 h-[2px] rounded-full bg-white/10" />
+                {options.sidebarCustomApps.map((app) => {
+                  const Icon = getLucideIcon(app.icon);
+                  return (
+                    <SidebarButton
+                      key={app.id}
+                      label={app.name}
+                      onClick={() => navigateActiveTab(app.url)}
+                    >
+                      <Icon size={16} />
+                    </SidebarButton>
+                  );
+                })}
+              </>
+            )}
           </div>
 
           <div className="my-6 w-7 h-[2px] rounded-full bg-white/20" />
 
           <div className="flex flex-col items-center gap-2">
-            <SidebarButton label="Bookmarks" onClick={() => window.dispatchEvent(new Event('ghost-open-bookmarks'))}>
-              <BookOpen size={16} />
-            </SidebarButton>
-            <div className="relative" ref={adBlockPopupRef}>
-              <SidebarButton
-                label="Ad Block"
-                onClick={() => setAdBlockPopupOpen((prev) => !prev)}
-                hideTooltip={adBlockPopupOpen}
-              >
-                <ShieldMinus size={16} />
+            {options?.sidebarToggles?.showBookmarks !== false && (
+              <SidebarButton label="Bookmarks" onClick={() => window.dispatchEvent(new Event('ghost-open-bookmarks'))}>
+                <BookOpen size={16} />
               </SidebarButton>
-              <div
-                className={`absolute left-[calc(100%+8px)] top-0 w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-              >
-                {currentSitePolicy?.site ? (
-                  <>
-                    <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
-                    <button
-                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                      onClick={() =>
-                        updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
-                      }
-                    >
-                      <span>Ad Block</span>
-                      <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
-                        {currentSitePolicy.adBlock ? 'On' : 'Off'}
-                      </span>
-                    </button>
-                    <button
-                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                      onClick={() =>
-                        updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
-                      }
-                    >
-                      <span>Popup Blocker</span>
-                      <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
-                        {currentSitePolicy.popupBlock ? 'On' : 'Off'}
-                      </span>
-                    </button>
-                    <button
-                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                      onClick={() =>
-                        updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
-                      }
-                    >
-                      <span>Download Blocker</span>
-                      <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
-                        {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
-                      </span>
-                    </button>
-                  </>
-                ) : (
-                  <p className="text-[12px] opacity-70 px-2.5 py-2">
-                    Ad block not available on internal Ghost pages.
-                  </p>
-                )}
+            )}
+            {options?.sidebarToggles?.showAdBlock !== false && (
+              <div className="relative" ref={adBlockPopupRef}>
+                <SidebarButton
+                  label="Ad Block"
+                  onClick={() => setAdBlockPopupOpen((prev) => !prev)}
+                  hideTooltip={adBlockPopupOpen}
+                >
+                  <ShieldMinus size={16} />
+                </SidebarButton>
+                <div
+                  className={`absolute left-[calc(100%+8px)] top-0 w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
+                >
+                  {currentSitePolicy?.site ? (
+                    <>
+                      <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
+                      <button
+                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                        onClick={() =>
+                          updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
+                        }
+                      >
+                        <span>Ad Block</span>
+                        <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
+                          {currentSitePolicy.adBlock ? 'On' : 'Off'}
+                        </span>
+                      </button>
+                      <button
+                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                        onClick={() =>
+                          updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
+                        }
+                      >
+                        <span>Popup Blocker</span>
+                        <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
+                          {currentSitePolicy.popupBlock ? 'On' : 'Off'}
+                        </span>
+                      </button>
+                      <button
+                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                        onClick={() =>
+                          updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
+                        }
+                      >
+                        <span>Download Blocker</span>
+                        <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
+                          {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
+                        </span>
+                      </button>
+                    </>
+                  ) : (
+                    <p className="text-[12px] opacity-70 px-2.5 py-2">
+                      Ad block not available on internal Ghost pages.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="relative" ref={devOptionsRef}>
-              <SidebarButton
-                label="Developer Options"
-                onClick={() => setDevOptionsOpen((prev) => !prev)}
-                hideTooltip={devOptionsOpen}
-              >
-                <Wrench size={16} />
+            )}
+            {options?.sidebarToggles?.showDevOptions !== false && (
+              <div className="relative" ref={devOptionsRef}>
+                <SidebarButton
+                  label="Developer Options"
+                  onClick={() => setDevOptionsOpen((prev) => !prev)}
+                  hideTooltip={devOptionsOpen}
+                >
+                  <Wrench size={16} />
+                </SidebarButton>
+                <div
+                  className={`absolute left-[calc(100%+8px)] top-0 w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-left ${devOptionsOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
+                >
+                  <button
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      openDevToolsForActiveTab();
+                      setDevOptionsOpen(false);
+                    }}
+                  >
+                    <Wrench size={14} /> DevTools
+                  </button>
+                  <button
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      navigateActiveTab('ghost://code');
+                      setDevOptionsOpen(false);
+                    }}
+                  >
+                    <Code2 size={14} /> Code Runner
+                  </button>
+                  <button
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                    onClick={() => updateOption({ debugMode: !options.debugMode })}
+                  >
+                    <span>Debug Mode</span>
+                    <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
+                      {options.debugMode ? 'On' : 'Off'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            )}
+            {options?.sidebarToggles?.showHistory !== false && (
+              <SidebarButton label="History" onClick={openProxyHistoryPopup}>
+                <History size={16} />
               </SidebarButton>
-              <div
-                className={`absolute left-[calc(100%+8px)] top-0 w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-left ${devOptionsOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-              >
-                <button
-                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                  onClick={() => {
-                    openDevToolsForActiveTab();
-                    setDevOptionsOpen(false);
-                  }}
-                >
-                  <Wrench size={14} /> DevTools
-                </button>
-                <button
-                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                  onClick={() => {
-                    navigateActiveTab('ghost://code');
-                    setDevOptionsOpen(false);
-                  }}
-                >
-                  <Code2 size={14} /> Code Runner
-                </button>
-                <button
-                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                  onClick={() => updateOption({ debugMode: !options.debugMode })}
-                >
-                  <span>Debug Mode</span>
-                  <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
-                    {options.debugMode ? 'On' : 'Off'}
-                  </span>
-                </button>
-              </div>
-            </div>
-            <SidebarButton label="History" onClick={openProxyHistoryPopup}>
-              <History size={16} />
-            </SidebarButton>
+            )}
           </div>
 
           <div className="mt-auto flex flex-col items-center gap-2 pb-1">
-            <SidebarButton label="Changelog" onClick={() => setIsChangelogOpen(true)}>
-              <Sparkles size={16} />
-            </SidebarButton>
-            <SidebarButton label="Docs" onClick={() => navigateActiveTab('ghost://docs')}>
-              <Book size={16} />
-            </SidebarButton>
-            <SidebarButton
-              label="Discord"
-              onClick={() => setGhostMenuOpen(false)}
-            >
-              <span className="inline-flex items-center justify-center w-4 h-4"><Discord fill="currentColor" /></span>
-            </SidebarButton>
+            {options?.sidebarToggles?.showChangelog !== false && (
+              <SidebarButton label="Changelog" onClick={() => setIsChangelogOpen(true)}>
+                <Sparkles size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showDocs !== false && (
+              <SidebarButton label="Docs" onClick={() => navigateActiveTab('ghost://docs')}>
+                <Book size={16} />
+              </SidebarButton>
+            )}
+            {options?.sidebarToggles?.showDiscord !== false && (
+              <SidebarButton
+                label="Discord"
+                onClick={() => navigateActiveTab('https://discord.gg/your-discord-link')}
+              >
+                <Discord fill="currentColor" />
+              </SidebarButton>
+            )}
             <SidebarButton label="Settings" onClick={() => navigateActiveTab('ghost://settings')}>
               <Settings size={16} />
             </SidebarButton>

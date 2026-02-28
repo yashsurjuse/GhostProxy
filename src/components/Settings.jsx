@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import theme from '/src/styles/theming.module.css';
 import { useOptions } from '/src/utils/optionsContext';
 import SettingsContainerItem from './settings/components/ContainerItem';
+import SidebarEditor from './settings/components/SidebarEditor';
 import * as settings from '/src/data/settings';
 import PanicDialog from './PanicDialog';
 import ShortcutsDialog from './settings/components/ShortcutsDialog';
@@ -247,6 +248,7 @@ const Setting = ({ setting }) => {
   const [cssEditorOpen, setCssEditorOpen] = useState(false);
   const [cssEditorRender, setCssEditorRender] = useState(false);
   const [cssEditorAnim, setCssEditorAnim] = useState(false);
+  const [sidebarEditorOpen, setSidebarEditorOpen] = useState(false);
   const [selectedPresetId, setSelectedPresetId] = useState('');
   const [newPresetName, setNewPresetName] = useState('');
   const [cssDraft, setCssDraft] = useState('');
@@ -338,7 +340,10 @@ const Setting = ({ setting }) => {
   const customizeSettings = settings.customizeConfig({
     options,
     updateOption,
-    openCssEditor: () => setCssEditorOpen(true),
+    openCssEditor: {
+      openCssEditor: () => setCssEditorOpen(true),
+      openSidebarEditor: () => setSidebarEditorOpen(true),
+    },
   });
 
   const historyItems = useMemo(() => {
@@ -844,6 +849,8 @@ const Setting = ({ setting }) => {
         />
       )}
       {setting === 'Info' && <InfoPanel />}
+
+      <SidebarEditor open={sidebarEditorOpen} onClose={() => setSidebarEditorOpen(false)} />
     </div>
   );
 };

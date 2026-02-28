@@ -5,6 +5,7 @@ import { useOptions } from '/src/utils/optionsContext';
 import { process } from '/src/utils/hooks/loader/utils';
 import { useRef, useEffect, useState } from 'react';
 import { Loader } from 'lucide-react';
+import { getEffectiveShortcuts, eventToShortcut, isTypingTarget } from '/src/utils/shortcuts';
 
 import NewTab from './NewTab';
 
@@ -91,8 +92,8 @@ const Viewer = ({ zoom }) => {
       if (parsed.origin !== location.origin) return false;
       if (parsed.searchParams.get('ghost') === '1') return true;
       const path = parsed.pathname.replace(/\/$/, '') || '/';
-      if (path.startsWith('/docs/')) return true;
-      return INTERNAL_GHOST_PATHS.has(path);
+      const bases = ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'];
+      return bases.some((b) => path === b || path.startsWith(`${b}/`));
     } catch {
       return false;
     }
@@ -295,8 +296,32 @@ const Viewer = ({ zoom }) => {
 
   useEffect(() => {
     const onPolicyUpdate = () => setPolicyTick((n) => n + 1);
+
+    const onMessage = (e) => {
+      if (e.data && e.data.type === 'ghost-shortcut') {
+        console.log('[VIEWER] Received ghost-shortcut message from proxy iframe:', e.data);
+        const { key, altKey, ctrlKey, shiftKey, metaKey } = e.data;
+        const synth = new KeyboardEvent('keydown', {
+          key,
+          altKey,
+          ctrlKey,
+          shiftKey,
+          metaKey,
+          bubbles: true,
+          cancelable: true
+        });
+        console.log('[VIEWER] Synthesizing and dispatching KeyboardEvent:', synth);
+        window.dispatchEvent(synth);
+      }
+    };
+
     window.addEventListener('ghost-site-policies-updated', onPolicyUpdate);
-    return () => window.removeEventListener('ghost-site-policies-updated', onPolicyUpdate);
+    window.addEventListener('message', onMessage);
+
+    return () => {
+      window.removeEventListener('ghost-site-policies-updated', onPolicyUpdate);
+      window.removeEventListener('message', onMessage);
+    };
   }, []);
 
   /* Rate-limited error retry helper */
@@ -394,9 +419,50 @@ const Viewer = ({ zoom }) => {
             prevTitle.current[tab.id] = curTTL;
             updateTitle(tab.id, curTTL);
           }
+
+          const cw = iframe.contentWindow;
+          if (cw && !cw.__ghostShortcutHooked) {
+            cw.__ghostShortcutHooked = true;
+
+            cw.addEventListener('keydown', (e) => {
+              const shortcutsMap = getEffectiveShortcuts(options);
+              const activeCombos = Object.entries(shortcutsMap)
+                .filter(([, cfg]) => cfg?.enabled !== false)
+                .map(([id, cfg]) => cfg.key);
+
+              let key = e.key;
+              if (key === ' ' || key === 'Spacebar') key = 'Space';
+              if (key.length === 1) key = key.toUpperCase();
+
+              const out = [];
+              if (e.ctrlKey) out.push('Ctrl');
+              if (e.altKey) out.push('Alt');
+              if (e.shiftKey) out.push('Shift');
+              if (e.metaKey) out.push('Meta');
+              out.push(key);
+              const combo = out.join('+');
+
+              if (activeCombos.includes(combo) || combo.startsWith('F11') || combo.startsWith('F12') || combo.startsWith('F5')) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const synth = new KeyboardEvent('keydown', {
+                  key: e.key,
+                  altKey: e.altKey,
+                  ctrlKey: e.ctrlKey,
+                  shiftKey: e.shiftKey,
+                  metaKey: e.metaKey,
+                  bubbles: true,
+                  cancelable: true
+                });
+                window.top.dispatchEvent(synth);
+              }
+            }, { capture: true });
+          }
         } catch (e) { }
       });
     }, 220);
+
     return () => {
       listeners.forEach(({ iframe, handleLoad, checkState }) => {
         iframe.removeEventListener('load', handleLoad);

@@ -634,7 +634,7 @@ const AppLayout = () => {
   );
 
   return (
-    <div className="flex flex-col overflow-hidden h-full">
+    <div className="flex flex-col h-full">
       {!inGhostBrowserMode && <Nav />}
       <div className={clsx('flex-1 overflow-y-auto', scrollCls)}>
         <Apps />

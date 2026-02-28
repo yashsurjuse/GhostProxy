@@ -31,6 +31,48 @@ export default function useReg() {
           sync: '/scram/scramjet.sync.js',
         },
         flags: { rewriterLogs: false, scramitize: false, cleanErrors: true, sourcemaps: true },
+        inject: [
+          {
+            host: /.*/,
+            injectTo: "head",
+            html: `
+            <script>
+                (function() {
+                    if (window === window.parent) return;
+                    let shortcuts = ["Alt+T", "Alt+W", "Alt+Shift+T", "Alt+D", "Alt+R", "F5", "F12", "F11", "Alt+L"];
+                    window.addEventListener('message', (e) => {
+                        if (e.data && e.data.type === 'ghost-update-shortcuts') shortcuts = e.data.shortcuts;
+                    });
+                    window.addEventListener('keydown', (e) => {
+                        let key = e.key;
+                        if (key === ' ' || key === 'Spacebar') key = 'Space';
+                        if (key.length === 1) key = key.toUpperCase();
+                        const out = [];
+                        if (e.ctrlKey) out.push('Ctrl');
+                        if (e.altKey) out.push('Alt');
+                        if (e.shiftKey) out.push('Shift');
+                        if (e.metaKey) out.push('Meta');
+                        out.push(key);
+                        const combo = out.join('+');
+
+                        if (shortcuts.includes(combo) || combo.startsWith('F11') || combo.startsWith('F12') || combo.startsWith('F5')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.top.postMessage({
+                                type: 'ghost-shortcut',
+                                key: e.key,
+                                altKey: e.altKey,
+                                ctrlKey: e.ctrlKey,
+                                shiftKey: e.shiftKey,
+                                metaKey: e.metaKey
+                            }, '*');
+                        }
+                    }, { capture: true });
+                })();
+            </script>
+            `
+          }
+        ]
       });
 
       window.scr.init();
@@ -45,6 +87,8 @@ export default function useReg() {
           console.warn(`SW reg err (${sw.path}):`, err);
         }
       }
+
+      globalThis.__ghostScramjetReady = true;
 
       const connection = new BareMuxConnection('/baremux/worker.js');
       setWispStatus('init');

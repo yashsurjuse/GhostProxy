@@ -151,7 +151,7 @@ export const OptionsProvider = ({ children }) => {
   useEffect(() => {
     try {
       localStorage.setItem('options', JSON.stringify(options));
-    } catch {}
+    } catch { }
   }, [options]);
 
   useEffect(() => {
@@ -167,17 +167,19 @@ export const OptionsProvider = ({ children }) => {
   const updateOption = useCallback((obj, immediate = true) => {
     if (!obj || typeof obj !== 'object') return;
 
-    let updated;
     setOptions((prev) => {
-      updated = { ...prev, ...obj };
+      const updated = { ...prev, ...obj };
+
+      try {
+        localStorage.setItem('options', JSON.stringify(updated));
+      } catch { }
+
+      setTimeout(() => {
+        window.dispatchEvent(new Event('ghost-options-updated'));
+      }, 0);
+
       return immediate ? updated : prev;
     });
-
-    try {
-      localStorage.setItem('options', JSON.stringify(updated));
-    } catch {}
-
-    window.dispatchEvent(new Event('ghost-options-updated'));
   }, []);
 
   const contextValue = useMemo(() => ({ options, updateOption }), [options, updateOption]);

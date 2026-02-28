@@ -955,7 +955,7 @@ const GamesLayout = () => {
   );
 
   return (
-    <div className="flex flex-col overflow-hidden h-full">
+    <div className="flex flex-col h-full">
       {!inGhostBrowserMode && <Nav />}
       <div className={clsx('flex-1 overflow-y-auto', scrollCls)}>
         <div className="w-full flex justify-center pt-6 px-4">

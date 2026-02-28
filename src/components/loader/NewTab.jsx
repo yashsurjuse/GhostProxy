@@ -178,12 +178,6 @@ const NewTab = ({ id, updateFn }) => {
 
 
     const fetchIpMeta = async () => {
-      const geo = await getBrowserCoords();
-      if (!cancelled && isValidMeta(geo)) {
-        setIpMeta(geo);
-        return;
-      }
-
       const providers = [
         { url: 'https://ipwho.is/', source: 'ipwho' },
         { url: 'https://ipinfo.io/json', source: 'ipinfo' },
