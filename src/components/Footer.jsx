@@ -24,7 +24,7 @@ const Footer = memo(() => {
       return raw;
     };
 
-    if (typeof window !== 'undefined' && typeof window.__ghostActiveWisp === 'string' && window.__ghostActiveWisp) {
+    if (typeof window !== 'undefined' && typeof window.__ghostActiveWisp === 'string' && window.__ghostActiveWisp && window.__ghostActiveWisp !== 'undefined') {
       return normalizeWisp(window.__ghostActiveWisp);
     }
 
@@ -68,7 +68,7 @@ const Footer = memo(() => {
         ok = status;
         try {
           ws.close();
-        } catch {}
+        } catch { }
         resolve();
       };
 

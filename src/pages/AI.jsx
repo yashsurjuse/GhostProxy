@@ -17,7 +17,33 @@ import {
   Trash2,
 } from 'lucide-react';
 import { X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import React from 'react';
 import ComboBox from '/src/components/settings/components/Combobox';
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, errorMsg: '' };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, errorMsg: error.message + '\\n' + error.stack };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div className="p-4 bg-red-900/50 text-red-200 whitespace-pre-wrap font-mono text-xs rounded-lg border border-red-500">REACT CRASH: {this.state.errorMsg}</div>;
+    }
+    return this.props.children;
+  }
+}
+
 import Input from '/src/components/settings/components/Input';
 import { useOptions } from '/src/utils/optionsContext';
 import { showConfirm } from '/src/utils/uiDialog';
@@ -29,7 +55,7 @@ const SEND_COOLDOWN_MS = 5000;
 
 const createId = () => `chat-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-const GHOST_AI_ENDPOINT = 'https://api.edisonlearningcenter.me/';
+const GHOST_AI_ENDPOINT = 'https://api.undoanarchy.rocks/';
 
 const SYSTEM_MESSAGE = { role: 'system', content: 'You are Ghost AI, a concise and helpful assistant.' };
 
@@ -119,6 +145,33 @@ const requestAiReply = async (chatMessages) => {
       return stripThinkingBlock(String(reply));
     }
 
+    if (provider === 'gemini') {
+      const contents = apiMessages.filter(m => m.role !== 'system').map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }]
+      }));
+      const systemInstruction = apiMessages.find(m => m.role === 'system')?.content;
+      const bodyPayload = { contents };
+      if (systemInstruction) {
+        bodyPayload.systemInstruction = { parts: [{ text: systemInstruction }] };
+      }
+
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model || 'gemini-1.5-flash'}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyPayload),
+      });
+      if (res.status === 429) throw new Error('You are sending messages too fast.');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData?.error?.message || 'AI provider returned an error.');
+      }
+      const data = await res.json();
+      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (!reply) throw new Error('AI returned an empty response.');
+      return stripThinkingBlock(String(reply));
+    }
+
     // Unsupported provider selected.
     throw new Error('Selected AI provider is not supported.');
   }
@@ -144,264 +197,7 @@ const requestAiReply = async (chatMessages) => {
   return reply;
 };
 
-const renderInlineMarkdown = (text, keyPrefix) => {
-  const raw = String(text || '');
-  const tokenRegex = /(\$[^$\n]+\$|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*)/g;
-  const parts = [];
-  let lastIndex = 0;
-  let m;
 
-  while ((m = tokenRegex.exec(raw)) !== null) {
-    if (m.index > lastIndex) {
-      parts.push(<Fragment key={`${keyPrefix}-txt-${lastIndex}`}>{raw.slice(lastIndex, m.index)}</Fragment>);
-    }
-    const token = m[0];
-    if (token.startsWith('$') && token.endsWith('$')) {
-      parts.push(
-        <span
-          key={`${keyPrefix}-math-${m.index}`}
-          className="px-1.5 py-0.5 rounded bg-black/25 text-[0.88em] font-mono"
-        >
-          {token.slice(1, -1)}
-        </span>,
-      );
-    } else if (token.startsWith('`') && token.endsWith('`')) {
-      parts.push(
-        <code key={`${keyPrefix}-code-${m.index}`} className="px-1 py-0.5 rounded bg-black/30 text-[0.88em]">
-          {token.slice(1, -1)}
-        </code>,
-      );
-    } else if (token.startsWith('**') && token.endsWith('**')) {
-      parts.push(
-        <strong key={`${keyPrefix}-strong-${m.index}`} className="font-semibold">
-          {token.slice(2, -2)}
-        </strong>,
-      );
-    } else if (token.startsWith('__') && token.endsWith('__')) {
-      parts.push(
-        <span key={`${keyPrefix}-underline-${m.index}`} className="underline underline-offset-2">
-          {token.slice(2, -2)}
-        </span>,
-      );
-    } else if (token.startsWith('*') && token.endsWith('*')) {
-      parts.push(
-        <em key={`${keyPrefix}-em-${m.index}`} className="italic">
-          {token.slice(1, -1)}
-        </em>,
-      );
-    }
-    lastIndex = m.index + token.length;
-  }
-
-  if (lastIndex < raw.length) {
-    parts.push(<Fragment key={`${keyPrefix}-txt-end`}>{raw.slice(lastIndex)}</Fragment>);
-  }
-
-  return parts.length > 0 ? parts : raw;
-};
-
-const renderMessageContent = (content, keyPrefix) => {
-  const text = String(content || '').replace(/\r\n/g, '\n');
-  const lines = text.split('\n');
-  const nodes = [];
-  let i = 0;
-
-  const pushGraphBlock = (graphLines, marker) => {
-    nodes.push(
-      <div key={`${keyPrefix}-graph-${marker}`} className="my-2 rounded-lg border border-white/10 bg-black/30 p-3 overflow-x-auto">
-        <div className="text-[0.72rem] opacity-70 mb-1">Graph</div>
-        <pre className="text-[0.85rem] leading-6 whitespace-pre-wrap font-mono">{graphLines.join('\n')}</pre>
-      </div>,
-    );
-  };
-
-  const parseTableRow = (row) =>
-    String(row || '')
-      .trim()
-      .replace(/^\|/, '')
-      .replace(/\|$/, '')
-      .split('|')
-      .map((cell) => cell.trim());
-
-  while (i < lines.length) {
-    const line = lines[i];
-
-    if (/^\s*---+\s*$/.test(line)) {
-      nodes.push(<hr key={`${keyPrefix}-hr-${i}`} className="border-white/15 my-2" />);
-      i += 1;
-      continue;
-    }
-
-    if (
-      line.includes('|') &&
-      i + 1 < lines.length &&
-      /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i + 1])
-    ) {
-      const headers = parseTableRow(line);
-      i += 2;
-      const bodyRows = [];
-      while (i < lines.length && lines[i].includes('|') && lines[i].trim()) {
-        bodyRows.push(parseTableRow(lines[i]));
-        i += 1;
-      }
-
-      nodes.push(
-        <div key={`${keyPrefix}-table-${i}`} className="my-2 overflow-x-auto">
-          <table className="min-w-full text-sm border border-white/10 rounded-lg overflow-hidden">
-            <thead className="bg-black/25">
-              <tr>
-                {headers.map((header, idx) => (
-                  <th key={`${keyPrefix}-th-${i}-${idx}`} className="px-3 py-2 text-left font-semibold border-b border-white/10">
-                    {renderInlineMarkdown(header, `${keyPrefix}-th-inline-${i}-${idx}`)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {bodyRows.map((row, rowIndex) => (
-                <tr key={`${keyPrefix}-tr-${i}-${rowIndex}`} className="border-t border-white/10">
-                  {headers.map((_, colIndex) => (
-                    <td key={`${keyPrefix}-td-${i}-${rowIndex}-${colIndex}`} className="px-3 py-2 align-top">
-                      {renderInlineMarkdown(row[colIndex] || '', `${keyPrefix}-td-inline-${i}-${rowIndex}-${colIndex}`)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>,
-      );
-      continue;
-    }
-
-    if (/^\s*(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|pie)\b/i.test(line)) {
-      const graphLines = [];
-      while (i < lines.length && lines[i].trim()) {
-        graphLines.push(lines[i]);
-        i += 1;
-      }
-      pushGraphBlock(graphLines, i);
-      continue;
-    }
-
-    if (/^\$\$\s*$/.test(line)) {
-      const block = [];
-      i += 1;
-      while (i < lines.length && !/^\$\$\s*$/.test(lines[i])) {
-        block.push(lines[i]);
-        i += 1;
-      }
-      if (i < lines.length && /^\$\$\s*$/.test(lines[i])) i += 1;
-      nodes.push(
-        <div key={`${keyPrefix}-math-block-${i}`} className="my-2 rounded-lg border border-white/10 bg-black/30 px-3 py-2 overflow-x-auto">
-          <pre className="text-[0.88rem] leading-6 font-mono whitespace-pre-wrap">{block.join('\n')}</pre>
-        </div>,
-      );
-      continue;
-    }
-
-    if (/^```/.test(line)) {
-      const lang = line.replace(/^```/, '').trim();
-      const code = [];
-      i += 1;
-      while (i < lines.length && !/^```/.test(lines[i])) {
-        code.push(lines[i]);
-        i += 1;
-      }
-      if (i < lines.length && /^```/.test(lines[i])) i += 1;
-
-      if (['mermaid', 'graph', 'chart', 'plot'].includes(lang.toLowerCase())) {
-        pushGraphBlock(code, `${i}-${lang}`);
-        continue;
-      }
-
-      nodes.push(
-        <div key={`${keyPrefix}-code-wrap-${i}`} className="my-2">
-          {lang && <div className="text-[0.72rem] opacity-70 mb-1">{lang}</div>}
-          <pre className="rounded-lg border border-white/10 bg-black/35 p-3 overflow-x-auto text-[0.85rem] leading-6">
-            <code>{code.join('\n')}</code>
-          </pre>
-        </div>,
-      );
-      continue;
-    }
-
-    const headingMatch = /^(#{1,3})\s+(.+)$/.exec(line);
-    if (headingMatch) {
-      const level = headingMatch[1].length;
-      const headingText = headingMatch[2];
-      const headingClass = level === 1 ? 'text-[1.05rem]' : level === 2 ? 'text-[1rem]' : 'text-[0.95rem]';
-      nodes.push(
-        <p key={`${keyPrefix}-h-${i}`} className={`font-semibold mt-1 ${headingClass}`}>
-          {renderInlineMarkdown(headingText, `${keyPrefix}-h-inline-${i}`)}
-        </p>,
-      );
-      i += 1;
-      continue;
-    }
-
-    if (/^\s*[-*+]\s+/.test(line)) {
-      const items = [];
-      while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*[-*+]\s+/, ''));
-        i += 1;
-      }
-      nodes.push(
-        <ul key={`${keyPrefix}-ul-${i}`} className="list-disc pl-5 space-y-1 my-1">
-          {items.map((item, idx) => (
-            <li key={`${keyPrefix}-ul-item-${i}-${idx}`}>{renderInlineMarkdown(item, `${keyPrefix}-ul-inline-${i}-${idx}`)}</li>
-          ))}
-        </ul>,
-      );
-      continue;
-    }
-
-    if (/^\s*\d+\.\s+/.test(line)) {
-      const items = [];
-      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
-        items.push(lines[i].replace(/^\s*\d+\.\s+/, ''));
-        i += 1;
-      }
-      nodes.push(
-        <ol key={`${keyPrefix}-ol-${i}`} className="list-decimal pl-5 space-y-1 my-1">
-          {items.map((item, idx) => (
-            <li key={`${keyPrefix}-ol-item-${i}-${idx}`}>{renderInlineMarkdown(item, `${keyPrefix}-ol-inline-${i}-${idx}`)}</li>
-          ))}
-        </ol>,
-      );
-      continue;
-    }
-
-    if (!line.trim()) {
-      nodes.push(<div key={`${keyPrefix}-sp-${i}`} className="h-2" />);
-      i += 1;
-      continue;
-    }
-
-    const paragraph = [line];
-    i += 1;
-    while (
-      i < lines.length &&
-      lines[i].trim() &&
-      !/^```/.test(lines[i]) &&
-      !/^\$\$\s*$/.test(lines[i]) &&
-      !/^(#{1,3})\s+/.test(lines[i]) &&
-      !/^\s*[-*+]\s+/.test(lines[i]) &&
-      !/^\s*\d+\.\s+/.test(lines[i])
-    ) {
-      paragraph.push(lines[i]);
-      i += 1;
-    }
-
-    nodes.push(
-      <p key={`${keyPrefix}-p-${i}`} className="leading-7">
-        {renderInlineMarkdown(paragraph.join(' '), `${keyPrefix}-p-inline-${i}`)}
-      </p>,
-    );
-  }
-
-  return <div className="space-y-1">{nodes}</div>;
-};
 
 export default function AIPage() {
   const [chats, setChats] = useState(() => getStoredChats());
@@ -954,8 +750,64 @@ export default function AIPage() {
                               : 'border-red-500/50 text-red-300 bg-red-900/20'
                           }`}
                       >
-                        {richMessage ? renderMessageContent(message.content, message.id) : (
-                          <div className="whitespace-pre-wrap">{message.content}</div>
+                        {richMessage ? (
+                          <ErrorBoundary>
+                            <div className="space-y-3 leading-7">
+                              <ReactMarkdown
+                                remarkPlugins={[remarkGfm, remarkMath]}
+                                rehypePlugins={[rehypeKatex]}
+                                components={{
+                                  p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                  a: ({ node, ...props }) => <a className="text-blue-400 hover:underline hover:text-blue-300 transition-colors" target="_blank" rel="noopener noreferrer" {...props} />,
+                                  ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-1 my-2" {...props} />,
+                                  ol: ({ node, ...props }) => <ol className="list-decimal pl-5 space-y-1 my-2" {...props} />,
+                                  li: ({ node, ...props }) => <li className="" {...props} />,
+                                  h1: ({ node, ...props }) => <h1 className="text-xl font-bold mt-4 mb-2" {...props} />,
+                                  h2: ({ node, ...props }) => <h2 className="text-lg font-bold mt-4 mb-2" {...props} />,
+                                  h3: ({ node, ...props }) => <h3 className="text-base font-bold mt-3 mb-1" {...props} />,
+                                  h4: ({ node, ...props }) => <h4 className="text-sm font-bold mt-3 mb-1" {...props} />,
+                                  h5: ({ node, ...props }) => <h5 className="text-sm font-semibold mt-2 mb-1 uppercase tracking-wide opacity-80" {...props} />,
+                                  h6: ({ node, ...props }) => <h6 className="text-xs font-semibold mt-2 mb-1 uppercase tracking-wide opacity-70" {...props} />,
+                                  hr: ({ node, ...props }) => <hr className="border-t border-black/10 dark:border-white/10 my-4" {...props} />,
+                                  blockquote: ({ node, ...props }) => (
+                                    <blockquote className="border-l-4 border-emerald-500/50 pl-4 py-1 my-3 bg-emerald-500/5 rounded-r-lg italic opacity-90" {...props} />
+                                  ),
+                                  code: ({ node, inline, className, children, ...props }) => {
+                                    const match = /language-(\w+)/.exec(className || '');
+                                    return !inline ? (
+                                      <div className="my-3 overflow-hidden rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/40">
+                                        <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/10 dark:border-white/10 bg-black/5 dark:bg-black/50 text-[0.75rem] font-mono text-black/60 dark:text-white/60">
+                                          <span>{match ? match[1] : 'text'}</span>
+                                        </div>
+                                        <pre className="p-4 overflow-x-auto text-[0.85rem] leading-6 font-mono">
+                                          <code className={className} {...props}>
+                                            {children}
+                                          </code>
+                                        </pre>
+                                      </div>
+                                    ) : (
+                                      <code className="px-1.5 py-0.5 mx-0.5 rounded-md bg-black/10 dark:bg-black/30 text-[0.88em] font-mono" {...props}>
+                                        {children}
+                                      </code>
+                                    );
+                                  },
+                                  table: ({ node, ...props }) => (
+                                    <div className="my-4 overflow-x-auto rounded-xl border border-black/10 dark:border-white/10">
+                                      <table className="min-w-full text-sm text-left" {...props} />
+                                    </div>
+                                  ),
+                                  thead: ({ node, ...props }) => <thead className="bg-black/5 dark:bg-black/40" {...props} />,
+                                  th: ({ node, ...props }) => <th className="px-4 py-3 font-semibold border-b border-black/10 dark:border-white/10" {...props} />,
+                                  td: ({ node, ...props }) => <td className="px-4 py-2 border-b border-black/5 dark:border-white/5 last:border-b-0 align-top" {...props} />,
+                                  del: ({ node, ...props }) => <del className="line-through opacity-70" {...props} />,
+                                }}
+                              >
+                                {message.content}
+                              </ReactMarkdown>
+                            </div>
+                          </ErrorBoundary>
+                        ) : (
+                          <div className="whitespace-pre-wrap leading-7">{message.content}</div>
                         )}
                       </div>
 

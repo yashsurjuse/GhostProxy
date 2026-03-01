@@ -134,8 +134,11 @@ const InfoPanel = () => {
             <li>- MercuryWorkshop/epoxy-transport</li>
             <li>- MercuryWorkshop/libcurl-transport</li>
             <li>- titaniumnetwork-dev/Ultraviolet</li>
-            <li>- pmndrs/zustand</li>
+            <li>- PMNDRS/zustand</li>
             <li>- lucide-icons/lucide</li>
+            <li>- remarkjs/react-markdown</li>
+            <li>- remarkjs/remark-gfm</li>
+            <li>- remarkjs/remark-math & rehypejs/rehype-katex</li>
             <li>- Headless UI, MUI, JSZip</li>
             <li>- React, Vite, Tailwind ecosystem packages</li>
           </ul>

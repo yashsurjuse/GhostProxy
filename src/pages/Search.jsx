@@ -7,6 +7,7 @@ import loaderStore from '/src/utils/hooks/loader/useLoaderStore';
 import { process } from '/src/utils/hooks/loader/utils';
 import { useOptions } from '../utils/optionsContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEffectiveShortcuts, eventToShortcut, isTypingTarget } from '/src/utils/shortcuts';
 import {
@@ -94,22 +95,54 @@ const sanitizeHydratedUrl = (raw) => {
   return process(value, false, opts.prType || 'auto', opts.engine || null);
 };
 
-const SidebarButton = ({ label, onClick, children, className = '', iconSize = 16, hideTooltip = false }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`group relative w-8 h-8 rounded-lg text-white/82 hover:text-white hover:bg-white/8 transition-all duration-150 flex items-center justify-center ${className}`}
-  >
-    <span className="flex items-center justify-center" style={{ fontSize: iconSize }}>
-      {children}
-    </span>
-    {!hideTooltip && (
-      <div className="pointer-events-none absolute left-[calc(100%+10px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md border border-white/10 bg-[#0b0d12] px-2.5 py-1.5 text-[11px] font-medium text-white/90 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 z-[160]">
-        {label}
-      </div>
-    )}
-  </button>
-);
+const SidebarButton = ({ label, onClick, children, className = '', iconSize = 16, hideTooltip = false }) => {
+  const [hovered, setHovered] = useState(false);
+  const btnRef = useRef(null);
+
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, height: 0 });
+
+  useEffect(() => {
+    if (hovered && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setCoords({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
+    }
+  }, [hovered]);
+
+  return (
+    <button
+      ref={btnRef}
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={`relative w-8 h-8 rounded-lg text-white/82 hover:text-white hover:bg-white/8 transition-all duration-150 flex items-center justify-center shrink-0 ${className}`}
+    >
+      <span className="flex items-center justify-center" style={{ fontSize: iconSize }}>
+        {children}
+      </span>
+      {!hideTooltip && typeof window !== 'undefined' && btnRef.current && typeof document !== 'undefined' && createPortal(
+        <div
+          className={`pointer-events-none fixed z-[99999] whitespace-nowrap rounded-md border border-white/10 bg-[#0b0d12] px-2.5 py-1.5 text-[11px] font-medium text-white/90 shadow-xl transition-all duration-150 ${hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            }`}
+          style={{
+            top: window.innerWidth < 768
+              ? coords.top
+              : coords.top + coords.height / 2,
+            left: window.innerWidth < 768
+              ? coords.left + coords.width / 2
+              : coords.left + coords.width + 10,
+            transform: window.innerWidth < 768
+              ? `translate(-50%, calc(-100% - ${hovered ? '10px' : '4px'}))`
+              : `translate(${hovered ? '0px' : '-4px'}, -50%)`,
+          }}
+        >
+          {label}
+        </div>,
+        document.body
+      )}
+    </button>
+  );
+};
 
 export default function Loader({ url, ui = true, zoom }) {
   useReg();
@@ -134,8 +167,42 @@ export default function Loader({ url, ui = true, zoom }) {
   const [changelogRender, setChangelogRender] = useState(false);
   const [changelogAnim, setChangelogAnim] = useState(false);
   const [ghostMenuOpen, setGhostMenuOpen] = useState(false);
-  const [devOptionsOpen, setDevOptionsOpen] = useState(false);
   const [adBlockPopupOpen, setAdBlockPopupOpen] = useState(false);
+  const [devOptionsOpen, setDevOptionsOpen] = useState(false);
+
+  const [popupCoords, setPopupCoords] = useState({
+    ghost: { top: 0, left: 0, right: 0 },
+    adBlock: { top: 0, left: 0, right: 0 },
+    dev: { top: 0, left: 0, right: 0 }
+  });
+
+  const updatePopupCoords = useCallback(() => {
+    setPopupCoords({
+      ghost: ghostMenuRef.current ? {
+        top: ghostMenuRef.current.getBoundingClientRect().top,
+        left: ghostMenuRef.current.getBoundingClientRect().left,
+        right: ghostMenuRef.current.getBoundingClientRect().right
+      } : { top: 0, left: 0, right: 0 },
+      adBlock: adBlockPopupRef.current ? {
+        top: adBlockPopupRef.current.getBoundingClientRect().top,
+        left: adBlockPopupRef.current.getBoundingClientRect().left,
+        right: adBlockPopupRef.current.getBoundingClientRect().right
+      } : { top: 0, left: 0, right: 0 },
+      dev: devOptionsRef.current ? {
+        top: devOptionsRef.current.getBoundingClientRect().top,
+        left: devOptionsRef.current.getBoundingClientRect().left,
+        right: devOptionsRef.current.getBoundingClientRect().right
+      } : { top: 0, left: 0, right: 0 }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (ghostMenuOpen || adBlockPopupOpen || devOptionsOpen) {
+      updatePopupCoords();
+      window.addEventListener('resize', updatePopupCoords);
+      return () => window.removeEventListener('resize', updatePopupCoords);
+    }
+  }, [ghostMenuOpen, adBlockPopupOpen, devOptionsOpen, updatePopupCoords]);
   const [geforceHelpOpen, setGeforceHelpOpen] = useState(false);
   const [geforceHelpDismissed, setGeforceHelpDismissed] = useState({});
   const [showDocsPopup, setShowDocsPopup] = useState(false);
@@ -815,7 +882,7 @@ export default function Loader({ url, ui = true, zoom }) {
     const fetchIpMeta = async () => {
 
       const providers = [
-        { url: 'https://ipwho.is/', source: 'ipwho' },
+        { url: 'https://whatismyipaddress.com/', source: 'ip' },
         { url: 'https://ipinfo.io/json', source: 'ipinfo' },
       ];
 
@@ -1404,15 +1471,20 @@ export default function Loader({ url, ui = true, zoom }) {
 
   return (
     <div
-      className="flex w-full h-full"
+      className="flex flex-col-reverse md:flex-row w-full h-full"
       style={{ color: options.siteTextColor || '#a0b0c8' }}
     >
       {ui && (
         <aside
-          className="w-[52px] h-full flex flex-col items-center px-1.5 py-2.5 z-[140] border-r border-white/10"
+          className="w-full h-auto md:w-[52px] md:h-full flex flex-row md:flex-col items-center px-1.5 md:py-2.5 z-[140] border-t md:border-t-0 md:border-r border-white/10 shrink-0 overflow-x-auto md:overflow-x-hidden md:overflow-y-auto hide-scrollbar"
           style={{ backgroundColor: options.tabBarColor || '#070e15' }}
+          onScroll={(e) => {
+            setGhostMenuOpen(false);
+            setAdBlockPopupOpen(false);
+            setDevOptionsOpen(false);
+          }}
         >
-          <div className="relative" ref={ghostMenuRef}>
+          <div className="relative shrink-0 md:pt-0" ref={ghostMenuRef}>
             <SidebarButton
               label="Ghost Menu"
               onClick={() => setGhostMenuOpen((prev) => !prev)}
@@ -1429,58 +1501,66 @@ export default function Loader({ url, ui = true, zoom }) {
               />
             </SidebarButton>
 
-            <div
-              className={`absolute left-[calc(100%+2px)] top-0 w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition-all duration-150 ${ghostMenuOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-1 pointer-events-none'}`}
-            >
-              <div className="px-2.5 py-1.5 mb-1 rounded-lg border border-white/10 bg-[#111722]">
-                <div className="text-[11px] font-semibold tracking-wide text-white/90 flex items-center justify-between">
-                  <span>{menuTimeLabel}</span>
-                  <span className="inline-flex items-center gap-1 opacity-85">
-                    <Battery size={12} />
-                    {Number.isFinite(batteryInfo.level) ? `${batteryInfo.level}%` : '--'}
-                  </span>
+            {typeof document !== 'undefined' && createPortal(
+              <div
+                className={`fixed z-[9999] w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition-all duration-150 origin-bottom-left md:origin-top-left ${ghostMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                style={{
+                  top: window.innerWidth < 768 ? Math.max(0, popupCoords.ghost.top - 220) : Math.min(popupCoords.ghost.top, window.innerHeight - 300),
+                  bottom: window.innerWidth < 768 ? 'auto' : 'auto',
+                  left: window.innerWidth < 768 ? Math.max(0, popupCoords.ghost.left - 80) : popupCoords.ghost.right + 2
+                }}
+              >
+                <div className="px-2.5 py-1.5 mb-1 rounded-lg border border-white/10 bg-[#111722]">
+                  <div className="text-[11px] font-semibold tracking-wide text-white/90 flex items-center justify-between">
+                    <span>{menuTimeLabel}</span>
+                    <span className="inline-flex items-center gap-1 opacity-85">
+                      <Battery size={12} />
+                      {Number.isFinite(batteryInfo.level) ? `${batteryInfo.level}%` : '--'}
+                    </span>
+                  </div>
+                  <div className="mt-1 flex items-center justify-between text-[11px] text-white/80">
+                    <span className="truncate max-w-[7.2rem]">{ipMeta.city || 'Your Location'}</span>
+                    <span className="inline-flex items-center gap-1">
+                      {(() => {
+                        const WxIcon = weatherIcon;
+                        return <WxIcon size={12} />;
+                      })()}
+                      {Number.isFinite(menuWeather.temp)
+                        ? `${Math.round(menuWeather.temp)}°${weatherUnitLabel}`
+                        : '--'}
+                    </span>
+                  </div>
                 </div>
-                <div className="mt-1 flex items-center justify-between text-[11px] text-white/80">
-                  <span className="truncate max-w-[7.2rem]">{ipMeta.city || 'Your Location'}</span>
-                  <span className="inline-flex items-center gap-1">
-                    {(() => {
-                      const WxIcon = weatherIcon;
-                      return <WxIcon size={12} />;
-                    })()}
-                    {Number.isFinite(menuWeather.temp)
-                      ? `${Math.round(menuWeather.temp)}°${weatherUnitLabel}`
-                      : '--'}
-                  </span>
-                </div>
-              </div>
 
-              {[
-                { label: 'Home', action: () => navigateActiveTab('ghost://home') },
-                { label: 'Apps', action: () => navigateActiveTab('ghost://apps') },
-                { label: 'Games', action: () => navigateActiveTab('ghost://games') },
-                { label: 'TV', action: () => navigateActiveTab('ghost://tv') },
-                { label: 'Music', action: () => openDefaultMusicProvider() },
-                { label: 'Remote Access', action: () => navigateActiveTab('ghost://remote') },
-                { label: 'Artificial Intelligence', action: () => navigateActiveTab('ghost://ai') },
-                { label: 'Code Runner', action: () => navigateActiveTab('ghost://code') },
-                { label: 'Docs', action: () => navigateActiveTab('ghost://docs') },
-                { label: 'Settings', action: () => navigateActiveTab('ghost://settings') },
-              ].map((item) => (
-                <button
-                  key={item.label}
-                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors"
-                  onClick={() => {
-                    item.action();
-                    setGhostMenuOpen(false);
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
+                {[
+                  { label: 'Home', action: () => navigateActiveTab('ghost://home') },
+                  { label: 'Apps', action: () => navigateActiveTab('ghost://apps') },
+                  { label: 'Games', action: () => navigateActiveTab('ghost://games') },
+                  { label: 'TV', action: () => navigateActiveTab('ghost://tv') },
+                  { label: 'Music', action: () => openDefaultMusicProvider() },
+                  { label: 'Remote Access', action: () => navigateActiveTab('ghost://remote') },
+                  { label: 'Artificial Intelligence', action: () => navigateActiveTab('ghost://ai') },
+                  { label: 'Code Runner', action: () => navigateActiveTab('ghost://code') },
+                  { label: 'Docs', action: () => navigateActiveTab('ghost://docs') },
+                  { label: 'Settings', action: () => navigateActiveTab('ghost://settings') },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors"
+                    onClick={() => {
+                      item.action();
+                      setGhostMenuOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>,
+              document.body
+            )}
           </div>
 
-          <div className="mt-2 flex flex-col items-center gap-2">
+          <div className="ml-2 md:mt-2 md:ml-0 flex flex-row md:flex-col items-center gap-2 shrink-0">
             {options?.sidebarToggles?.showApps !== false && (
               <SidebarButton label="Apps" onClick={() => navigateActiveTab('ghost://apps')}>
                 <Blocks size={16} />
@@ -1539,9 +1619,9 @@ export default function Loader({ url, ui = true, zoom }) {
             )}
           </div>
 
-          <div className="my-6 w-7 h-[2px] rounded-full bg-white/20" />
+          <div className="shrink-0 mx-2 md:my-6 md:mx-0 w-[2px] md:w-7 h-5 md:h-[2px] rounded-full bg-white/20" />
 
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-row md:flex-col items-center gap-2 shrink-0">
             {options?.sidebarToggles?.showBookmarks !== false && (
               <SidebarButton label="Bookmarks" onClick={() => window.dispatchEvent(new Event('ghost-open-bookmarks'))}>
                 <BookOpen size={16} />
@@ -1551,99 +1631,123 @@ export default function Loader({ url, ui = true, zoom }) {
               <div className="relative" ref={adBlockPopupRef}>
                 <SidebarButton
                   label="Ad Block"
-                  onClick={() => setAdBlockPopupOpen((prev) => !prev)}
+                  onClick={() => {
+                    if (window.innerWidth >= 768) {
+                      setAdBlockPopupOpen((prev) => !prev);
+                    }
+                  }}
                   hideTooltip={adBlockPopupOpen}
                 >
                   <ShieldMinus size={16} />
                 </SidebarButton>
-                <div
-                  className={`absolute left-[calc(100%+8px)] top-0 w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-                >
-                  {currentSitePolicy?.site ? (
-                    <>
-                      <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
-                      <button
-                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                        onClick={() =>
-                          updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
-                        }
-                      >
-                        <span>Ad Block</span>
-                        <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
-                          {currentSitePolicy.adBlock ? 'On' : 'Off'}
-                        </span>
-                      </button>
-                      <button
-                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                        onClick={() =>
-                          updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
-                        }
-                      >
-                        <span>Popup Blocker</span>
-                        <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
-                          {currentSitePolicy.popupBlock ? 'On' : 'Off'}
-                        </span>
-                      </button>
-                      <button
-                        className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                        onClick={() =>
-                          updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
-                        }
-                      >
-                        <span>Download Blocker</span>
-                        <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
-                          {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
-                        </span>
-                      </button>
-                    </>
-                  ) : (
-                    <p className="text-[12px] opacity-70 px-2.5 py-2">
-                      Ad block not available on internal Ghost pages.
-                    </p>
-                  )}
-                </div>
+                {typeof document !== 'undefined' && createPortal(
+                  <div
+                    className={`fixed z-[9999] w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-bottom md:origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                    style={{
+                      top: window.innerWidth < 768 ? Math.max(0, popupCoords.adBlock.top - 160) : Math.min(popupCoords.adBlock.top, window.innerHeight - 200),
+                      bottom: window.innerWidth < 768 ? 'auto' : 'auto',
+                      left: window.innerWidth < 768 ? Math.max(0, popupCoords.adBlock.left - 100) : popupCoords.adBlock.right + 8
+                    }}
+                  >
+                    {currentSitePolicy?.site ? (
+                      <>
+                        <p className="text-[11px] opacity-70 px-2.5 pb-2 break-all">Site: {currentSitePolicy.site.label}</p>
+                        <button
+                          className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                          onClick={() =>
+                            updateCurrentSitePolicy({ adBlock: !currentSitePolicy.adBlock })
+                          }
+                        >
+                          <span>Ad Block</span>
+                          <span className={currentSitePolicy.adBlock ? 'text-emerald-400' : 'text-white/55'}>
+                            {currentSitePolicy.adBlock ? 'On' : 'Off'}
+                          </span>
+                        </button>
+                        <button
+                          className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                          onClick={() =>
+                            updateCurrentSitePolicy({ popupBlock: !currentSitePolicy.popupBlock })
+                          }
+                        >
+                          <span>Popup Blocker</span>
+                          <span className={currentSitePolicy.popupBlock ? 'text-emerald-400' : 'text-white/55'}>
+                            {currentSitePolicy.popupBlock ? 'On' : 'Off'}
+                          </span>
+                        </button>
+                        <button
+                          className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                          onClick={() =>
+                            updateCurrentSitePolicy({ downloadBlock: !currentSitePolicy.downloadBlock })
+                          }
+                        >
+                          <span>Download Blocker</span>
+                          <span className={currentSitePolicy.downloadBlock ? 'text-emerald-400' : 'text-white/55'}>
+                            {currentSitePolicy.downloadBlock ? 'On' : 'Off'}
+                          </span>
+                        </button>
+                      </>
+                    ) : (
+                      <p className="text-[12px] opacity-70 px-2.5 py-2">
+                        Ad block not available on internal Ghost pages.
+                      </p>
+                    )}
+                  </div>,
+                  document.body
+                )}
               </div>
             )}
             {options?.sidebarToggles?.showDevOptions !== false && (
               <div className="relative" ref={devOptionsRef}>
                 <SidebarButton
                   label="Developer Options"
-                  onClick={() => setDevOptionsOpen((prev) => !prev)}
+                  onClick={() => {
+                    if (window.innerWidth >= 768) {
+                      setDevOptionsOpen((prev) => !prev);
+                    }
+                  }}
                   hideTooltip={devOptionsOpen}
                 >
                   <Wrench size={16} />
                 </SidebarButton>
-                <div
-                  className={`absolute left-[calc(100%+8px)] top-0 w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-left ${devOptionsOpen ? 'opacity-100 scale-100 translate-x-0 pointer-events-auto' : 'opacity-0 scale-95 -translate-x-1 pointer-events-none'}`}
-                >
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                    onClick={() => {
-                      openDevToolsForActiveTab();
-                      setDevOptionsOpen(false);
+                {typeof document !== 'undefined' && createPortal(
+                  <div
+                    className={`fixed z-[9999] w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-bottom-right md:origin-left ${devOptionsOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                    style={{
+                      top: window.innerWidth < 768 ? Math.max(0, popupCoords.dev.top - 140) : Math.min(popupCoords.dev.top, window.innerHeight - 150),
+                      bottom: window.innerWidth < 768 ? 'auto' : 'auto',
+                      left: window.innerWidth < 768 ? Math.max(0, popupCoords.dev.left - 50) : popupCoords.dev.right + 8
                     }}
                   >
-                    <Wrench size={14} /> DevTools
-                  </button>
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
-                    onClick={() => {
-                      navigateActiveTab('ghost://code');
-                      setDevOptionsOpen(false);
-                    }}
-                  >
-                    <Code2 size={14} /> Code Runner
-                  </button>
-                  <button
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
-                    onClick={() => updateOption({ debugMode: !options.debugMode })}
-                  >
-                    <span>Debug Mode</span>
-                    <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
-                      {options.debugMode ? 'On' : 'Off'}
-                    </span>
-                  </button>
-                </div>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                      onClick={() => {
+                        openDevToolsForActiveTab();
+                        setDevOptionsOpen(false);
+                      }}
+                    >
+                      <Wrench size={14} /> DevTools
+                    </button>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center gap-2"
+                      onClick={() => {
+                        navigateActiveTab('ghost://code');
+                        setDevOptionsOpen(false);
+                      }}
+                    >
+                      <Code2 size={14} /> Code Runner
+                    </button>
+                    <button
+                      className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors flex items-center justify-between"
+                      onClick={() => updateOption({ debugMode: !options.debugMode })}
+                    >
+                      <span>Debug Mode</span>
+                      <span className={options.debugMode ? 'text-emerald-400' : 'text-white/60'}>
+                        {options.debugMode ? 'On' : 'Off'}
+                      </span>
+                    </button>
+                  </div>,
+                  document.body
+                )}
               </div>
             )}
             {options?.sidebarToggles?.showHistory !== false && (
@@ -1653,7 +1757,7 @@ export default function Loader({ url, ui = true, zoom }) {
             )}
           </div>
 
-          <div className="mt-auto flex flex-col items-center gap-2 pb-1">
+          <div className="ml-auto md:mt-auto md:ml-0 flex flex-row md:flex-col items-center gap-2 shrink-0 pr-1 md:pr-0 md:pb-1">
             {options?.sidebarToggles?.showChangelog !== false && (
               <SidebarButton label="Changelog" onClick={() => setIsChangelogOpen(true)}>
                 <Sparkles size={16} />

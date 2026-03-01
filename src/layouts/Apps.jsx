@@ -238,7 +238,7 @@ const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemSt
           <LayoutGrid className="w-full h-full" />
         ) : (
           <img
-            src={app.icon}
+            src={app.icon && String(app.icon).includes('placeholder.com') ? '' : app.icon}
             draggable="false"
             loading="lazy"
             className="w-full h-full object-cover"
