@@ -123,7 +123,7 @@ const SidebarButton = ({ label, onClick, children, className = '', iconSize = 16
       </span>
       {!hideTooltip && typeof window !== 'undefined' && btnRef.current && typeof document !== 'undefined' && createPortal(
         <div
-          className={`pointer-events-none fixed z-[99999] whitespace-nowrap rounded-md border border-white/10 bg-[#0b0d12] px-2.5 py-1.5 text-[11px] font-medium text-white/90 shadow-xl transition-all duration-150 ${hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          className={`pointer-events-none fixed z-[99999] whitespace-nowrap rounded-md border border-white/10 bg-[#0b0d12] px-2.5 py-1.5 text-[11px] font-medium text-white/90 shadow-xl transition duration-150 ${hovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
             }`}
           style={{
             top: window.innerWidth < 768
