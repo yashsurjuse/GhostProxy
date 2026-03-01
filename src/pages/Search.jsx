@@ -101,19 +101,20 @@ const SidebarButton = ({ label, onClick, children, className = '', iconSize = 16
 
   const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, height: 0 });
 
-  useEffect(() => {
-    if (hovered && btnRef.current) {
+  const handleMouseEnter = () => {
+    if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
       setCoords({ top: rect.top, left: rect.left, width: rect.width, height: rect.height });
     }
-  }, [hovered]);
+    setHovered(true);
+  };
 
   return (
     <button
       ref={btnRef}
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
       className={`relative w-8 h-8 rounded-lg text-white/82 hover:text-white hover:bg-white/8 transition-all duration-150 flex items-center justify-center shrink-0 ${className}`}
     >
