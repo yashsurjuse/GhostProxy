@@ -7,6 +7,24 @@ import Bookmarks from '../Bookmarks';
 import { createId } from '/src/utils/id';
 import { process } from '/src/utils/hooks/loader/utils';
 
+const INTERNAL_GHOST_PATHS = ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'];
+
+const isInternalGhostTabUrl = (urlValue) => {
+  const raw = String(urlValue || '').trim();
+  if (!raw || raw === 'tabs://new') return true;
+  if (raw.startsWith('ghost://') || raw.startsWith('tabs://')) return true;
+
+  try {
+    const parsed = new URL(raw, location.origin);
+    if (parsed.origin !== location.origin) return false;
+    if (parsed.searchParams.get('ghost') === '1') return true;
+    const path = parsed.pathname.replace(/\/$/, '') || '/';
+    return INTERNAL_GHOST_PATHS.some((base) => path === base || path.startsWith(`${base}/`));
+  } catch {
+    return false;
+  }
+};
+
 const devTools = (fr) => {
   if (!fr?.contentWindow || !fr?.contentDocument) return;
 
@@ -51,6 +69,8 @@ export default function Menu() {
   } = loaderStore();
   const { options } = useOptions();
   const [showBookmarks, setShowBm] = useState(false);
+  const activeTab = tabs.find((tab) => tab.active) || tabs[0] || null;
+  const devToolsBlockedForInternalPage = isInternalGhostTabUrl(activeTab?.url);
 
   const newTab = useCallback(() => {
     if (tabs.length < 20) {
@@ -74,8 +94,9 @@ export default function Menu() {
   }, [tabs, removeTab, newTab]);
 
   const togEruda = useCallback(() => {
+    if (devToolsBlockedForInternalPage) return;
     activeFrameRef?.current && devTools(activeFrameRef.current);
-  }, [activeFrameRef]);
+  }, [activeFrameRef, devToolsBlockedForInternalPage]);
 
   const items = [
     {
@@ -108,7 +129,7 @@ export default function Menu() {
       name: 'DevTools',
       shortcut: 'alt + shift + i',
       fn: togEruda,
-      disabled: !activeFrameRef?.current,
+      disabled: !activeFrameRef?.current || devToolsBlockedForInternalPage,
       divider: true,
     },
     {
