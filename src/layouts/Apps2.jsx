@@ -22,7 +22,10 @@ const WHITE_MUSIC_ICON = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/
 
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles, actionLabel = 'Play', options }) => {
   const [loaded, setLoaded] = useState(false);
-  const hideIcon = !!options?.performanceMode || !!app.noIcon;
+  const iconStr = String(app.icon || '');
+  const isGhostIcon = app.icon && /ghost/i.test(iconStr);
+  const isLocalPublicIcon = app.icon && /^\/[^\/]/.test(iconStr);
+  const hideIcon = (!isGhostIcon && !isLocalPublicIcon && !!options?.performanceMode) || !!app.noIcon;
 
   return (
     <div
@@ -732,7 +735,7 @@ const Games = memo(() => {
                   onClick={() => openSourceGame(game)}
                   className="group relative rounded-2xl border border-white/12 bg-[#111a27] overflow-hidden aspect-[16/10] shadow-[0_8px_22px_rgba(0,0,0,0.24)] hover:shadow-[0_14px_30px_rgba(0,0,0,0.36)] hover:-translate-y-0.5 transition-all"
                 >
-                  {game.icon && !game.noIcon && !options.performanceMode ? (
+                  {game.icon && !game.noIcon && (!options.performanceMode || /ghost/i.test(String(game.icon)) || /^\/[^\/]/.test(String(game.icon))) ? (
                     <img src={game.icon} alt={game.appName} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center px-2 text-center text-sm font-semibold opacity-90">

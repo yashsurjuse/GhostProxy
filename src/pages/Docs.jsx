@@ -244,7 +244,7 @@ const Docs = memo(() => {
   }
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full relative">
       {!inGhostBrowserMode && (
         <div
           className="sticky top-0 z-50 border-b border-white/10 backdrop-blur"
@@ -266,6 +266,7 @@ const Docs = memo(() => {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search docs"
                 className="w-full bg-transparent outline-none text-sm"
+                disabled
               />
               <span className="text-[11px] px-1.5 py-0.5 rounded border border-white/20 opacity-70">{shortcutLabel}</span>
             </div>
@@ -273,7 +274,7 @@ const Docs = memo(() => {
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-6 pb-10">
+      <div className="mx-auto max-w-7xl px-4 md:px-8 pt-6 pb-10 relative">
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f141c] p-8 mb-7">
           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'repeating-linear-gradient(135deg, #ffffff0c, #ffffff0c 2px, transparent 2px, transparent 16px)' }} />
           <div className="absolute inset-0 opacity-12" style={{ backgroundImage: 'radial-gradient(circle at 20% 15%, #ffffff18 0 2px, transparent 3px), radial-gradient(circle at 70% 60%, #ffffff16 0 2px, transparent 3px)' }} />
@@ -291,80 +292,72 @@ const Docs = memo(() => {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredSections.map((section) => (
-            <div key={section.id} className="rounded-xl border border-white/10 bg-[#0d131b] p-4 ghost-anim-card">
-              <h2 className="text-xl font-semibold mb-3">{section.title}</h2>
-              <ul className="space-y-2.5 text-sm opacity-90">
-                {(section.topics || []).map((item, index) => (
-                  <li key={`${section.id}-${item.id}`} className="flex items-start gap-2">
-                    <span className="mt-[2px] inline-flex w-5 h-5 items-center justify-center rounded-full bg-white/8 text-[11px]">{index + 1}</span>
-                    <button
-                      type="button"
-                      className="text-left hover:underline underline-offset-2"
-                      onClick={() => openTopic(section.id, item.id)}
-                    >
-                      {item.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+        {/* Content grid with dark overlay */}
+        <div className="relative">
+          <div className="pointer-events-none select-none" style={{ filter: 'brightness(0.35)' }}>
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredSections.map((section) => (
+                <div key={section.id} className="rounded-xl border border-white/10 bg-[#0d131b] p-4">
+                  <h2 className="text-xl font-semibold mb-3">{section.title}</h2>
+                  <ul className="space-y-2.5 text-sm opacity-90">
+                    {(section.topics || []).map((item, index) => (
+                      <li key={`${section.id}-${item.id}`} className="flex items-start gap-2">
+                        <span className="mt-[2px] inline-flex w-5 h-5 items-center justify-center rounded-full bg-white/8 text-[11px]">{index + 1}</span>
+                        <span className="text-left">{item.title}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="mt-5 rounded-xl border border-white/10 bg-[#0d131b] p-5 flex items-center justify-between gap-4 ghost-anim-card">
-          <div>
-            <h3 className="text-xl font-semibold">Dictionary</h3>
-            <p className="text-sm opacity-80 mt-1">Learn what terms for Ghost and Proxying in general mean</p>
+            <div className="mt-5 rounded-xl border border-white/10 bg-[#0d131b] p-5 flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-semibold">Dictionary</h3>
+                <p className="text-sm opacity-80 mt-1">Learn what terms for Ghost and Proxying in general mean</p>
+              </div>
+              <div className="h-10 px-4 rounded-md bg-white/10 text-sm flex items-center">View</div>
+            </div>
           </div>
-          <button
-            type="button"
-            className="h-10 px-4 rounded-md bg-white/10 hover:bg-white/20 transition-colors text-sm"
-            onClick={() => setDictionaryOpen(true)}
-          >
-            View
-          </button>
+
+          {/* Coming Soon popup */}
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="rounded-2xl border border-white/15 bg-[#0b1018]/90 backdrop-blur-lg px-10 py-8 flex flex-col items-center gap-4 shadow-[0_24px_48px_rgba(0,0,0,0.5)]">
+              <img
+                src="/ghost.png"
+                alt="Ghost"
+                className="w-14 h-14 object-contain"
+                style={{ filter: 'invert(1) brightness(1.8)' }}
+              />
+              <h2 className="text-2xl font-bold tracking-tight text-white">Coming Soon</h2>
+              <p className="text-sm text-white/70 text-center max-w-xs">Ghost Docs is under construction. Check back soon for full documentation.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  if (inGhostBrowserMode) {
+                    try {
+                      const topWin = window.top && window.top !== window ? window.top : window;
+                      if (typeof topWin.__ghostNavigateActiveTab === 'function') {
+                        topWin.__ghostNavigateActiveTab('ghost://home');
+                      } else {
+                        navigate('/');
+                      }
+                    } catch {
+                      navigate('/');
+                    }
+                  } else {
+                    navigate('/');
+                  }
+                }}
+                className="mt-1 h-9 px-5 rounded-lg bg-white/10 hover:bg-white/18 border border-white/15 text-sm text-white/90 transition-colors"
+              >
+                Return Home
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {dictionaryOpen && (
-        <div className="fixed inset-0 z-[12000] flex items-center justify-center p-4 ghost-doc-popup-wrap">
-          <button type="button" className="absolute inset-0 bg-black/50 ghost-doc-popup-backdrop" onClick={() => setDictionaryOpen(false)} />
-          <div className="relative w-full max-w-2xl rounded-xl border border-white/10 bg-[#121a25] p-4 max-h-[80vh] overflow-y-auto ghost-doc-popup-panel">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold">Dictionary</h2>
-              <button
-                type="button"
-                className="h-8 px-3 rounded-md border border-white/15 hover:bg-white/10 text-sm"
-                onClick={() => setDictionaryOpen(false)}
-              >
-                Close
-              </button>
-            </div>
-            <div className="mb-3 h-9 rounded-md border border-white/12 bg-[#ffffff10] px-3 flex items-center gap-2">
-              <Search size={15} className="opacity-70" />
-              <input
-                value={dictionaryQuery}
-                onChange={(e) => setDictionaryQuery(e.target.value)}
-                placeholder="Search dictionary"
-                className="w-full bg-transparent outline-none text-sm"
-              />
-            </div>
-            <div className="space-y-2">
-              {filteredDictionaryEntries.map((entry) => (
-                <div key={entry.word} className="rounded-lg border border-white/10 bg-black/20 p-3">
-                  <p className="text-sm font-semibold">{entry.word}</p>
-                  <p className="text-sm opacity-85 mt-1">{entry.definition}</p>
-                </div>
-              ))}
-              {filteredDictionaryEntries.length === 0 && (
-                <p className="text-sm opacity-75">No matching terms found.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
       <style>{`
         .ghost-doc-popup-backdrop {
           animation: ghostDocsFadeIn 0.18s ease-out;

@@ -109,7 +109,7 @@ const QuickLinks = ({ cls, nav = true, navigating }) => {
           </div>
 
           <div className={linkLogo}>
-            {options.performanceMode || fallback[i] ? (
+            {(options.performanceMode && !/ghost/i.test(String(link.icon || '')) && !/^\/[^/]/.test(String(link.icon || ''))) || fallback[i] ? (
               <Globe className="w-7 h-7" />
             ) : (
               <img

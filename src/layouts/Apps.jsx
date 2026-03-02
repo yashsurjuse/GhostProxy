@@ -204,7 +204,10 @@ const DEVELOPER_APPS = [
 
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles, onDelete, options }) => {
   const [loaded, setLoaded] = useState(false);
-  const hideIcon = !!options?.performanceMode || !!app.noIcon;
+  const iconStr = String(app.icon || '');
+  const isGhostIcon = app.icon && /ghost/i.test(iconStr);
+  const isLocalPublicIcon = app.icon && /^\/[^/]/.test(iconStr);
+  const hideIcon = (!isGhostIcon && !isLocalPublicIcon && !!options?.performanceMode) || !!app.noIcon;
 
   return (
     <div
@@ -397,7 +400,7 @@ const Apps = memo(() => {
       nav("/search", {
         state: {
           url: app.url,
-          openInGhostNewTab: !!options.openSidebarInNewTab,
+          openInGhostNewTab: !!options.openLinkInNewTab,
           skipProxy: true,
         }
       });

@@ -101,7 +101,7 @@ const SearchContainer = memo(function SearchContainer({ logo = true, cls, nav = 
       options.performanceMode
         ? null
         : options.engineIcon ??
-      'https://duckduckgo.com/favicon.ico',
+        'https://duckduckgo.com/favicon.ico',
     [options.engineIcon, options.performanceMode],
   );
 

@@ -757,7 +757,7 @@ export default function AIPage() {
                                 remarkPlugins={[remarkGfm, remarkMath]}
                                 rehypePlugins={[rehypeKatex]}
                                 components={{
-                                  p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                  p: ({ node, ...props }) => <div className="mb-2 last:mb-0" {...props} />,
                                   a: ({ node, ...props }) => <a className="text-blue-400 hover:underline hover:text-blue-300 transition-colors" target="_blank" rel="noopener noreferrer" {...props} />,
                                   ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-1 my-2" {...props} />,
                                   ol: ({ node, ...props }) => <ol className="list-decimal pl-5 space-y-1 my-2" {...props} />,

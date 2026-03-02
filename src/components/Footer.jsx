@@ -174,7 +174,7 @@ const Footer = memo(() => {
             diagnosticsOpen ? 'translate-y-[-1px]' : '',
           )}
         >
-          <span className="opacity-70">Wisp Latency:</span>
+          <span className="opacity-70">Server Latency:</span>
           <span className="text-[#22c55e] font-medium ml-1">{latency}ms</span>
           <button
             className="opacity-70 hover:opacity-100 transition-opacity"
@@ -192,10 +192,8 @@ const Footer = memo(() => {
             diagnosticsOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-1 pointer-events-none',
           )}
         >
-          <p className="text-[11px] uppercase tracking-wide opacity-60 mb-2">Wisp Diagnostics</p>
+          <p className="text-[11px] uppercase tracking-wide opacity-60 mb-2">Server Diagnostics</p>
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between"><span className="opacity-75">Stutter</span><span>{diagnostics.stutter}%</span></div>
-            <div className="flex items-center justify-between"><span className="opacity-75">Packet Loss</span><span>{diagnostics.packetLoss}%</span></div>
             <div className="flex items-center justify-between"><span className="opacity-75">Jitter</span><span>{diagnostics.jitter}ms</span></div>
             <div className="flex items-center justify-between"><span className="opacity-75">Samples</span><span>{probeStats.attempts}</span></div>
           </div>

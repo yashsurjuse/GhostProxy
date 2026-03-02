@@ -7,6 +7,8 @@ import SidebarEditor from './settings/components/SidebarEditor';
 import * as settings from '/src/data/settings';
 import PanicDialog from './PanicDialog';
 import ShortcutsDialog from './settings/components/ShortcutsDialog';
+import ExportDialog from './settings/components/ExportDialog';
+import ImportDialog from './settings/components/ImportDialog';
 import {
   ChevronDown,
   ChevronUp,
@@ -73,7 +75,7 @@ const InfoPanel = () => {
         <div>
           <p className="font-semibold mb-1">Core Team</p>
           <ul className="space-y-1 opacity-90">
-            <li>- yashcan (Lead Developer)</li>
+            <li>- Anonymous (Lead Developer)</li>
           </ul>
         </div>
 
@@ -86,8 +88,10 @@ const InfoPanel = () => {
             <li>- lucide-icons/lucide</li>
             <li>- pmndrs/zustand</li>
             <li>- Stuk/jszip</li>
+            <li>- remarkjs/react-markdown</li>
+            <li>- remarkjs/remark-gfm</li>
             <li>- movement.css</li>
-            <li>- React ecosystem (React, React Router, Vite)</li>
+            <li>- React ecosystem (React, React Router, Vite, HeadlessUI)</li>
           </ul>
         </div>
 
@@ -108,7 +112,7 @@ const InfoPanel = () => {
             <li>- Creator of Vapor v4 (took games from Vapor)</li>
             <li>- Creator of DayDreamX (heavily inspired by DayDreamX)</li>
             <li>
-              - Sidebar icon attribution:{' '}
+              - Ghost Icon attribution:{' '}
               <span
                 title="nightmare icons"
                 className="underline underline-offset-2"
@@ -151,9 +155,9 @@ const InfoPanel = () => {
     Legal: (
       <div className="space-y-3 text-sm opacity-90">
         <p>
-          We are not a legal entity or corporation. This was a tool made from open-sourced components by a kid
-          in his free time. We do not want to profit from you or deceive you. All code is available in our
-          GitHub (yashsurjuse/GhostProxy) and auditable.
+          We are not a legal entity or corporation. This was a tool made from open-sourced components by someone
+          in their free time. We do not want to profit from you or deceive you. All code is available in our
+          GitHub (anonymous/GhostProxy) and auditable.
         </p>
         <p>
           Because of this, we do not have a formal Terms of Service, Privacy Policy, etc. It’s as simple as this:
@@ -161,7 +165,7 @@ const InfoPanel = () => {
         <ul className="space-y-1">
           <li>- We advise you not to use our platform for illegal or bad intentions.</li>
           <li>- Anything you do on our platform is your responsibility, and you take full accountability for your actions.</li>
-          <li>- If you are forking our project, you MUST agree and follow the terms of our license (AGPL-3.0 license), and you MUST not fork our project for bad intent.</li>
+          <li>- If you are forking our project, you MUST agree and follow the terms of our license (AGPL-3.0 license), and you MAY NOT fork our project for bad intent.</li>
           <li>- We do not store any data on our servers. All data is local and can easily be deleted through settings.</li>
         </ul>
       </div>
@@ -170,15 +174,18 @@ const InfoPanel = () => {
       <div className="space-y-3 text-sm opacity-90">
         <p>All code is on GitHub.</p>
         <p>Like any Open Source Software, there is a risk you may be using a hacked version of Ghost. We reccomend you only put private information on links provided by Ghost, a source you trust, or yourself.</p>
-        <p>Contact me on Discord (username: yashcan)</p>
-        <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+        <p>Contact me on Discord (username: anonymous)</p>
+        <div className="rounded-lg border border-white/10 bg-black/20 p-3 relative overflow-hidden">
           <p className="font-semibold mb-2">Repositories</p>
           <ul className="space-y-1">
-            <li>- Frontend (website): yashsurjuse/GhostProxy</li>
-            <li>- WispServer (setting up your own proxy server): yashsurjuse/WispServer</li>
-            <li>- Ghost Remote Access (accessing your home PC remotely): yashsurjuse/RemoteAccess</li>
-            <li>- Cloud Saving (save data online): yashsurjuse/CloudSaving</li>
+            <li>- Frontend (website): anonymous/GhostProxy</li>
+            <li>- WispServer (setting up your own proxy server): anonymous/WispServer</li>
+            <li>- Ghost Remote Access (accessing your home PC remotely): anonymous/RemoteAccess</li>
+            <li>- Cloud Saving (save data online): anonymous/CloudSaving</li>
           </ul>
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px] flex items-center justify-center rounded-lg">
+            <p className="text-sm font-semibold text-white/80 tracking-wide">Not Open-Sourced in Beta...</p>
+          </div>
         </div>
       </div>
     ),
@@ -248,6 +255,8 @@ const Setting = ({ setting }) => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyQuery, setHistoryQuery] = useState('');
   const [dataOpen, setDataOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [cssEditorOpen, setCssEditorOpen] = useState(false);
   const [cssEditorRender, setCssEditorRender] = useState(false);
   const [cssEditorAnim, setCssEditorAnim] = useState(false);
@@ -327,6 +336,17 @@ const Setting = ({ setting }) => {
     const t = setTimeout(() => setCssEditorRender(false), 200);
     return () => clearTimeout(t);
   }, [cssEditorOpen]);
+
+  useEffect(() => {
+    const handleExport = () => setExportOpen(true);
+    const handleImport = () => setImportOpen(true);
+    window.addEventListener('ghost-export-data', handleExport);
+    window.addEventListener('ghost-import-data', handleImport);
+    return () => {
+      window.removeEventListener('ghost-export-data', handleExport);
+      window.removeEventListener('ghost-import-data', handleImport);
+    };
+  }, []);
 
   const privSettings = settings.privacyConfig({
     options,
@@ -414,18 +434,10 @@ const Setting = ({ setting }) => {
     if (!ok) return;
 
     try {
-      localStorage.removeItem('ghostBrowserHistory');
-      localStorage.removeItem('ghostSavedTabs');
-      localStorage.removeItem('ghostCustomApps');
-
-      const current = JSON.parse(localStorage.getItem('options') || '{}');
-      const next = {
-        ...current,
-        bookmarks: [],
-      };
-      localStorage.setItem('options', JSON.stringify(next));
-      updateOption({ bookmarks: [] });
-      showAlert('Browser data deleted.', 'Done');
+      localStorage.clear();
+      sessionStorage.clear();
+      showAlert('All local data and preferences have been deleted. Reloading...', 'Data Wiped');
+      setTimeout(() => window.location.reload(), 1500);
     } catch {
       showAlert('Failed to delete data.', 'Error');
     }
@@ -854,6 +866,8 @@ const Setting = ({ setting }) => {
       {setting === 'Info' && <InfoPanel />}
 
       <SidebarEditor open={sidebarEditorOpen} onClose={() => setSidebarEditorOpen(false)} />
+      <ExportDialog open={exportOpen} onClose={() => setExportOpen(false)} />
+      <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
     </div>
   );
 };

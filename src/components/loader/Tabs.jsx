@@ -1,5 +1,6 @@
 import loaderStore from '/src/utils/hooks/loader/useLoaderStore';
 import { Globe, X, Plus, Loader, UsersRound, UserPlus, Check, Pencil, Trash2, Upload, Download } from 'lucide-react';
+import { showConfirm } from '/src/utils/uiDialog';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useOptions } from '/src/utils/optionsContext'
 import clsx from 'clsx';
@@ -155,15 +156,20 @@ const TabBar = () => {
     window.location.reload();
   };
 
-  const deleteProfile = (id) => {
+  const deleteProfile = async (id) => {
     if (profiles.length <= 1) return;
+
+    const target = profiles.find(p => p.id === id);
+    const confirmed = await showConfirm(`Are you sure you want to delete the profile "${target?.name || 'Unknown'}"? This action cannot be undone.`, 'Delete Profile');
+    if (!confirmed) return;
+
     const next = profiles.filter((profile) => profile.id !== id);
     const nextActive = id === activeProfileId ? next[0].id : activeProfileId;
     persistProfiles(next, nextActive);
 
     if (id === activeProfileId) {
-      const target = next.find((profile) => profile.id === nextActive);
-      applyStorageSnapshot(target?.snapshot || {});
+      const nextTarget = next.find((profile) => profile.id === nextActive);
+      applyStorageSnapshot(nextTarget?.snapshot || {});
       window.location.reload();
     }
   };
@@ -178,18 +184,22 @@ const TabBar = () => {
     setRenameValue('');
   };
 
-  const exportActiveProfile = () => {
-    if (!activeProfile) return;
-    const payload = JSON.stringify(activeProfile, null, 2);
+  const exportSpecificProfile = (profile) => {
+    if (!profile) return;
+    const payload = JSON.stringify(profile, null, 2);
     const blob = new Blob([payload], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${(activeProfile.name || 'profile').replace(/\s+/g, '_').toLowerCase()}.json`;
+    a.download = `${(profile.name || 'profile').replace(/\s+/g, '_').toLowerCase()}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const exportActiveProfile = () => {
+    exportSpecificProfile(activeProfile);
   };
 
   const importProfile = (event) => {
@@ -346,22 +356,31 @@ const TabBar = () => {
                   const active = profile.id === activeProfileId;
                   const isRenaming = renameId === profile.id;
                   return (
-                    <div key={profile.id} className={clsx('rounded-lg border px-2 py-2', active ? 'border-white/25 bg-white/12' : 'border-white/10 bg-white/5')}>
+                    <div
+                      key={profile.id}
+                      className={clsx('rounded-lg border px-2 py-2 transition duration-75', active ? 'border-white/25 bg-white/12' : 'border-white/10 bg-white/5 cursor-pointer hover:bg-white/10')}
+                      onClick={() => !active && !isRenaming && switchProfile(profile.id)}
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <div className="min-w-0 flex-1">
                           {isRenaming ? (
                             <input
                               value={renameValue}
                               onChange={(e) => setRenameValue(e.target.value)}
-                              className="w-full bg-[#ffffff10] border border-white/15 rounded px-2 py-1 text-sm"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveRename();
+                              }}
+                              className="w-full bg-[#00000040] border border-white/20 outline-none focus:border-white/40 rounded px-2 py-1 text-sm shadow-inner"
                               placeholder="Profile name"
+                              autoFocus
+                              onClick={(e) => e.stopPropagation()}
                             />
                           ) : (
                             <p className="text-sm font-medium truncate">{profile.name}</p>
                           )}
                           <p className="text-[11px] opacity-70">{active ? '• Active' : '• Available'}</p>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                           {isRenaming ? (
                             <button className="p-1 rounded hover:bg-white/10" onClick={saveRename} title="Save name">
                               <Check size={13} />
@@ -371,13 +390,12 @@ const TabBar = () => {
                               <Pencil size={13} />
                             </button>
                           )}
-                          {!active && (
-                            <button className="p-1 rounded hover:bg-white/10" onClick={() => switchProfile(profile.id)} title="Switch to profile">
-                              <Check size={13} />
-                            </button>
-                          )}
+
+                          <button className="p-1 rounded hover:bg-white/10" onClick={() => exportSpecificProfile(profile)} title="Export Profile">
+                            <Download size={13} />
+                          </button>
                           {profiles.length > 1 && (
-                            <button className="p-1 rounded hover:bg-white/10" onClick={() => deleteProfile(profile.id)} title="Delete">
+                            <button className="p-1 rounded hover:bg-white/10 hover:text-red-400" onClick={() => deleteProfile(profile.id)} title="Delete">
                               <Trash2 size={13} />
                             </button>
                           )}
@@ -392,8 +410,11 @@ const TabBar = () => {
                 <input
                   value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') createProfile();
+                  }}
                   placeholder="New profile name"
-                  className="flex-1 h-9 rounded-md bg-[#ffffff10] border border-white/10 px-2 text-sm"
+                  className="flex-1 h-9 rounded-md bg-[#00000040] shadow-inner outline-none focus:border-white/30 border border-white/10 px-2 text-sm"
                 />
                 <button className="h-9 px-3 rounded-md bg-[#ffffff18] hover:bg-[#ffffff28] text-sm font-medium flex items-center gap-1.5" onClick={createProfile}>
                   <UserPlus size={13} /> Create

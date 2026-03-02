@@ -217,7 +217,7 @@ const Settings = () => {
                         ? options.settingsPanelItemBackgroundColor || '#405a77'
                         : undefined,
                   }}
-                  onClick={() => setContent((prev) => (prev === name ? '' : name))}
+                  onClick={() => setContent(name)}
                   title={name}
                 >
                   <div className="flex items-center justify-center md:justify-start h-6">

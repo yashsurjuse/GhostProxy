@@ -44,6 +44,7 @@ export const ckOff = () => {
     const { tabName: t, tabIcon: i } = op;
     const { tabName: ogName, tabIcon: ogIcon } = meta[0].value;
     const iconsDisabled = !!op.performanceMode;
+    const isGhostFavicon = /ghost/i.test(String(icon || ogIcon || '')) || /^\/[^/]/.test(String(icon || ogIcon || ''));
     const hostWindow = (() => {
       try {
         if (window.top && window.top.location.origin === window.location.origin) {
@@ -63,7 +64,7 @@ export const ckOff = () => {
         doc.head.appendChild(favicon);
       }
       favicon.setAttribute('sizes', '16x16');
-      favicon.setAttribute('href', iconsDisabled ? '' : (icon || ogIcon));
+      favicon.setAttribute('href', (iconsDisabled && !isGhostFavicon) ? '' : (icon || ogIcon));
     };
 
     const set = (title, icon) => {

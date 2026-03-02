@@ -29,7 +29,7 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
   useEffect(() => {
     if (isOpen) {
       setRender(true);
-      setTimeout(() => setAnim(true), 10);
+      requestAnimationFrame(() => requestAnimationFrame(() => setAnim(true)));
     } else {
       setAnim(false);
       setTimeout(() => setRender(false), 200);
@@ -215,7 +215,7 @@ const Bookmarks = ({ isOpen, onClose, inLoader = false }) => {
                       const processedUrl = process(fixUrl(b.url), false, o.prType || 'auto', o.engine || null);
                       const activeTab = tabs.find(t => t.active);
 
-                      if (!o.openSidebarInNewTab && activeTab) {
+                      if (!o.openLinkInNewTab && activeTab) {
                         updateUrl(activeTab.id, processedUrl);
                       } else {
                         const id = createId();

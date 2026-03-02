@@ -182,8 +182,29 @@ const ThemedApp = memo(() => {
           bgDesign.find((d) => d.value.bgDesign === options.bgDesign) || bgDesign[0]
         ).value.getCSS?.(options.bgDesignColor || '102, 105, 109') || 'none';
 
+    const transpValue = Number(options.bgTransparency ?? 20);
+    const overlayAlpha = 100 - (Number.isFinite(transpValue) ? Math.max(0, Math.min(100, transpValue)) : 20);
+
+    // We only apply the dimmer gradient if overlayAlpha > 0 and there's actually a background to dim
+    const hasBg = resolvedCustomBg || bgDesignConfig !== 'none';
+    const overlayGradient = hasBg && overlayAlpha > 0
+      ? `linear-gradient(color-mix(in srgb, var(--ghost-bg-color) ${overlayAlpha}%, transparent), color-mix(in srgb, var(--ghost-bg-color) ${overlayAlpha}%, transparent))`
+      : '';
+
+    const finalBgImageHtml = resolvedCustomBg
+      ? (overlayGradient ? `${overlayGradient}, url("${resolvedCustomBg}")` : `url("${resolvedCustomBg}")`)
+      : 'none';
+
+    const finalBgImageBody = resolvedCustomBg
+      ? (overlayGradient ? `${overlayGradient}, url("${resolvedCustomBg}")` : `url("${resolvedCustomBg}")`)
+      : (bgDesignConfig !== 'none' ? (overlayGradient ? `${overlayGradient}, ${bgDesignConfig}` : bgDesignConfig) : 'none');
+
     return `
       :root {
+        --ghost-bg-color: ${options.bgColor || '#111827'};
+        --ghost-logo-color: ${options.logoColor || '#ffffff'};
+        --ghost-text-color: ${options.siteTextColor || '#a0b0c8'};
+        --ghost-muted-text-color: ${options.siteMutedTextColor || 'rgba(160, 176, 200, 0.78)'};
         ${options.customFontFamily ? `--font-family: ${options.customFontFamily} !important;` : ''}
         ${options.customPadding ? `--main-padding: ${options.customPadding} !important;` : ''}
         ${options.customBorderRadius ? `--border-radius: ${options.customBorderRadius} !important;` : ''}
@@ -194,7 +215,7 @@ const ThemedApp = memo(() => {
       ${options.customGlobalCss || ''}
 
       html {
-        background-image: ${resolvedCustomBg ? `url("${resolvedCustomBg}")` : 'none'};
+        background-image: ${finalBgImageHtml};
         background-size: ${resolvedCustomBg ? '100% 100% !important' : 'auto'};
         background-repeat: ${resolvedCustomBg ? 'no-repeat !important' : 'repeat'};
         background-position: center;
@@ -204,10 +225,7 @@ const ThemedApp = memo(() => {
 
       body {
         color: ${options.siteTextColor || '#a0b0c8'};
-        background-image: ${resolvedCustomBg
-        ? `url("${resolvedCustomBg}")`
-        : bgDesignConfig
-      };
+        background-image: ${finalBgImageBody};
         background-size: ${resolvedCustomBg ? '100% 100% !important' : options.bgDesign === 'grid' ? '24px 24px' : 'auto'};
         background-repeat: ${resolvedCustomBg ? 'no-repeat !important' : 'repeat'};
         background-position: center;
@@ -215,12 +233,6 @@ const ThemedApp = memo(() => {
         background-color: ${options.bgColor || '#111827'};
         font-family: '${(options.globalFont || 'Inter').replace(/'/g, '')}', Inter, system-ui, -apple-system, sans-serif;
         opacity: 1 !important;
-      }
-
-      :root {
-        --ghost-logo-color: ${options.logoColor || '#ffffff'};
-        --ghost-text-color: ${options.siteTextColor || '#a0b0c8'};
-        --ghost-muted-text-color: ${options.siteMutedTextColor || 'rgba(160, 176, 200, 0.78)'};
       }
 
       #root {
@@ -247,7 +259,7 @@ const ThemedApp = memo(() => {
         scroll-behavior: auto !important;
       }
       
-      img:not(#ghost-font-link ~ img), video, iframe[src*="youtube"] {
+      img:not([src^="/"]), img[src^="//"], video, iframe[src*="youtube"] {
         visibility: hidden !important;
         opacity: 0 !important;
       }
@@ -270,6 +282,7 @@ const ThemedApp = memo(() => {
     options.logoColor,
     options.customGlobalCss,
     resolvedCustomBg,
+    options.bgTransparency,
   ]);
 
   return (

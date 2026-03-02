@@ -527,7 +527,7 @@ export default function Loader({ url, ui = true, zoom }) {
 
     if (activeTab && activeTab.url === processed) return;
 
-    if (options.openSidebarInNewTab) {
+    if (options.openLinkInNewTab) {
       if (store.tabs.length < 20) {
         const id = createId();
         addTab({ title: 'New Tab', id, url: processed });
@@ -792,16 +792,20 @@ export default function Loader({ url, ui = true, zoom }) {
     };
 
     const onWindowError = (event) => {
+      if (event.target && (event.target.src || event.target.href)) {
+        pushDebugLog('error', [`Resource failed to load: ${event.target.src || event.target.href}`]);
+        return;
+      }
       pushDebugLog('error', [event?.message || 'Unhandled error', event?.filename || '', event?.lineno || '']);
     };
     const onUnhandledRejection = (event) => {
       pushDebugLog('error', ['Unhandled rejection', event?.reason || '']);
     };
-    window.addEventListener('error', onWindowError);
+    window.addEventListener('error', onWindowError, true);
     window.addEventListener('unhandledrejection', onUnhandledRejection);
 
     return () => {
-      window.removeEventListener('error', onWindowError);
+      window.removeEventListener('error', onWindowError, true);
       window.removeEventListener('unhandledrejection', onUnhandledRejection);
       if (logRestoreRef.current) {
         logRestoreRef.current();
@@ -960,7 +964,7 @@ export default function Loader({ url, ui = true, zoom }) {
   useEffect(() => {
     if (isChangelogOpen) {
       setChangelogRender(true);
-      const t = setTimeout(() => setChangelogAnim(true), 10);
+      requestAnimationFrame(() => requestAnimationFrame(() => setChangelogAnim(true)));
       return () => clearTimeout(t);
     }
 
@@ -1140,12 +1144,16 @@ export default function Loader({ url, ui = true, zoom }) {
 
     window.__ghostOpenBrowserTab = openGhostBrowserTab;
     window.__ghostUpdateBrowserTabUrl = updateGhostBrowserTabUrl;
+    window.__ghostNavigateActiveTab = navigateActiveTab;
     return () => {
       if (window.__ghostOpenBrowserTab === openGhostBrowserTab) {
         delete window.__ghostOpenBrowserTab;
       }
       if (window.__ghostUpdateBrowserTabUrl === updateGhostBrowserTabUrl) {
         delete window.__ghostUpdateBrowserTabUrl;
+      }
+      if (window.__ghostNavigateActiveTab === navigateActiveTab) {
+        delete window.__ghostNavigateActiveTab;
       }
     };
   }, [addTab, setActive, options.prType, options.engine]);
@@ -1504,7 +1512,7 @@ export default function Loader({ url, ui = true, zoom }) {
 
             {typeof document !== 'undefined' && createPortal(
               <div
-                className={`fixed z-[9999] w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition-all duration-150 origin-bottom-left md:origin-top-left ${ghostMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                className={`fixed z-[9999] w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition duration-150 origin-bottom-left md:origin-top-left ${ghostMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                 style={{
                   top: window.innerWidth < 768 ? Math.max(0, popupCoords.ghost.top - 220) : Math.min(popupCoords.ghost.top, window.innerHeight - 300),
                   bottom: window.innerWidth < 768 ? 'auto' : 'auto',
@@ -1547,8 +1555,12 @@ export default function Loader({ url, ui = true, zoom }) {
                 ].map((item) => (
                   <button
                     key={item.label}
-                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors"
-                    onClick={() => {
+                    type="button"
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-white/10 text-[12px] transition-colors cursor-pointer"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
                       item.action();
                       setGhostMenuOpen(false);
                     }}
@@ -1643,7 +1655,7 @@ export default function Loader({ url, ui = true, zoom }) {
                 </SidebarButton>
                 {typeof document !== 'undefined' && createPortal(
                   <div
-                    className={`fixed z-[9999] w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition-all duration-200 origin-bottom md:origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                    className={`fixed z-[9999] w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition duration-200 origin-bottom md:origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                     style={{
                       top: window.innerWidth < 768 ? Math.max(0, popupCoords.adBlock.top - 160) : Math.min(popupCoords.adBlock.top, window.innerHeight - 200),
                       bottom: window.innerWidth < 768 ? 'auto' : 'auto',
@@ -1712,7 +1724,7 @@ export default function Loader({ url, ui = true, zoom }) {
                 </SidebarButton>
                 {typeof document !== 'undefined' && createPortal(
                   <div
-                    className={`fixed z-[9999] w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition-all duration-200 origin-bottom-right md:origin-left ${devOptionsOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+                    className={`fixed z-[9999] w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition duration-200 origin-bottom-right md:origin-left ${devOptionsOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                     style={{
                       top: window.innerWidth < 768 ? Math.max(0, popupCoords.dev.top - 140) : Math.min(popupCoords.dev.top, window.innerHeight - 150),
                       bottom: window.innerWidth < 768 ? 'auto' : 'auto',
@@ -2065,7 +2077,7 @@ export default function Loader({ url, ui = true, zoom }) {
                   }}
                   className="h-9 px-3 rounded-md border border-white/15 hover:bg-[#ffffff10] text-sm"
                 >
-                  Ok
+                  Close
                 </button>
                 <button
                   type="button"

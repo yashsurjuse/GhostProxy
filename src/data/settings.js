@@ -131,6 +131,20 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     disabled: !!options.customBackgroundImage,
   },
   3: {
+    name: 'Background Transparency',
+    desc: 'Set the transparency/dim of the background image or design (0-100). Lower values make it darker/dimmer.',
+    value: options.bgTransparency ?? '20',
+    type: 'input',
+    placeholder: '20',
+    action: (v) => {
+      let val = parseInt(v);
+      if (isNaN(val)) return;
+      if (val < 0) val = 0;
+      if (val > 100) val = 100;
+      updateOption({ bgTransparency: String(val) });
+    },
+  },
+  4: {
     name: 'Apps per Page',
     desc: 'Number of apps to show per page ("All" will show everything).',
     config: appsPerPageConfig,
@@ -138,7 +152,7 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     type: 'select',
     action: (a) => updateOption(a),
   },
-  4: {
+  5: {
     name: 'Navigation Scale',
     desc: 'Scale navigation bar size (logo & font) globally.',
     config: navScaleConfig,
@@ -146,21 +160,21 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     type: 'select',
     action: (a) => updateOption(a),
   },
-  5: {
+  6: {
     name: 'Typography',
     desc: 'Set any Google Font name (example: Inter, Poppins, Roboto). Some fonts may not fit to elements well.',
     value: options.globalFont || 'Inter',
     type: 'input',
     action: (v) => updateOption({ globalFont: (v || 'Inter').trim() || 'Inter' }),
   },
-  6: {
+  7: {
     name: 'Performance Mode',
     desc: 'Disable heavy animations and app/media icon loading for faster performance.',
     value: !!options.performanceMode,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ performanceMode: b }), 100),
   },
-  7: {
+  8: {
     name: 'Custom Background URL',
     desc: 'Set a custom background image URL (leave empty to use design presets).',
     value: options.customBackgroundImage || '',
@@ -174,28 +188,28 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
       updateOption({ customBackgroundImage: cleaned });
     },
   },
-  8: {
+  9: {
     name: 'Sidebar Editor',
     desc: 'Add custom apps and manage sidebar toggles.',
     type: 'button',
     value: 'Open Sidebar Editor',
     action: openCssEditor?.openSidebarEditor, // Note: Need to pass openSidebarEditor
   },
-  9: {
+  10: {
     name: 'CSS Editor',
     desc: 'Create and manage custom CSS presets, including global CSS and colors.',
     type: 'button',
     value: 'Open CSS Editor',
     action: openCssEditor?.openCssEditor || openCssEditor, // fallback for backward compatibility
   },
-  10: {
+  11: {
     name: 'Clock Format',
     desc: 'Use 12-hour or 24-hour time in the Ghost menu. Default is 12-hour.',
     value: !!options.clock24Hour,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ clock24Hour: b }), 100),
   },
-  11: {
+  12: {
     name: 'Timezone Override',
     desc: 'Optional IANA timezone (example: America/New_York). Leave empty to auto-detect from your IP.',
     value: options.timezoneOverride || '',
@@ -203,14 +217,14 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     placeholder: 'Auto (IP timezone)',
     action: (v) => updateOption({ timezoneOverride: (v || '').trim() || null }),
   },
-  12: {
+  13: {
     name: 'Use Your Location (IP)',
     desc: 'Use your IP-based location for menu weather.',
     value: options.weatherUseIpLocation !== false,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ weatherUseIpLocation: b }), 100),
   },
-  13: {
+  14: {
     name: 'Weather Unit',
     desc: 'Choose the temperature unit shown in the Ghost menu weather.',
     config: weatherUnitConfig,
@@ -218,7 +232,7 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     type: 'select',
     action: (a) => updateOption(a),
   },
-  14: {
+  15: {
     name: 'Weather Coords Override',
     desc: 'Optional coordinates when IP location is disabled (format: lat,lon).',
     value: options.weatherCoordsOverride || '',
@@ -227,7 +241,7 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     action: (v) => updateOption({ weatherCoordsOverride: (v || '').trim() }),
     hidden: options.weatherUseIpLocation !== false,
   },
-  15: {
+  16: {
     name: 'Music Player',
     desc: 'What music player opens when music is opened normally.',
     config: musicPlayerConfig,
@@ -303,11 +317,11 @@ export const browsingConfig = ({ options, updateOption, openShortcuts }) => ({
     action: (b) => setTimeout(() => updateOption({ downloadBlockDefault: b }), 100),
   },
   9: {
-    name: 'Open Sidebar In New Tab',
+    name: 'Open Link In New Tab',
     desc: 'When clicking a bookmark or an app in the side menu, open it in a new tab instead of replacing the current one.',
-    value: !!options.openSidebarInNewTab,
+    value: !!options.openLinkInNewTab,
     type: 'switch',
-    action: (b) => setTimeout(() => updateOption({ openSidebarInNewTab: b }), 100),
+    action: (b) => setTimeout(() => updateOption({ openLinkInNewTab: b }), 100),
   },
   10: {
     name: 'Keyboard Shortcuts',
@@ -371,6 +385,7 @@ export const advancedConfig = ({ options, updateOption }) => ({
     value: !!options.cloudSaveEnabled,
     type: 'switch',
     action: (b) => updateOption({ cloudSaveEnabled: b }),
+    disabled: true,
   },
   7: {
     name: 'Cloud Save Value',
@@ -380,6 +395,7 @@ export const advancedConfig = ({ options, updateOption }) => ({
     placeholder: 'Enter Value',
     action: (v) => updateOption({ cloudSave: (v || '').trim() }),
     disabled: !options.cloudSaveEnabled,
+    hidden: !options.cloudSaveEnabled,
   },
   8: {
     name: 'Cloud Save Username',
@@ -389,6 +405,7 @@ export const advancedConfig = ({ options, updateOption }) => ({
     placeholder: 'Enter Username',
     action: (v) => updateOption({ cloudSaveUsername: (v || '').trim() }),
     disabled: !options.cloudSaveEnabled,
+    hidden: !options.cloudSaveEnabled,
   },
   9: {
     name: 'Cloud Save Password',
@@ -399,6 +416,7 @@ export const advancedConfig = ({ options, updateOption }) => ({
     placeholder: 'Enter Password',
     action: (v) => updateOption({ cloudSavePassword: String(v || '') }),
     disabled: !options.cloudSaveEnabled,
+    hidden: !options.cloudSaveEnabled,
   },
   10: {
     name: 'Reset Instance',
@@ -483,198 +501,10 @@ function find(config, predicate, fallbackIndex = 0) {
   return found ? found.value : config[fallbackIndex].value; // fallback
 }
 
-async function exportData() {
-  try {
-    const startExport = await showConfirm('Start creating a backup file now?', 'Export Data');
-    if (!startExport) return;
-
-    const includeOptions = await showConfirm('Include settings/options?', 'Export Data');
-    const includeTabs = await showConfirm('Include saved tabs?', 'Export Data');
-    const includeHistory = await showConfirm('Include browsing history?', 'Export Data');
-    const includeCustomApps = await showConfirm('Include custom apps?', 'Export Data');
-    const includeSession = await showConfirm('Include session storage?', 'Export Data');
-    const includeCookies = await showConfirm('Include cookies?', 'Export Data');
-
-    if (
-      !includeOptions &&
-      !includeTabs &&
-      !includeHistory &&
-      !includeCustomApps &&
-      !includeSession &&
-      !includeCookies
-    ) {
-      showAlert('Export cancelled. No data categories were selected.', 'Export Data');
-      return;
-    }
-
-    const local = {};
-    if (includeOptions) {
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (!key) continue;
-
-        const isSettingsKey =
-          key === 'options' ||
-          key === 'ghostDocsPopupDismissed' ||
-          key === 'ghostSitePolicies' ||
-          key === 'ghostBrowserProfiles' ||
-          key === 'ghostBrowserActiveProfileId' ||
-          key.startsWith('ghost');
-
-        if (isSettingsKey) {
-          local[key] = localStorage.getItem(key) || '';
-        }
-      }
-    }
-    if (includeTabs) {
-      local.ghostSavedTabs = localStorage.getItem('ghostSavedTabs') || '';
-    }
-    if (includeHistory) {
-      local.ghostBrowserHistory = localStorage.getItem('ghostBrowserHistory') || '';
-    }
-    if (includeCustomApps) {
-      local.ghostCustomApps = localStorage.getItem('ghostCustomApps') || '';
-    }
-
-    const session = {};
-    if (includeSession) {
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (!key) continue;
-        session[key] = sessionStorage.getItem(key);
-      }
-    }
-
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      version: 'v3-selective',
-      localStorage: local,
-      sessionStorage: session,
-      cookies: includeCookies ? document.cookie || '' : '',
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-
-    if ('showSaveFilePicker' in window) {
-      try {
-        const fileHandle = await window.showSaveFilePicker({
-          suggestedName: `ghost-backup-${Date.now()}.json`,
-          types: [
-            {
-              description: 'JSON backup',
-              accept: { 'application/json': ['.json'] },
-            },
-          ],
-        });
-        const writable = await fileHandle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } catch (error) {
-        if (error?.name === 'AbortError') {
-          showAlert('Export cancelled.', 'Export Data');
-          return;
-        }
-        throw error;
-      }
-      return;
-    }
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ghost-backup-${Date.now()}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  } catch {
-    showAlert('Failed to export data.', 'Export Error');
-  }
+function exportData() {
+  window.dispatchEvent(new Event('ghost-export-data'));
 }
 
-async function importData() {
-  const confirmed = await showConfirm(
-    'Warning: importing data will overwrite your current data. Continue?',
-    'Import Data',
-  );
-  if (!confirmed) return;
-
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/json';
-  input.onchange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result || '{}'));
-        const local = parsed.localStorage || {};
-        const session = parsed.sessionStorage || {};
-
-        (async () => {
-          const importOptions = Object.prototype.hasOwnProperty.call(local, 'options')
-            ? await showConfirm('Import settings/options?', 'Import Data')
-            : false;
-          const importTabs = Object.prototype.hasOwnProperty.call(local, 'ghostSavedTabs')
-            ? await showConfirm('Import saved tabs?', 'Import Data')
-            : false;
-          const importHistory = Object.prototype.hasOwnProperty.call(local, 'ghostBrowserHistory')
-            ? await showConfirm('Import browsing history?', 'Import Data')
-            : false;
-          const importCustomApps = Object.prototype.hasOwnProperty.call(local, 'ghostCustomApps')
-            ? await showConfirm('Import custom apps?', 'Import Data')
-            : false;
-          const importSession = Object.keys(session).length > 0
-            ? await showConfirm('Import session storage?', 'Import Data')
-            : false;
-          const importCookies = parsed.cookies
-            ? await showConfirm('Import cookies?', 'Import Data')
-            : false;
-
-          if (importOptions) {
-            Object.entries(local).forEach(([key, value]) => {
-              if (
-                key === 'ghostSavedTabs' ||
-                key === 'ghostBrowserHistory' ||
-                key === 'ghostCustomApps'
-              ) {
-                return;
-              }
-              localStorage.setItem(key, String(value ?? ''));
-            });
-          }
-          if (importTabs) {
-            localStorage.setItem('ghostSavedTabs', String(local.ghostSavedTabs ?? ''));
-          }
-          if (importHistory) {
-            localStorage.setItem('ghostBrowserHistory', String(local.ghostBrowserHistory ?? ''));
-          }
-          if (importCustomApps) {
-            localStorage.setItem('ghostCustomApps', String(local.ghostCustomApps ?? ''));
-          }
-
-          if (importSession) {
-            sessionStorage.clear();
-            Object.entries(session).forEach(([key, value]) => {
-              sessionStorage.setItem(key, String(value ?? ''));
-            });
-          }
-
-          if (importCookies) {
-            const cookies = String(parsed.cookies || '').split(';').map((c) => c.trim()).filter(Boolean);
-            cookies.forEach((cookie) => {
-              document.cookie = cookie;
-            });
-          }
-
-          window.dispatchEvent(new Event('ghost-options-updated'));
-          showAlert('Import completed. Changes were applied.', 'Import Data');
-        })();
-      } catch {
-        showAlert('Invalid backup file.', 'Import Error');
-      }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
+function importData() {
+  window.dispatchEvent(new Event('ghost-import-data'));
 }

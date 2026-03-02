@@ -472,7 +472,6 @@ const Omnibox = () => {
               }
               style={{ backgroundColor: options.menuColor || '#171d29' }}
             >
-              <p className="text-[11px] uppercase tracking-wide opacity-60 mb-2.5">Quick Browsing Settings</p>
 
               <div className="space-y-2.5 text-sm">
                 <label className="block">

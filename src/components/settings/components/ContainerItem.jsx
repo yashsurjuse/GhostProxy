@@ -25,7 +25,7 @@ const SettingsContainerItem = ({
   return (
     <div
       className={clsx(
-        'flex items-center gap-4 py-4 px-5 transition-colors min-w-0 ghost-anim-card',
+        'flex items-center gap-4 py-4 px-5 transition-colors min-w-0',
         !isLast && 'border-b border-white/5',
         isFirst && 'rounded-t-xl',
         isLast && 'rounded-b-xl',

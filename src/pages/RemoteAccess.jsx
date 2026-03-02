@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { useOptions } from '/src/utils/optionsContext';
 import { useNavigate } from 'react-router-dom';
 import { Globe, Server, ExternalLink, Network, SquareArrowOutUpRight } from 'lucide-react';
@@ -8,6 +8,11 @@ const RemoteAccess = memo(() => {
   const navigate = useNavigate();
   const [hoveredCard, setHoveredCard] = useState(null);
   const [discordHovered, setDiscordHovered] = useState(false);
+  const [anim, setAnim] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => requestAnimationFrame(() => setAnim(true)));
+  }, []);
 
   const pageBg = options.bgColor || '#0c131d';
   const panelBg = options.quickModalBgColor || '#121c2a';
@@ -43,7 +48,7 @@ const RemoteAccess = memo(() => {
       </div>
 
       {/* Two-Column Layout */}
-      <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-5">
+      <div className={`flex-1 min-h-0 flex flex-col md:flex-row gap-5 transition-all duration-500 ease-out origin-bottom ${anim ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-[0.98]'}`}>
 
         {/* Left: Browser.lol Card */}
         <div
