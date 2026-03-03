@@ -300,6 +300,28 @@ const TabBar = () => {
     return () => clearInterval(interval);
   }, [activeProfileId, profiles.length]);
 
+  // Instant tab-save: subscribe to loaderStore changes so tab updates persist immediately
+  useEffect(() => {
+    if (!activeProfileId) return;
+    let debounceTimer = null;
+    const unsub = loaderStore.subscribe(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const latestSnapshot = snapshotCurrentStorage();
+        try {
+          const storedProfiles = JSON.parse(localStorage.getItem(PROFILE_STORE_KEY) || '[]');
+          const next = storedProfiles.map((p) =>
+            p.id === activeProfileId
+              ? { ...p, snapshot: latestSnapshot, updatedAt: Date.now() }
+              : p
+          );
+          localStorage.setItem(PROFILE_STORE_KEY, JSON.stringify(next));
+        } catch { }
+      }, 300);
+    });
+    return () => { unsub(); clearTimeout(debounceTimer); };
+  }, [activeProfileId]);
+
   return (
     <div className={clsx("h-10 items-center overflow-visible gap-1 px-1 relative", showTabs && showUI ? 'flex' : 'hidden')} style={{ backgroundColor: options.tabBarColor || "#070e15" }}>
       <div className="relative flex-none">

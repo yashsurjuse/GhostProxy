@@ -45,6 +45,21 @@ const musicPlayerConfig = [
   { option: 'Qobuz', value: { defaultMusicPlayer: 'qobuz' } },
 ];
 
+const aiProviderConfig = [
+  { option: 'Ghost AI (Default)', value: { defaultAiProvider: '' } },
+  { option: 'ChatGPT', value: { defaultAiProvider: 'chatgpt' } },
+  { option: 'Google Gemini', value: { defaultAiProvider: 'gemini' } },
+  { option: 'Claude', value: { defaultAiProvider: 'claude' } },
+  { option: 'Perplexity', value: { defaultAiProvider: 'perplexity' } },
+  { option: 'Microsoft Copilot', value: { defaultAiProvider: 'copilot' } },
+  { option: 'DeepSeek', value: { defaultAiProvider: 'deepseek' } },
+  { option: 'Mistral (Le Chat)', value: { defaultAiProvider: 'mistral' } },
+  { option: 'Grok (xAI)', value: { defaultAiProvider: 'grok' } },
+  { option: 'You.com', value: { defaultAiProvider: 'you' } },
+  { option: 'Poe', value: { defaultAiProvider: 'poe' } },
+  { option: 'HuggingChat', value: { defaultAiProvider: 'huggingchat' } },
+];
+
 export const privacyConfig = ({ options, updateOption, openPanic }) => ({
   1: {
     name: 'Site Title',
@@ -249,6 +264,19 @@ export const customizeConfig = ({ options, updateOption, openCssEditor }) => ({
     value: find(
       musicPlayerConfig,
       (c) => c.value?.defaultMusicPlayer === String(options.defaultMusicPlayer || ''),
+      0,
+    ),
+    type: 'select',
+    action: (a) => updateOption(a),
+  },
+  17: {
+    name: 'AI Provider',
+    desc: 'What AI provider opens when you use Ghost AI.',
+    config: aiProviderConfig,
+    dropdownDirection: 'up',
+    value: find(
+      aiProviderConfig,
+      (c) => c.value?.defaultAiProvider === String(options.defaultAiProvider || ''),
       0,
     ),
     type: 'select',

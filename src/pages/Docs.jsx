@@ -337,8 +337,11 @@ const Docs = memo(() => {
                   if (inGhostBrowserMode) {
                     try {
                       const topWin = window.top && window.top !== window ? window.top : window;
-                      if (typeof topWin.__ghostNavigateActiveTab === 'function') {
-                        topWin.__ghostNavigateActiveTab('ghost://home');
+                      const getTabId = topWin.__ghostGetActiveTabId;
+                      const updater = topWin.__ghostUpdateBrowserTabUrl;
+                      const tabId = typeof getTabId === 'function' ? getTabId() : null;
+                      if (tabId && typeof updater === 'function') {
+                        updater(tabId, 'ghost://home', { skipProxy: true });
                       } else {
                         navigate('/');
                       }

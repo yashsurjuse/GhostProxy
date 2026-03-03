@@ -228,6 +228,9 @@ export default function AIPage() {
   });
   const aiSettingsRef = useRef(null);
   const { options } = useOptions();
+  const [aiProviderPopupOpen, setAiProviderPopupOpen] = useState(() => {
+    try { return localStorage.getItem('ghostAiProviderPopupDismissed') !== 'true'; } catch { return true; }
+  });
 
   useEffect(() => {
     if (!aiSettingsMounted) return;
@@ -712,11 +715,11 @@ export default function AIPage() {
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => setInput('How do you solve a parabola')}
+                    onClick={() => setInput('How do you find the vertex of a parabola')}
                     className={`h-16 rounded-2xl border px-4 text-left transition-all duration-200 hover:translate-y-[-1px] ${ui.card}`}
                   >
-                    <p className="text-[0.95rem] font-semibold">How do you solve</p>
-                    <p className={`text-[0.9rem] ${ui.muted}`}>a parabola</p>
+                    <p className="text-[0.95rem] font-semibold">How do you find</p>
+                    <p className={`text-[0.9rem] ${ui.muted}`}>the vertex of a parabola</p>
                   </button>
                   <button
                     type="button"
@@ -912,6 +915,46 @@ export default function AIPage() {
           </div>
         </main>
       </div>
+
+      {/* "Another AI Provider?" popup */}
+      {aiProviderPopupOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="w-[370px] rounded-2xl border border-white/10 bg-[#0f141d] p-5 shadow-2xl">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Another AI Provider?</h2>
+                <p className="text-sm text-white/60 mt-1">Choose your default provider in Settings.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAiProviderPopupOpen(false)}
+                className="p-1 rounded-md hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="flex items-center justify-end gap-2 mt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.setItem('ghostAiProviderPopupDismissed', 'true');
+                  setAiProviderPopupOpen(false);
+                }}
+                className="px-3 py-1.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/8 transition-colors"
+              >
+                Don't Show Again
+              </button>
+              <button
+                type="button"
+                onClick={() => setAiProviderPopupOpen(false)}
+                className="px-4 py-1.5 rounded-lg bg-white/10 hover:bg-white/18 border border-white/15 text-sm text-white/90 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

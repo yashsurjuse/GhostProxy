@@ -2,9 +2,6 @@ import clsx from 'clsx';
 import { useOptions } from '/src/utils/optionsContext';
 import { memo, useMemo } from 'react';
 
-/** Spacing (in px) between the Ghost text‑logo and the Beta badge. */
-const LOGO_BADGE_GAP = 0;
-
 const Logo = memo(({ options, action, width, height }) => {
   const { options: op } = useOptions();
   const isLightTheme =
@@ -35,7 +32,7 @@ const Logo = memo(({ options, action, width, height }) => {
 
   if (logoColor) {
     return (
-      <div className="inline-flex items-center" style={{ gap: `${LOGO_BADGE_GAP}px` }}>
+      <div className="inline-flex items-center gap-0">
         <div
           className={className}
           id="btn-logo"
@@ -53,13 +50,13 @@ const Logo = memo(({ options, action, width, height }) => {
             maskSize: 'contain',
           }}
         />
-        <span className="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border border-white/20 bg-white/8 select-none" style={{ color: logoColor }}>Beta</span>
+        <span className="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border border-white/20 bg-white/8 select-none -ml-2" style={{ color: logoColor }}>Beta</span>
       </div>
     );
   }
 
   return (
-    <div className="inline-flex items-center" style={{ gap: `${LOGO_BADGE_GAP}px` }}>
+    <div className="inline-flex items-center gap-0">
       <img
         src={logoSrc}
         className={className}
@@ -69,7 +66,7 @@ const Logo = memo(({ options, action, width, height }) => {
         onClick={action}
         style={style}
       />
-      <span className="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border border-white/20 bg-white/8 text-white/70 select-none">Beta</span>
+      <span className="text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border border-white/20 bg-white/8 text-white/70 select-none -ml-2">Beta</span>
     </div>
   );
 });

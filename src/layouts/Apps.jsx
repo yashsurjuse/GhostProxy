@@ -204,10 +204,8 @@ const DEVELOPER_APPS = [
 
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles, onDelete, options }) => {
   const [loaded, setLoaded] = useState(false);
-  const iconStr = String(app.icon || '');
-  const isGhostIcon = app.icon && /ghost/i.test(iconStr);
-  const isLocalPublicIcon = app.icon && /^\/[^/]/.test(iconStr);
-  const hideIcon = (!isGhostIcon && !isLocalPublicIcon && !!options?.performanceMode) || !!app.noIcon;
+  const isGhostIcon = app.icon && /ghost/i.test(String(app.icon));
+  const hideIcon = (!isGhostIcon && !!options?.performanceMode) || !!app.noIcon;
 
   return (
     <div

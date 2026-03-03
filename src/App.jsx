@@ -259,10 +259,8 @@ const ThemedApp = memo(() => {
         scroll-behavior: auto !important;
       }
       
-      img:not([src^="/"]), img[src^="//"], video, iframe[src*="youtube"] {
-        visibility: hidden !important;
-        opacity: 0 !important;
-      }
+      img:not([src^="/"]):not([src^="data:"]):not([src=""]) { visibility: hidden !important; opacity: 0 !important; }
+      video, iframe[src*="youtube"] { visibility: hidden !important; opacity: 0 !important; }
 
       html, body {
         background-image: none !important;

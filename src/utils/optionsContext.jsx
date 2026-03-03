@@ -46,6 +46,7 @@ const DEFAULT_OPTIONS = {
   weatherUseIpLocation: true,
   weatherCoordsOverride: '',
   defaultMusicPlayer: '',
+  defaultAiProvider: '',
   debugMode: false,
 };
 

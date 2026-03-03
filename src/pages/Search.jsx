@@ -47,23 +47,6 @@ import { getLucideIcon } from '/src/components/settings/components/SidebarEditor
 
 const SAVED_TABS_KEY = 'ghostSavedTabs';
 const SITE_POLICY_KEY = 'ghostSitePolicies';
-const INTERNAL_GHOST_PATHS = ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'];
-
-const isInternalGhostTabUrl = (urlValue) => {
-  const raw = String(urlValue || '').trim();
-  if (!raw || raw === 'tabs://new') return true;
-  if (raw.startsWith('ghost://') || raw.startsWith('tabs://')) return true;
-
-  try {
-    const parsed = new URL(raw, location.origin);
-    if (parsed.origin !== location.origin) return false;
-    if (parsed.searchParams.get('ghost') === '1') return true;
-    const path = parsed.pathname.replace(/\/$/, '') || '/';
-    return INTERNAL_GHOST_PATHS.some((base) => path === base || path.startsWith(`${base}/`));
-  } catch {
-    return false;
-  }
-};
 
 const getSitePolicies = () => {
   try {
@@ -240,6 +223,9 @@ export default function Loader({ url, ui = true, zoom }) {
   const ghostMenuRef = useRef(null);
   const devOptionsRef = useRef(null);
   const adBlockPopupRef = useRef(null);
+  const ghostMenuPortalRef = useRef(null);
+  const devOptionsPortalRef = useRef(null);
+  const adBlockPortalRef = useRef(null);
   const findInputRef = useRef(null);
   const debugDragRef = useRef({ active: false, startX: 0, startY: 0, originX: 0, originY: 0 });
   const logRestoreRef = useRef(null);
@@ -416,11 +402,6 @@ export default function Loader({ url, ui = true, zoom }) {
     [tabs],
   );
 
-  const activeTabIsInternalGhost = useMemo(
-    () => isInternalGhostTabUrl(activeTab?.url),
-    [activeTab?.url],
-  );
-
   const activeMusicPrompt = useMemo(() => {
     const tabId = activeTab?.id;
     if (!tabId) return null;
@@ -529,20 +510,6 @@ export default function Loader({ url, ui = true, zoom }) {
 
   const toggleDevToolsForTab = (tabId, frameRef) => {
     if (!tabId) return;
-
-    const tab = loaderStore.getState().tabs.find((item) => item.id === tabId);
-    if (isInternalGhostTabUrl(tab?.url)) {
-      disableDevTools(frameRef);
-      setDevToolsTabs((prev) => {
-        if (!prev[tabId]) return prev;
-        const next = { ...prev };
-        delete next[tabId];
-        return next;
-      });
-      showAlert('DevTools are not available on internal Ghost pages.', 'Unavailable');
-      return;
-    }
-
     setDevToolsTabs((prev) => {
       const enabled = !!prev[tabId];
       if (enabled) {
@@ -557,6 +524,27 @@ export default function Loader({ url, ui = true, zoom }) {
   };
 
   const navigateActiveTab = (rawUrl) => {
+    // Intercept ghost://ai — redirect to external provider if one is set
+    if (String(rawUrl).toLowerCase() === 'ghost://ai' && options.defaultAiProvider) {
+      const providerUrls = {
+        chatgpt: 'https://chat.openai.com',
+        gemini: 'https://gemini.google.com',
+        claude: 'https://claude.ai',
+        perplexity: 'https://www.perplexity.ai',
+        copilot: 'https://copilot.microsoft.com',
+        deepseek: 'https://chat.deepseek.com',
+        mistral: 'https://chat.mistral.ai',
+        grok: 'https://grok.x.ai',
+        you: 'https://you.com',
+        poe: 'https://poe.com',
+        huggingchat: 'https://huggingface.co/chat',
+      };
+      const externalUrl = providerUrls[options.defaultAiProvider];
+      if (externalUrl) {
+        rawUrl = externalUrl;
+      }
+    }
+
     const store = loaderStore.getState();
     const activeTab = store.tabs.find((tab) => tab.active) || store.tabs[0];
     const processed = process(rawUrl, false, options.prType || 'auto', options.engine || null);
@@ -580,7 +568,27 @@ export default function Loader({ url, ui = true, zoom }) {
     }
   };
 
+  const isActiveTabInternalGhost = () => {
+    const store = loaderStore.getState();
+    const tab = store.tabs.find((tab) => tab.active) || store.tabs[0];
+    if (!tab) return true;
+    const raw = String(tab?.url || '').trim();
+    // Check iframeUrls too (ghost:// URLs stored as iframeUrl)
+    const iframeUrl = String(store.iframeUrls?.[tab.id] || '').trim();
+    if (!raw || raw === 'tabs://new') return true;
+    if (raw.startsWith('ghost://') || raw.startsWith('tabs://')) return true;
+    if (iframeUrl.startsWith('ghost://') || iframeUrl.startsWith('tabs://')) return true;
+    try {
+      const parsed = new URL(raw, location.origin);
+      if (parsed.origin !== location.origin) return false;
+      if (parsed.searchParams.get('ghost') === '1') return true;
+      const path = parsed.pathname.replace(/\/$/, '') || '/';
+      return ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'].some((base) => path === base || path.startsWith(`${base}/`));
+    } catch { return false; }
+  };
+
   const openDevToolsForActiveTab = () => {
+    if (isActiveTabInternalGhost()) return;
     const store = loaderStore.getState();
     const activeTab = store.tabs.find((tab) => tab.active);
     if (!activeTab) return;
@@ -668,6 +676,7 @@ export default function Loader({ url, ui = true, zoom }) {
     const close = (event) => {
       if (!ghostMenuOpen) return;
       if (ghostMenuRef.current?.contains(event.target)) return;
+      if (ghostMenuPortalRef.current?.contains(event.target)) return;
       setGhostMenuOpen(false);
     };
     window.addEventListener('pointerdown', close);
@@ -678,6 +687,7 @@ export default function Loader({ url, ui = true, zoom }) {
     const close = (event) => {
       if (!devOptionsOpen) return;
       if (devOptionsRef.current?.contains(event.target)) return;
+      if (devOptionsPortalRef.current?.contains(event.target)) return;
       setDevOptionsOpen(false);
     };
     window.addEventListener('pointerdown', close);
@@ -688,6 +698,7 @@ export default function Loader({ url, ui = true, zoom }) {
     const close = (event) => {
       if (!adBlockPopupOpen) return;
       if (adBlockPopupRef.current?.contains(event.target)) return;
+      if (adBlockPortalRef.current?.contains(event.target)) return;
       setAdBlockPopupOpen(false);
     };
     window.addEventListener('pointerdown', close);
@@ -1000,14 +1011,8 @@ export default function Loader({ url, ui = true, zoom }) {
   useEffect(() => {
     if (isChangelogOpen) {
       setChangelogRender(true);
-      let innerFrame = 0;
-      const outerFrame = requestAnimationFrame(() => {
-        innerFrame = requestAnimationFrame(() => setChangelogAnim(true));
-      });
-      return () => {
-        cancelAnimationFrame(outerFrame);
-        if (innerFrame) cancelAnimationFrame(innerFrame);
-      };
+      requestAnimationFrame(() => requestAnimationFrame(() => setChangelogAnim(true)));
+      return;
     }
 
     setChangelogAnim(false);
@@ -1177,16 +1182,30 @@ export default function Loader({ url, ui = true, zoom }) {
 
     const updateGhostBrowserTabUrl = (tabId, rawUrl, config = {}) => {
       if (!tabId || !rawUrl) return false;
+      // Handle ghost://home specially — switch to tabs://new so Viewer shows home
+      if (String(rawUrl).toLowerCase() === 'ghost://home') {
+        loaderStore.getState().updateUrl(tabId, 'tabs://new');
+        loaderStore.getState().setIframeUrl(tabId, 'ghost://home');
+        return true;
+      }
       const processedUrl = config?.skipProxy
         ? rawUrl
         : process(rawUrl, false, options.prType || 'auto', options.engine || null);
       loaderStore.getState().updateUrl(tabId, processedUrl);
+      // Also set iframeUrl for ghost:// protocol URLs
+      if (String(rawUrl).startsWith('ghost://')) {
+        loaderStore.getState().setIframeUrl(tabId, rawUrl);
+      }
       return true;
     };
 
     window.__ghostOpenBrowserTab = openGhostBrowserTab;
     window.__ghostUpdateBrowserTabUrl = updateGhostBrowserTabUrl;
-    window.__ghostNavigateActiveTab = navigateActiveTab;
+    window.__ghostGetActiveTabId = () => {
+      const store = loaderStore.getState();
+      const active = store.tabs.find((tab) => tab.active) || store.tabs[0];
+      return active?.id || null;
+    };
     return () => {
       if (window.__ghostOpenBrowserTab === openGhostBrowserTab) {
         delete window.__ghostOpenBrowserTab;
@@ -1194,9 +1213,7 @@ export default function Loader({ url, ui = true, zoom }) {
       if (window.__ghostUpdateBrowserTabUrl === updateGhostBrowserTabUrl) {
         delete window.__ghostUpdateBrowserTabUrl;
       }
-      if (window.__ghostNavigateActiveTab === navigateActiveTab) {
-        delete window.__ghostNavigateActiveTab;
-      }
+      delete window.__ghostGetActiveTabId;
     };
   }, [addTab, setActive, options.prType, options.engine]);
 
@@ -1205,19 +1222,6 @@ export default function Loader({ url, ui = true, zoom }) {
       const tabId = event?.detail?.tabId;
       const frame = event?.detail?.frame || null;
       if (!tabId || !devToolsTabs[tabId]) return;
-
-      const tab = loaderStore.getState().tabs.find((item) => item.id === tabId);
-      if (isInternalGhostTabUrl(tab?.url)) {
-        disableDevTools(frame);
-        setDevToolsTabs((prev) => {
-          if (!prev[tabId]) return prev;
-          const next = { ...prev };
-          delete next[tabId];
-          return next;
-        });
-        return;
-      }
-
       enableDevTools(frame);
     };
 
@@ -1531,13 +1535,6 @@ export default function Loader({ url, ui = true, zoom }) {
       policyTick,
     ],
   );
-
-  useEffect(() => {
-    if (!currentSitePolicy?.site && adBlockPopupOpen) {
-      setAdBlockPopupOpen(false);
-    }
-  }, [currentSitePolicy?.site, adBlockPopupOpen]);
-
   const anySidebarPopupOpen = ghostMenuOpen || devOptionsOpen || adBlockPopupOpen;
 
   return (
@@ -1574,6 +1571,7 @@ export default function Loader({ url, ui = true, zoom }) {
 
             {typeof document !== 'undefined' && createPortal(
               <div
+                ref={ghostMenuPortalRef}
                 className={`fixed z-[9999] w-52 rounded-xl border border-white/10 bg-[#0c0f14] p-2 shadow-2xl transition duration-150 origin-bottom-left md:origin-top-left ${ghostMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                 style={{
                   top: window.innerWidth < 768 ? Math.max(0, popupCoords.ghost.top - 220) : Math.min(popupCoords.ghost.top, window.innerHeight - 300),
@@ -1708,11 +1706,6 @@ export default function Loader({ url, ui = true, zoom }) {
                   label="Ad Block"
                   onClick={() => {
                     if (window.innerWidth >= 768) {
-                      if (!currentSitePolicy?.site) {
-                        setAdBlockPopupOpen(false);
-                        showAlert('Ad block controls are not available on internal Ghost pages.', 'Unavailable');
-                        return;
-                      }
                       setAdBlockPopupOpen((prev) => !prev);
                     }
                   }}
@@ -1722,6 +1715,7 @@ export default function Loader({ url, ui = true, zoom }) {
                 </SidebarButton>
                 {typeof document !== 'undefined' && createPortal(
                   <div
+                    ref={adBlockPortalRef}
                     className={`fixed z-[9999] w-64 rounded-xl border border-white/10 bg-[#0f141d] p-2.5 shadow-2xl transition duration-200 origin-bottom md:origin-left ${adBlockPopupOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                     style={{
                       top: window.innerWidth < 768 ? Math.max(0, popupCoords.adBlock.top - 160) : Math.min(popupCoords.adBlock.top, window.innerHeight - 200),
@@ -1791,6 +1785,7 @@ export default function Loader({ url, ui = true, zoom }) {
                 </SidebarButton>
                 {typeof document !== 'undefined' && createPortal(
                   <div
+                    ref={devOptionsPortalRef}
                     className={`fixed z-[9999] w-48 rounded-xl border border-white/10 bg-[#0f141d] p-2 shadow-2xl transition duration-200 origin-bottom-right md:origin-left ${devOptionsOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
                     style={{
                       top: window.innerWidth < 768 ? Math.max(0, popupCoords.dev.top - 140) : Math.min(popupCoords.dev.top, window.innerHeight - 150),
@@ -1799,16 +1794,9 @@ export default function Loader({ url, ui = true, zoom }) {
                     }}
                   >
                     <button
-                      className={
-                        'w-full text-left px-2.5 py-2 rounded-lg text-[12px] transition-colors flex items-center gap-2 ' +
-                        (activeTabIsInternalGhost ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10')
-                      }
+                      className={`w-full text-left px-2.5 py-2 rounded-lg text-[12px] transition-colors flex items-center gap-2 ${isActiveTabInternalGhost() ? 'opacity-40 cursor-not-allowed' : 'hover:bg-white/10'}`}
                       onClick={() => {
-                        if (activeTabIsInternalGhost) {
-                          showAlert('DevTools are not available on internal Ghost pages.', 'Unavailable');
-                          setDevOptionsOpen(false);
-                          return;
-                        }
+                        if (isActiveTabInternalGhost()) return;
                         openDevToolsForActiveTab();
                         setDevOptionsOpen(false);
                       }}
