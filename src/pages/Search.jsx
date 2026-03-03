@@ -578,12 +578,26 @@ export default function Loader({ url, ui = true, zoom }) {
     if (!raw || raw === 'tabs://new') return true;
     if (raw.startsWith('ghost://') || raw.startsWith('tabs://')) return true;
     if (iframeUrl.startsWith('ghost://') || iframeUrl.startsWith('tabs://')) return true;
+    const GHOST_PATHS = ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'];
     try {
       const parsed = new URL(raw, location.origin);
       if (parsed.origin !== location.origin) return false;
       if (parsed.searchParams.get('ghost') === '1') return true;
+
+      // Check pathname-based routes (BrowserRouter / localhost)
       const path = parsed.pathname.replace(/\/$/, '') || '/';
-      return ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'].some((base) => path === base || path.startsWith(`${base}/`));
+      if (GHOST_PATHS.some((base) => path === base || path.startsWith(`${base}/`))) return true;
+
+      // Check hash-based routes (HashRouter / static/Cloudflare builds)
+      const hash = parsed.hash || '';
+      if (hash.startsWith('#/')) {
+        const hashPath = '/' + hash.slice(2).split('?')[0].replace(/\/$/, '');
+        const hashQs = hash.includes('?') ? new URLSearchParams(hash.split('?')[1]) : null;
+        if (hashQs?.get('ghost') === '1') return true;
+        if (GHOST_PATHS.some((base) => hashPath === base || hashPath.startsWith(`${base}/`))) return true;
+      }
+
+      return false;
     } catch { return false; }
   };
 
