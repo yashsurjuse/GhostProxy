@@ -571,15 +571,13 @@ export default function Loader({ url, ui = true, zoom }) {
   const INTERNAL_PATHS = ['/apps', '/settings', '/discover', '/docs', '/search', '/code', '/ai', '/remote', '/new'];
 
   const isActiveTabInternalGhost = () => {
-    const store = loaderStore.getState();
-    const tab = store.tabs.find((tab) => tab.active) || store.tabs[0];
-    if (!tab) return true;
-    const raw = String(tab?.url || '').trim();
-    // Check iframeUrls too (ghost:// URLs stored as iframeUrl)
-    const iframeUrl = String(store.iframeUrls?.[tab.id] || '').trim();
+    const activeTab = tabs.find((t) => t.active) || tabs[0] || null;
+    if (!activeTab) return true;
+
+    const raw = String(activeTab.url || '').trim();
     if (!raw || raw === 'tabs://new') return true;
     if (raw.startsWith('ghost://') || raw.startsWith('tabs://')) return true;
-    if (iframeUrl.startsWith('ghost://') || iframeUrl.startsWith('tabs://')) return true;
+
     try {
       const parsed = new URL(raw, location.origin);
       if (parsed.origin !== location.origin) return false;
@@ -599,7 +597,9 @@ export default function Loader({ url, ui = true, zoom }) {
       }
 
       return false;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   };
 
   const openDevToolsForActiveTab = () => {
@@ -623,10 +623,12 @@ export default function Loader({ url, ui = true, zoom }) {
   };
 
   const resolveCurrentSite = () => {
+    if (isActiveTabInternalGhost()) return null;
+
     const store = loaderStore.getState();
     const activeTab = store.tabs.find((tab) => tab.active) || store.tabs[0];
     const raw = String(activeTab?.url || '').trim();
-    if (!raw || raw === 'tabs://new' || raw.startsWith('ghost://') || raw.startsWith('tabs://')) return null;
+    if (!raw || raw === 'tabs://new') return null;
 
     let decoded = raw;
     try {
